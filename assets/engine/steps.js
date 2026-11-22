@@ -46,7 +46,8 @@
         const btn = api.button(st.button || "Check", check, "primary");
         box.append(prompt, h("div", null, btn));
         if (st.note) box.appendChild(h("div", { class: "preview", html: st.note }));
-        setTimeout(() => fields[0] && fields[0].focus(), 0);
+        // Don't scroll the question out of view on load; after the first step, keep the cursor in the next box.
+        if (i > 0) setTimeout(() => fields[0] && fields[0].focus({ preventScroll: true }), 0);
 
         function check() {
           const vals = fields.map((f) => Alg.parseNum(f.value));

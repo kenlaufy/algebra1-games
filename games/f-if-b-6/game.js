@@ -1,0 +1,51 @@
+/* Speed Trap · AI.F-IF.B.6 */
+(function () {
+  const M = "−";
+  const LEVELS = [
+    { stage: 1, ctx: "A car's distance: d(t) = 60t miles after t hours. Average speed from t = 1 to t = 3?",
+      steps: [["in", "d(1) = [] and d(3) = []", [60, 180]], ["in", "Average rate = (180 − 60) / (3 − 1) = [] miles per hour", [60]]], answer: "60 mi/h", check: "A line has the same rate everywhere ✓", tip: "Average rate of change = change in output ÷ change in input." },
+    { stage: 1, ctx: "A falling object: distance fallen d (m) after t seconds.", table: { colLabel: "t (s)", cols: [0, 1, 2, 3, 4], rows: [{ label: "d (m)", values: [0, 5, 20, 45, 80] }] },
+      steps: [["in", "Average rate from t = 1 to t = 3: (45 − 5) / (3 − 1) = [] m/s", [20]]], answer: "20 m/s", check: "(45 − 5)/2 = 20 ✓", tip: "Read the two values from the table." },
+    { stage: 1, ctx: "f(x) = x². Use the graph: average rate from x = 0 to x = 4.", chart: { r: [-1, 5, -1, 18, 1, 2], series: [{ f: (x) => x * x }], marks: [[0, 0, "(0, 0)"], [4, 16, "(4, 16)"]], reveal: "start" },
+      steps: [["in", "(16 − 0) / (4 − 0) = []", [4]]], answer: "4", check: "The slope of the line joining (0, 0) and (4, 16) ✓", tip: "It's the slope between two points on the graph." },
+    { stage: 1, ctx: "The falling object again: 20 m/s from t = 1 to t = 3.", steps: [["ch", "What does \"20 m/s\" mean here?", [["On average it fell 20 more meters for each second", ""], ["It's 20 m high", "That's a height, not a rate."], ["It fell exactly 20 m every second", "It's an average: it fell slower at first and faster later."]]]],
+      answer: "An average of 20 meters per second", check: "Units: output units per input unit ✓", tip: "Rates have units." },
+    { stage: 2, ctx: "A ball's height: h(t) = −5t² + 30t meters.", chart: { r: [0, 6.5, 0, 50, 1, 5, 1, 10], xlabel: "t (s)", ylabel: "h (m)", series: [{ f: (t) => -5 * t * t + 30 * t }], reveal: "start" },
+      steps: [["in", "h(1) = [] and h(3) = []", [25, 45]], ["in", "Average rate from t = 1 to 3: [] m/s", [10]]], answer: "10 m/s (rising)", check: "(45 − 25)/2 = 10 ✓", tip: "Compute two heights first." },
+    { stage: 2, ctx: "Same ball: average rate from t = 3 to t = 5.", chart: { r: [0, 6.5, 0, 50, 1, 5, 1, 10], xlabel: "t (s)", ylabel: "h (m)", series: [{ f: (t) => -5 * t * t + 30 * t }], reveal: "start" },
+      steps: [["in", "h(5) = []", [25]], ["in", "Average rate: (25 − 45) / 2 = []", [-10]], ["ch", "A negative rate means…", [["The ball is coming down", ""], ["The ball is underground", "It's still 25 m up."], ["A mistake", "Negative rates are normal for decreasing functions."]]]],
+      answer: "−10 m/s (falling)", check: "Symmetric to the way up ✓", tip: "Rates can be negative." },
+    { stage: 2, ctx: "A population: P(t) = 100 · 2ᵗ.", steps: [["in", "P(0) = [] and P(3) = []", [100, 800]], ["in", "Average rate from t = 0 to 3: [] per year (2 decimal places)", [233.33], { tol: 0.011 }]],
+      answer: "≈ 233.33 per year", check: "700 ÷ 3 ≈ 233.33 ✓", tip: "Exponentials have average rates too." },
+    { stage: 2, ctx: "Temperatures through a day.", table: { colLabel: "time", cols: ["6 am", "noon", "6 pm"], rows: [{ label: "°C", values: [12, 24, 18] }] },
+      steps: [["in", "Rate from 6 am to noon: [] °C per hour", [2]], ["in", "Rate from noon to 6 pm: [] °C per hour", [-1]]], answer: "+2 °C/h, then −1 °C/h", check: "12 °C over 6 h, then −6 °C over 6 h ✓", tip: "6 hours between each reading." },
+    { stage: 3, ctx: "Speed trap! A camera records a car's position. The limit is 25 m/s.", table: { colLabel: "t (s)", cols: [0, 2, 4, 6], rows: [{ label: "position (m)", values: [0, 50, 110, 180] }] },
+      steps: [["in", "Average speed from t = 2 to t = 6: [] m/s", [32.5]], ["ch", "Ticket?", [["Yes: its average speed was over the limit", ""], ["No", "32.5 > 25."]]]], answer: "32.5 m/s: speeding", check: "(180 − 50)/4 = 32.5 ✓", tip: "Catch the speeder." },
+    { stage: 3, ctx: "f(x) = 3x + 1 and g(x) = x², from x = 1 to x = 3.", steps: [["in", "Average rate of f: [], of g: []", [3, 4]], ["ch", "Which changes faster on this interval?", [["g", ""], ["f", "4 > 3."], ["The same", "3 ≠ 4."]]]],
+      answer: "f: 3, g: 4", check: "g: (9 − 1)/2 = 4 ✓", tip: "Compare two functions on the same interval." },
+    { stage: 3, ctx: "Estimate from the graph: the average rate from x = 1 to x = 4.", chart: { r: [-1, 5, -1, 11, 1, 1, 1, 2], series: [{ f: (x) => 0.5 * x * x + 1 }], marks: [[1, 1.5, "(1, 1.5)"], [4, 9, "(4, 9)"]], reveal: "start" },
+      steps: [["in", "(9 − 1.5) / (4 − 1) = []", [2.5]]], answer: "2.5", check: "7.5 ÷ 3 = 2.5 ✓", tip: "Read the marked points." },
+    { stage: 3, ctx: "f(x) = 2ˣ. Which interval has the greatest average rate of change?", steps: [["ch", "Choose:", [["4 to 5", ""], ["0 to 1", "Rate 1: 2⁰ to 2¹."], ["2 to 3", "Rate 4."]]], ["in", "Average rate from 4 to 5: []", [16]]],
+      answer: "4 to 5 (rate 16)", check: "32 − 16 = 16 ✓", tip: "Last one: exponential rates keep growing." },
+  ];
+  Timeline.stepGame({
+    slug: "f-if-b-6", title: "Speed Trap", subtitle: "Calculate and interpret average rate of change",
+    stages: { 1: "Stage 1 · Formula, table, graph", 2: "Stage 2 · Changing rates", 3: "Stage 3 · Catch and compare" }, levels: LEVELS,
+    help: { intro: "Average rate of change = <b>(change in output) ÷ (change in input)</b>. On a graph, it's the slope between two points.",
+      steps: ["Find the outputs at the two inputs.", "Subtract, then divide by the change in input.", "Think about units and sign: m/s, °C per hour, positive or negative.", "Fewer wrong answers means more stars."],
+      note: "Decimals are fine: round to 2 places when asked." },
+    hint: "(f(b) − f(a)) ÷ (b − a).",
+    guide: {
+      summary: "A 12-level game for average rate of change. Students compute rates from formulas, tables and graphs, interpret units and negative rates, catch a speeding car, and compare rates across functions and intervals.",
+      also: "<span class='code'>AI.F-LE.A.3</span> exponential vs. linear growth.",
+      practices: "MP2 Reason abstractly and quantitatively · MP6 Attend to precision",
+      goals: ["Calculate the average rate of change of a function over an interval from a formula or table.", "Estimate the rate of change from a graph.", "Interpret rates, including units and negative values, in context."],
+      howItWorks: "Each level gives a function as a formula, table or graph with marked points. Students compute outputs and the average rate, then interpret it.",
+      stageNotes: { 1: { sees: "A linear distance, a falling object table, y = x².", builds: "The formula; units." }, 2: { sees: "A thrown ball, population, temperatures.", builds: "Changing and negative rates." }, 3: { sees: "A speed trap, comparisons, exponential intervals.", builds: "Decisions from rates." } },
+      discussion: ["Why is the average speed of the falling object not the same on every interval?", "What does a negative average rate mean for the ball?", "Why do later intervals of 2ˣ have bigger rates?"],
+      misconceptions: [["Dividing output by input instead of changes", "The template uses differences."], ["Ignoring the sign", "Level 6."], ["Average = actual speed at every moment", "Level 4."]],
+      exitTicket: { items: ["f(x) = x² + 1. Average rate from x = 2 to x = 5?", "A plant is 4 cm on day 2 and 16 cm on day 8. Average growth rate?", "Explain what −3 °C per hour means."],
+        answers: ["(26 − 5)/3 = 7", "12/6 = 2 cm per day", "On average the temperature dropped 3 °C each hour."] },
+    },
+  });
+})();

@@ -21,6 +21,7 @@ cat > "games/$slug/index.html" <<HTML
 <script src="../../assets/engine/algebra.js"></script>
 <script src="../../assets/engine/cartoon.js"></script>
 <script src="../../assets/engine/plane.js"></script>
+<script src="../../assets/engine/timeline.js"></script>
 <script src="../../assets/engine/game-shell.js"></script>
 <script src="../../assets/engine/steps.js"></script>
 <script src="game.js"></script>
