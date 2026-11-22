@@ -12,7 +12,7 @@
   };
   const R = (k) => window.Alg.round(D.r(S[k]), 2);
   const pic = (k) => ({ vb: "0 0 900 420", label: "Scatter plot", html: D.scatter(S[k], { xr: [0, 9, 1], yr: [0, 14, 1, 2] }).svg });
-  const guess = (k) => ["in", "Your guess for r (−1 to 1): []", [R(k)], { tol: 0.25, hint: "Strong straight-line trends are near ±1; no trend is near 0. The sign follows the direction." }];
+  const guess = (k) => ["in", "Your guess for r (−1 to 1): []", [R(k)], { tol: 0.25, hint: "Strong straight-line trends have r near ±1; a weak or no linear trend has r near 0. The sign follows the direction." }];
   const LEVELS = [
     { stage: 1, ctx: "Study the scatter plot: which way does it go, and how tightly do the points hug a line?", pic: pic("strongPos"), steps: [guess("strongPos")], answer: "r ≈ " + R("strongPos"), check: "Points hug a rising line ✓", tip: "Guess r. Within 0.25 counts." },
     { stage: 1, ctx: "Study the scatter plot: which way does it go, and how tightly do the points hug a line?", pic: pic("strongNeg"), steps: [guess("strongNeg")], answer: "r ≈ " + R("strongNeg"), check: "Points hug a falling line ✓", tip: "Downhill means negative." },

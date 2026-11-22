@@ -71,7 +71,7 @@
             const miss = lv.coins.find((c) => !Alg.close(fn(vals)(c[0]), c[1], 1e-6));
             if (!miss) return true;
             return "Missed (" + Alg.num(miss[0]) + ", " + Alg.num(miss[1]) + "): your slide gives y = " + Alg.num(Alg.round(fn(vals)(miss[0]), 3)) + " there. " +
-              (miss[0] === 0 ? "At x = 0, bˣ = 1, so y = a" + (n === 3 ? " + c." : ".") : "Compare neighbouring coins: what do you multiply by" + (n === 3 ? " (after subtracting the floor)?" : "?"));
+              (miss[0] === 0 ? "At x = 0, bˣ = 1, so y = a" + (n === 3 ? " + c." : ".") : "Compare neighboring coins: what do you multiply by" + (n === 3 ? " (after subtracting the floor)?" : "?"));
           }, done: eq(lv.ans) });
         if (lv.end) steps.push({ type: "choice", prompt: "As x → ∞, y…", options: [{ label: "approaches 0", ok: true }, { label: "grows without bound", why: "b < 1: each step multiplies by less than 1." }, { label: "becomes negative", why: "A positive a times positive powers stays positive." }] });
       } else {
@@ -111,7 +111,7 @@
       },
     },
     answerKey(lv) {
-      if (lv.coins) return { prompt: "Coins " + lv.coins.map((c) => "(" + c.join(", ") + ")").join(", "), solution: "a = y at x = 0" + (lv.floor ? " minus the floor" : "") + "; b = ratio of neighbouring coins", answer: eq(lv.ans) };
+      if (lv.coins) return { prompt: "Coins " + lv.coins.map((c) => "(" + c.join(", ") + ")").join(", "), solution: "a = y at x = 0" + (lv.floor ? " minus the floor" : "") + "; b = ratio of neighboring coins", answer: eq(lv.ans) };
       const vals = lv.qs.map((q) => (Array.isArray(q) ? q[0].replace("[]", Alg.num(q[1][0])) : q.c + " " + q.o[0][0]));
       return { prompt: eq(lv.show), solution: vals.join("; "), answer: vals.join("; ") };
     },

@@ -66,7 +66,7 @@
     const stamp = /^([0-9a-z]+)(?:\.([0-9a-z]+))?$/.exec(p[3]);
     const offset = stamp && stamp[2] ? parseInt(stamp[2], 36) : 0;
     const time = stamp ? EPOCH + parseInt(stamp[1], 36) * 60000 + offset : NaN;
-    if (!Number.isSafeInteger(time) || time > 8640000000000000 || offset >= 60000) return { error: "Damaged timestamp" };
+    if (!Number.isSafeInteger(time) || time > 8640000000000000 || offset >= 60000) return { error: "Damaged code (its date is not valid)" };
     const out = { classCode: CL.prettyCode(p[1]), nick, time, stars: {} };
     for (const e of p.slice(4)) {
       const m = /^([a-z0-9-]+)\.([A-Za-z0-9_-]{4})$/.exec(e); if (!m) return { error: "Damaged code" };
@@ -119,7 +119,7 @@
     const data = JSON.parse(json);
     const isRecord = v => v !== null && typeof v === "object" && !Array.isArray(v);
     if (!data || data.app !== "algebra1-games" || data.kind !== "classes" || data.version !== 1 || !isRecord(data.classes)) {
-      throw new Error("Choose a version 1 class backup downloaded from Algebra 1 Games.");
+      throw new Error("Choose a class backup file downloaded from Algebra 1 Games.");
     }
     const classes = Object.values(data.classes);
     const validStudent = s => isRecord(s) && typeof s.nick === "string" && Number.isFinite(s.time) &&
