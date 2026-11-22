@@ -61,12 +61,34 @@
     const st = CL.get(cls.code).students[nick.toLowerCase()];
     check("Dashboard summary counts levels and stars", CL.summary(st.stars["f-if-a-2"]).solved === 4 && CL.summary(st.stars["f-if-a-2"]).stars === 9);
 
+    // A teacher can import a student's second hand-in within the same minute.
+    const realNow = Date.now;
+    const minute = Math.floor(realNow() / 60000) * 60000 + 60000;
+    let first, second;
+    try {
+      Date.now = () => minute + 100;
+      first = CL.progressCode();
+      localStorage.setItem("a1g-stars-f-if-a-2", JSON.stringify({ 0: 3, 1: 2, 2: 1, 3: 3, 11: 3 }));
+      Date.now = () => minute + 200;
+      second = CL.progressCode();
+    } finally { Date.now = realNow; }
+    CL.importText(first, cls.code);
+    check("A second hand-in in the same minute replaces the first", CL.importText(second, cls.code).updated === 1 &&
+      CL.get(cls.code).students[nick.toLowerCase()].stars["f-if-a-2"][3] === 3);
+    check("An older hand-in cannot replace a newer one", CL.importText(first, cls.code).same === 1);
+    check("Progress codes made before this update still parse", CL.parse("A1G1~ABC234~Pilot~1~46az").nick === "Pilot");
+
     // backup and restore
     const backup = CL.backup();
     localStorage.removeItem("a1g-classes");
     check("Restore brings classes back", CL.restore(backup) === 2 && CL.get(cls.code) && CL.get(cls.code).students[nick.toLowerCase()]);
     let threw = false; try { CL.restore('{"hello":1}'); } catch (e) { threw = true; }
     check("Restore rejects other files", threw);
+    const savedClasses = JSON.stringify(CL.all());
+    const incomplete = JSON.parse(backup);
+    delete incomplete.classes[cls.code].students;
+    threw = false; try { CL.restore(JSON.stringify(incomplete)); } catch (e) { threw = true; }
+    check("An incomplete backup does not overwrite classes", threw && JSON.stringify(CL.all()) === savedClasses);
     CL.leave();
     check("Leaving the class turns the calculator back on", C.allowed() === true);
 
