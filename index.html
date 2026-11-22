@@ -35,7 +35,9 @@
   .feature .name { font-family: var(--head); font-weight: 700; font-size: 28px; margin: 2px 0 2px; }
   .feature .row { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 12px; }
   .feature .meta { color: var(--muted); font-weight: 700; font-size: 15px; }
-  .feature .band { display: flex; align-items: center; gap: 16px; padding: 22px 20px; background: var(--t); border-bottom: 3px solid var(--ink); }
+  .feature .band { display: flex; align-items: center; justify-content: center; aspect-ratio: 2 / 1; gap: 16px; padding: 18px 16px; background: var(--t); border-bottom: 3px solid var(--ink); }
+  .feature-controls { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .feature-controls[hidden] { display: none; }
   .feature .band svg { width: 86px; height: 86px; flex: none; background: #fff; border: 3px solid var(--ink); border-radius: 18px; padding: 8px; }
   .feature .band .unitname { font-family: var(--head); font-weight: 600; font-size: 19px; color: var(--u); }
   .play-pill { font-family: var(--head); font-weight: 600; font-size: 20px; color: #fff; background: var(--go);
@@ -126,10 +128,6 @@
     .hero h1 { font-size: 42px; }
     .three, .teachers { grid-template-columns: 1fr; }
     /* a returning student sees "continue" right under the headline */
-    .hero.continuing { gap: 16px; }
-    .hero.continuing > div:first-child { display: contents; }
-    .hero.continuing h1 { order: 0; margin: 0; } .hero.continuing #heroCard { order: 1; } .hero.continuing > div > :not(h1) { order: 2; }
-    .hero.continuing .lede, .hero.continuing .paths, .hero.continuing .facts { margin: 0; }
   }
   @media (max-width: 480px) {
     .hero h1 { font-size: 36px; }
@@ -222,6 +220,12 @@
           </div>
         </div>
       </a>
+      <div class="feature-controls" role="group" aria-label="Featured game controls" hidden>
+        <button class="btn" id="featurePrev" type="button" aria-label="Previous featured game">Previous</button>
+        <button class="btn" id="featureNext" type="button" aria-label="Next featured game">Next</button>
+        <button class="btn" id="featureRotation" type="button">Pause rotation</button>
+        <span class="sr-only" id="featureStatus" role="status"></span>
+      </div>
     </div>
   </section>
 
@@ -387,20 +391,53 @@
   document.getElementById("clearFilters").addEventListener("click", () => { search.value = ""; unit = ""; chips.querySelectorAll(".chip").forEach(c => c.setAttribute("aria-pressed", String(c.dataset.unit === ""))); render(); search.focus(); });
   render();
 
-  // continue where the student left off
-  let last = null; try { last = localStorage.getItem("a1g-last"); } catch (e) {}
-  const place = last && L.place(last);
-  if (place && place.game.ready && A1G_NAV.role() === "student") {
-    const g = place.game, d = place.domain, pr = progress(g), p = L.progress(g.slug);
-    const done = p.solved === 12;
-    const href = done && place.next ? "games/" + place.next.slug + "/" : "games/" + g.slug + "/" + (pr.level > 1 ? "?level=" + pr.level : "");
-    if (done && place.next) pr.label = "Play next";
-    document.querySelector(".hero").classList.add("continuing");
-    document.getElementById("heroCard").innerHTML = '<a class="feature" style="' + style(d) + '" href="' + href + '"><div class="band">' + L.icon(g.engine) +
-      '<div><span class="unitname">' + esc(L.unit(d.name).short) + '</span><div class="name">' + esc(g.name) + "</div></div></div>" +
-      '<div class="body"><span class="kicker">' + (done ? "You finished this one" : "Continue where you left off") + "</span><div>" + esc(g.desc) + '</div><div class="prog" style="margin-top:12px">' + pr.html + "</div>" +
-      '<div class="row"><span class="meta">' + (done ? (place.next ? "Next up: " + esc(place.next.name) : "") : "Level " + pr.level + " is next") + '</span><span class="play-pill">' + pr.label + "</span></div></div></a>";
+  // Both views use the same featured games. Progress remains available on each catalog card.
+  const featured = ["a-rei-b-3", "a-ced-a-2", "s-id-a-1", "f-bf-b-3"]
+    .map(slug => L.place(slug)).filter(item => item && item.game.ready);
+  if (featured.length > 1) {
+    const hero = document.getElementById("heroCard");
+    const link = hero.querySelector(".feature");
+    const balanceArt = link.querySelector(".art").outerHTML;
+    const controls = hero.querySelector(".feature-controls");
+    const rotation = document.getElementById("featureRotation");
+    const status = document.getElementById("featureStatus");
+    const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
+    let current = 0;
+    let paused = reducedMotion.matches;
+
+    function showFeature(offset, announce = false) {
+      current = (current + offset + featured.length) % featured.length;
+      const { game, domain } = featured[current];
+      const unitName = esc(L.unit(domain.name).short);
+      link.href = "games/" + game.slug + "/";
+      link.setAttribute("aria-label", "Play " + game.name);
+      link.setAttribute("style", style(domain));
+      const art = game.slug === "a-rei-b-3" ? balanceArt :
+        '<div class="band" aria-hidden="true">' + L.icon(game.engine) + '<span class="unitname">' + unitName + '</span></div>';
+      link.innerHTML = art + '<div class="body"><span class="kicker">Featured game · ' + unitName + '</span>' +
+        '<div class="name">' + esc(game.name) + '</div><div>' + esc(game.desc) + '</div>' +
+        '<div class="row"><span class="meta"><span class="code">' + esc(game.code) + '</span> · 12 levels</span>' +
+        '<span class="play-pill">Play</span></div></div>';
+      if (announce) status.textContent = game.name + ", featured game " + (current + 1) + " of " + featured.length;
+    }
+
+    function setPaused(value) {
+      paused = value;
+      rotation.textContent = paused ? "Resume rotation" : "Pause rotation";
+    }
+
+    controls.hidden = false;
+    setPaused(paused);
+    showFeature(0);
+    document.getElementById("featurePrev").addEventListener("click", () => showFeature(-1, true));
+    document.getElementById("featureNext").addEventListener("click", () => showFeature(1, true));
+    rotation.addEventListener("click", () => setPaused(!paused));
+    reducedMotion.addEventListener("change", e => { if (e.matches) setPaused(true); });
+    setInterval(() => {
+      if (!paused && !document.hidden && !hero.matches(":hover, :focus-within")) showFeature(1);
+    }, 8000);
   }
+
 })();
 </script>
 </body>
