@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<title>Tests · Algebra 1 Games</title>
+<style>
+  body { font-family: system-ui, sans-serif; margin: 24px; }
+  .pass { color: #2a7a3b; } .fail { color: #b42318; font-weight: 700; }
+  iframe { width: 1000px; height: 700px; border: 1px solid #ccc; margin-top: 16px; }
+  h2 { font-size: 18px; margin: 18px 0 4px; }
+</style>
+</head>
+<body>
+<h1>Algebra 1 Games tests</h1>
+<p>Open from a local web server. Plays every level of each game through its real controls using the game's answer key.
+Use <code>?g=slug1,slug2</code> to test specific games; with no parameter it tests every game marked ready in the catalog.</p>
+<p id="summary">Running…</p>
+<div id="results"></div>
+<iframe id="frame" title="Game under test"></iframe>
+<script src="../assets/engine/catalog.js"></script>
+<script>
+const param = (/[?&]g=([a-z0-9,-]+)/.exec(location.search) || [])[1];
+const all = A1G_CATALOG.domains.flatMap(d => d.games);
+const slugs = param ? param.split(",") : all.filter(g => g.ready && !g.guide).map(g => g.slug);
+const frame = document.getElementById("frame");
+let totalFail = 0, totalChecks = 0;
+
+function loadGame(slug) {
+  return new Promise(resolve => {
+    try { localStorage.setItem("a1g-help-" + slug, "1"); } catch (e) {}
+    frame.onload = () => resolve(frame.contentWindow);
+    frame.src = "../games/" + slug + "/?test=1";
+  });
+}
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+(async () => {
+  for (const slug of slugs) {
+    const results = [];
+    const check = (name, ok, detail) => { results.push({ name, ok, detail }); totalChecks++; if (!ok) totalFail++; };
+    const w = await loadGame(slug);
+    const errors = [];
+    w.addEventListener("error", e => errors.push(e.message));
+    await sleep(100);
+    const GS = w.GameShell, api = GS && GS.api, cfg = GS && GS.config;
+    check("Game loads", !!(api && cfg), api ? "" : "no GameShell.api");
+    if (api && cfg) {
+      check("12 levels", cfg.levels.length === 12, cfg.levels.length + " levels");
+      for (let i = 0; i < cfg.levels.length; i++) {
+        try {
+          api.goto(i);
+          if (typeof api.autoplay !== "function") { check("Level " + (i + 1) + " has autoplay", false, ""); continue; }
+          const r = api.autoplay() || {};
+          await sleep(10);
+          const parOk = r.par == null || r.steps === r.par;
+          check("Level " + (i + 1) + " solves" + (r.par != null ? " at par" : ""), api.solved && parOk,
+            "solved=" + api.solved + (r.par != null ? " steps=" + r.steps + "/" + r.par : ""));
+          const k = cfg.answerKey(cfg.levels[i], i);
+          check("Level " + (i + 1) + " answer key", !!(k && k.prompt && k.solution && k.answer), k ? k.answer : "missing");
+          if (!cfg.levels[i].tip) check("Level " + (i + 1) + " has a tip", false, "");
+        } catch (e) { check("Level " + (i + 1) + " runs without errors", false, e.message); }
+      }
+      const g = cfg.guide || {};
+      check("Teacher guide content", !!(g.goals && g.misconceptions && g.exitTicket && g.exitTicket.items.length === g.exitTicket.answers.length), "");
+      // close any open win overlay
+      w.document.querySelectorAll(".overlay.show").forEach(o => o.classList.remove("show"));
+    }
+    check("No script errors", errors.length === 0, errors.join(" | "));
+    const fails = results.filter(r => !r.ok);
+    const div = document.createElement("div");
+    div.innerHTML = "<h2 class='" + (fails.length ? "fail" : "pass") + "'>" + slug + ": " + (fails.length ? fails.length + " failed" : "all " + results.length + " passed") + "</h2>" +
+      (fails.length ? "<ul>" + fails.map(r => "<li class='fail'>✗ " + r.name + " <small>(" + r.detail + ")</small></li>").join("") + "</ul>" : "");
+    document.getElementById("results").appendChild(div);
+  }
+  document.getElementById("summary").innerHTML = totalFail
+    ? "<span class='fail'>" + totalFail + " of " + totalChecks + " checks failed</span>"
+    : "<span class='pass'>All " + totalChecks + " checks passed across " + slugs.length + " games</span>";
+  document.title = (totalFail ? "FAIL" : "PASS") + " · Algebra 1 Games tests";
+})();
+</script>
+</body>
+</html>

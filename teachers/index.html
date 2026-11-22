@@ -3,24 +3,18 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Teacher guide · Balance Workshop · Algebra 1 Games</title>
-<meta name="description" content="Teacher guide for Balance Workshop: standards alignment, a 20-minute lesson plan, misconceptions, an answer key for all 12 levels, and an exit ticket.">
+<title>For teachers · Algebra 1 Games</title>
+<meta name="description" content="Teacher guides for every Algebra 1 Games game: standards alignment, lesson plans, misconceptions, answer keys and exit tickets.">
 <link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
 <link rel="stylesheet" href="../assets/site.css">
 <style>
-  .toc { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 0; padding: 0; list-style: none; }
-  .toc a { display: inline-block; background: var(--chip); border-radius: 999px; padding: 4px 12px; font-weight: 700; font-size: 15px; text-decoration: none; }
-  ol.plan > li { margin: 10px 0; }
-  ol.plan b.t { font-family: var(--head); font-weight: 600; }
-  .quote { border-left: 5px solid var(--unit); padding: 4px 0 4px 14px; margin: 8px 0; font-weight: 700; }
-  .ticket { border: 2px dashed var(--ink); border-radius: 14px; padding: 14px 20px; background: #fff; }
-  .ticket ol li { margin: 10px 0 28px; }
-  .actions { display: flex; gap: 10px; flex-wrap: wrap; margin: 16px 0 0; }
-  @media print {
-    .ticket { break-inside: avoid; }
-    h2 { break-after: avoid; }
-    table { break-inside: avoid; }
-  }
+  .domain h2 small { color: var(--muted); font-family: var(--body); font-size: 15px; font-weight: 700; margin-left: 6px; }
+  .glist { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+  .glist li { background: var(--card); border: 2px solid var(--line); border-radius: 12px; padding: 10px 14px;
+              display: flex; gap: 10px 14px; align-items: center; flex-wrap: wrap; }
+  .glist .nm { font-family: var(--head); font-weight: 600; font-size: 18px; flex: 1; min-width: 180px; }
+  .glist .soon { color: var(--muted); font-weight: 700; font-size: 15px; }
+  .glist a.btn { min-height: 38px; padding: 5px 12px; font-size: 16px; }
 </style>
 </head>
 <body>
@@ -33,138 +27,34 @@
     <a href="../privacy/">Privacy</a>
   </nav>
 </header>
-
 <main id="main" class="page">
-  <h1>Teacher guide: Balance Workshop</h1>
-  <p class="lead">A 12-level game for solving linear equations in one variable. Students keep a balance scale level while they isolate x, moving from pictures to algebra tiles to symbols.</p>
-  <div class="actions no-print">
-    <a class="btn primary" href="../games/a-rei-b-3/">Open the game</a>
-    <button class="btn" onclick="window.print()">Print this guide</button>
+  <h1>For teachers</h1>
+  <p class="lead">Every game has a guide with the standard's official wording, learning goals, a 20-minute lesson plan, common misconceptions, an answer key for all 12 levels, and a printable exit ticket.</p>
+  <div class="panel-box">
+    <b>Using the games in class</b>
+    <ul style="margin:6px 0 0">
+      <li>No accounts, installs or student data. Share the game link.</li>
+      <li>Each game takes 15–20 minutes for the first 8 levels, so it fits a warm-up or a station.</li>
+      <li>Add <code>?level=5</code> to a game's address to send students straight to a level.</li>
+    </ul>
   </div>
-  <ul class="toc no-print" aria-label="On this page">
-    <li><a href="#glance">At a glance</a></li>
-    <li><a href="#goals">Learning goals</a></li>
-    <li><a href="#stages">How it works</a></li>
-    <li><a href="#lesson">Lesson plan</a></li>
-    <li><a href="#misconceptions">Misconceptions</a></li>
-    <li><a href="#key">Answer key</a></li>
-    <li><a href="#ticket">Exit ticket</a></li>
-    <li><a href="#tech">Technical notes</a></li>
-  </ul>
-
-  <h2 id="glance">At a glance</h2>
-  <table>
-    <tr><th scope="row">Standard</th><td><span class="code">AI.A-REI.B.3</span>
-      <div class="quote">Solve linear equations and inequalities in one variable, including equations with coefficients represented by letters.</div>
-      2017 Massachusetts Curriculum Framework for Mathematics, Model Algebra I. This game covers linear <em>equations</em> with integer coefficients; inequalities and letter coefficients are planned as separate games.</td></tr>
-    <tr><th scope="row">Also supports</th><td><span class="code">AI.A-REI.A.1</span> explaining each step of solving an equation. Every win screen writes the student's moves as algebra.</td></tr>
-    <tr><th scope="row">Math practices</th><td>MP2 Reason abstractly and quantitatively · MP3 Construct viable arguments · MP7 Look for and make use of structure</td></tr>
-    <tr><th scope="row">Time</th><td>15–20 minutes for levels 1–8; about 30 minutes for all 12</td></tr>
-    <tr><th scope="row">Grouping</th><td>Individuals or pairs (one student drives, one predicts)</td></tr>
-    <tr><th scope="row">Prep</th><td>None. No accounts or installs. Share the link.</td></tr>
-  </table>
-
-  <h2 id="goals">Learning goals</h2>
-  <p>By the end of the activity, students can:</p>
-  <ul>
-    <li>Explain why an operation must be applied to <b>both sides</b> of an equation to keep it true.</li>
-    <li>Choose an efficient sequence of inverse operations to isolate a variable, including variables on both sides.</li>
-    <li>Solve equations with negative numbers and negative solutions, and check a solution by substitution.</li>
-  </ul>
-
-  <h2 id="stages">How the game works</h2>
-  <p>Students build a move (<b>+</b>, <b>−</b> or <b>÷</b>, a number, and either <b>1</b> or <b><i>x</i></b>) and apply it to one pan. The scale tips until they apply the same move to the other pan. A level is solved when one pan holds a single <i>x</i> and nothing else. Stars reward solving in the fewest moves (par).</p>
-  <table>
-    <thead><tr><th>Stage</th><th>Levels</th><th>What students see</th><th>What it builds</th></tr></thead>
-    <tbody>
-      <tr><td>1 · Mystery boxes</td><td>1–4</td><td>Cardboard boxes and blocks on a scale. The equation stays hidden until the level is solved.</td><td>The balance idea: whatever you do to one side, you do to the other.</td></tr>
-      <tr><td>2 · Tiles and symbols</td><td>5–8</td><td>Algebra tiles (red = negative) and the live equation under the scale.</td><td>Zero pairs, negative numbers, negative solutions, dividing by −1.</td></tr>
-      <tr><td>3 · Symbols only</td><td>9–12</td><td>Only the equation. Each move applies to both sides automatically.</td><td>Fluent symbolic solving with variables on both sides.</td></tr>
-    </tbody>
-  </table>
-
-  <h2 id="lesson">Lesson plan (20 minutes)</h2>
-  <ol class="plan">
-    <li><b class="t">Launch, 3 min.</b> Project level 1. Ask: <em>"What could we do so the box is alone, but the scale stays balanced?"</em> Take two or three ideas, then try one together. Let the class see the scale tip when only one pan changes.</li>
-    <li><b class="t">Play, 10 min.</b> In pairs, one student controls the game and the other must predict the next move out loud before it's made. Switch roles every level. Goal: reach level 8. Early finishers go for 3 stars on every level.</li>
-    <li><b class="t">Translate, 4 min.</b> Each pair copies one win screen's "written in math" steps into their notebook, then writes one sentence explaining the first step (for example, "I subtracted 3 from both sides so the equation stays true").</li>
-    <li><b class="t">Exit ticket, 3 min.</b> Use the printable exit ticket below, on paper with no game.</li>
-  </ol>
-
-  <h3>Discussion questions</h3>
-  <ul>
-    <li>Why does the scale tip when you change only one pan? What does that mean for an equation?</li>
-    <li>On level 3, does it matter whether you subtract 1 or divide by 2 first? Why can't you divide first?</li>
-    <li>Level 7 has a negative answer. How can a box "weigh" a negative amount?</li>
-    <li>On level 8 you get −<i>x</i> = −3. Is that solved? What move finishes it?</li>
-  </ul>
-
-  <h2 id="misconceptions">Common misconceptions and what the game does</h2>
-  <table>
-    <thead><tr><th>Misconception</th><th>What happens in the game</th></tr></thead>
-    <tbody>
-      <tr><td>Doing an operation to only one side</td><td>The scale tips, the mascot looks worried, and the game asks for the same move on the other pan.</td></tr>
-      <tr><td>Dividing only one term, e.g. (2<i>x</i> + 1) ÷ 2 = <i>x</i> + 1</td><td>The game refuses: "You can't split 2x + 1 into 2 equal groups." Students must subtract first.</td></tr>
-      <tr><td>Sign errors with negatives</td><td>Red tiles make the negatives visible; adding +1 to −3 cancels one zero pair.</td></tr>
-      <tr><td>Stopping at −<i>x</i> = 3</td><td>The game doesn't count it as solved and hints: "What could flip its sign?"</td></tr>
-      <tr><td>Believing solutions must be positive</td><td>Level 7 solves to <i>x</i> = −4. The win screen checks it by substitution.</td></tr>
-    </tbody>
-  </table>
-  <p style="font-size:15px; color:var(--muted)">Note for level 7: the scale tilts using the true value of <i>x</i>. Because <i>x</i> = −4, the blue tiles count as negative weight, so a pan with more tiles can rise. This is a good discussion point, but it can surprise students at first.</p>
-
-  <h2 id="key">Answer key</h2>
-  <p>One solution at par for each level. Other orders of moves also work; they may just take more moves.</p>
-  <table>
-    <thead><tr><th>Level</th><th>Equation</th><th>Par</th><th>Moves at par</th><th>Answer</th></tr></thead>
-    <tbody>
-      <tr><td>1</td><td class="math">x + 2 = 5</td><td>1</td><td>− 2</td><td class="math">x = 3</td></tr>
-      <tr><td>2</td><td class="math">2x = 8</td><td>1</td><td>÷ 2</td><td class="math">x = 4</td></tr>
-      <tr><td>3</td><td class="math">2x + 1 = 7</td><td>2</td><td>− 1, ÷ 2</td><td class="math">x = 3</td></tr>
-      <tr><td>4</td><td class="math">3x + 2 = x + 8</td><td>3</td><td>− x, − 2, ÷ 2</td><td class="math">x = 3</td></tr>
-      <tr><td>5</td><td class="math">x − 3 = 2</td><td>1</td><td>+ 3</td><td class="math">x = 5</td></tr>
-      <tr><td>6</td><td class="math">2x − 1 = x + 3</td><td>2</td><td>− x, + 1</td><td class="math">x = 4</td></tr>
-      <tr><td>7</td><td class="math">4x + 3 = 2x − 5</td><td>3</td><td>− 2x, − 3, ÷ 2</td><td class="math">x = −4</td></tr>
-      <tr><td>8</td><td class="math">−x + 5 = 2</td><td>2</td><td>− 5, ÷ (−1)</td><td class="math">x = 3</td></tr>
-      <tr><td>9</td><td class="math">5x − 4 = 2x + 11</td><td>3</td><td>− 2x, + 4, ÷ 3</td><td class="math">x = 5</td></tr>
-      <tr><td>10</td><td class="math">3x + 7 = 7x − 9</td><td>3</td><td>− 3x, + 9, ÷ 4</td><td class="math">x = 4</td></tr>
-      <tr><td>11</td><td class="math">−2x + 9 = x − 6</td><td>3</td><td>+ 2x, + 6, ÷ 3</td><td class="math">x = 5</td></tr>
-      <tr><td>12</td><td class="math">6x − 8 = 2x + 8</td><td>3</td><td>− 2x, + 8, ÷ 4</td><td class="math">x = 4</td></tr>
-    </tbody>
-  </table>
-
-  <h2 id="ticket">Exit ticket</h2>
-  <div class="ticket">
-    <p style="margin-top:0"><b>Balance Workshop exit ticket</b> &nbsp; Name: ______________________</p>
-    <ol>
-      <li>Solve and check: <span class="math">3x + 5 = 20</span></li>
-      <li>Solve and check: <span class="math">2x − 7 = 5x + 8</span></li>
-      <li>Maya says the first step for <span class="math">4x + 6 = 18</span> is to divide only the 4<i>x</i> by 4. Is she right? Explain using the idea of a balance scale.</li>
-    </ol>
-  </div>
-  <h3>Exit ticket answers</h3>
-  <ol>
-    <li><span class="math">x = 5</span>. Subtract 5 from both sides (3<i>x</i> = 15), then divide both sides by 3. Check: 3(5) + 5 = 20.</li>
-    <li><span class="math">x = −5</span>. Subtract 2<i>x</i> (−7 = 3<i>x</i> + 8), subtract 8 (−15 = 3<i>x</i>), divide by 3. Check: 2(−5) − 7 = −17 and 5(−5) + 8 = −17.</li>
-    <li>No. Dividing only one term changes one side differently from the other, so the scale tips and the equation is no longer true. She could subtract 6 from both sides first, or divide <em>every</em> term on both sides by 4.</li>
-  </ol>
-
-  <h3>Differentiation</h3>
-  <ul>
-    <li><b>Support:</b> start every student at level 1 and let pairs talk through each move before applying it. The "How to play" button repeats the instructions.</li>
-    <li><b>Extension:</b> earn 3 stars on all 12 levels, then write a new equation for a partner and solve it on paper using the same moves. Challenge: solve <span class="math">ax + b = c</span> for <i>x</i>.</li>
-  </ul>
-
-  <h2 id="tech">Technical notes</h2>
-  <ul>
-    <li>Runs in any current browser (Chrome, Edge, Safari, Firefox), including school Chromebooks and iPads. Works on a projector.</li>
-    <li>No accounts and no student data. Stars are saved only in the browser on that device; students can clear them with <b>Levels → Reset my stars</b>. See the <a href="../privacy/">privacy page</a>.</li>
-    <li>Fully playable with a keyboard: use Tab to reach the buttons, and the <b>Left pan</b> / <b>Right pan</b> buttons instead of clicking the scale. The scale has a text description for screen readers.</li>
-  </ul>
+  <div id="list"></div>
 </main>
-
 <footer class="site-footer">
   <div>Algebra 1 Games · Standards: 2017 Massachusetts Curriculum Framework for Mathematics, Model Algebra I.</div>
   <nav aria-label="Footer"><a href="../">Games</a><a href="../privacy/">Privacy</a></nav>
 </footer>
+<script src="../assets/engine/catalog.js"></script>
+<script>
+document.getElementById("list").innerHTML = A1G_CATALOG.domains.map(d => {
+  const ready = d.games.filter(g => g.ready).length;
+  return "<section class='domain'><h2>" + d.name + "<small>" + ready + " of " + d.games.length + " ready</small></h2><ul class='glist'>" +
+    d.games.map(g => "<li><span class='code'>" + g.code + "</span><span class='nm'>" + g.name + "</span>" +
+      (g.ready
+        ? "<a class='btn' href='" + (g.guide ? "../" + g.guide : "guide.html?g=" + g.slug) + "'>Teacher guide</a><a class='btn primary' href='../games/" + g.slug + "/'>Play</a>"
+        : "<span class='soon'>Coming soon</span>") + "</li>").join("") +
+    "</ul></section>";
+}).join("");
+</script>
 </body>
 </html>

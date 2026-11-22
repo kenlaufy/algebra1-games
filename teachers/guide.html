@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Teacher guide · Algebra 1 Games</title>
+<meta name="description" content="Teacher guide: standards alignment, lesson plan, misconceptions, answer key and exit ticket.">
+<link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/site.css">
+<style>
+  .toc { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 0; padding: 0; list-style: none; }
+  .toc a { display: inline-block; background: var(--chip); border-radius: 999px; padding: 4px 12px; font-weight: 700; font-size: 15px; text-decoration: none; }
+  ol.plan > li { margin: 10px 0; }
+  ol.plan b.t { font-family: var(--head); font-weight: 600; }
+  .quote { border-left: 5px solid var(--unit); padding: 4px 0 4px 14px; margin: 8px 0; font-weight: 700; }
+  .ticket { border: 2px dashed var(--ink); border-radius: 14px; padding: 14px 20px; background: #fff; }
+  .ticket ol li { margin: 10px 0 28px; }
+  .actions { display: flex; gap: 10px; flex-wrap: wrap; margin: 16px 0 0; }
+  td .math, li .math { white-space: normal; }
+  @media print { .ticket { break-inside: avoid; } h2 { break-after: avoid; } }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header">
+  <a class="brand" href="../"><img src="../assets/logo.svg" alt="">Algebra 1 Games</a>
+  <nav class="site-nav" aria-label="Main">
+    <a href="../">Games</a>
+    <a href="./" aria-current="page">For teachers</a>
+    <a href="../privacy/">Privacy</a>
+  </nav>
+</header>
+<main id="main" class="page"><p>Loading the guide…</p></main>
+<footer class="site-footer">
+  <div>Algebra 1 Games · Standards: 2017 Massachusetts Curriculum Framework for Mathematics, Model Algebra I.</div>
+  <nav aria-label="Footer"><a href="./">All teacher guides</a><a href="../privacy/">Privacy</a></nav>
+</footer>
+<script>window.GAME_GUIDE_MODE = true;</script>
+<script src="../assets/engine/catalog.js"></script>
+<script src="../assets/engine/algebra.js"></script>
+<script src="../assets/engine/game-shell.js"></script>
+<script>
+(function () {
+  const slug = (/[?&]g=([a-z0-9-]+)/.exec(location.search) || [])[1];
+  const main = document.getElementById("main");
+  const info = slug && GameShell.findGame(slug);
+  if (!info) { main.innerHTML = '<h1>Guide not found</h1><p><a href="./">See all teacher guides</a>.</p>'; return; }
+  if (info.guide) { location.replace("../" + info.guide); return; }
+  if (!info.ready) {
+    main.innerHTML = "<h1>" + info.name + "</h1><p class='lead'>This game is still in development. Its teacher guide will appear here when it's ready.</p><p><a href='./'>See all teacher guides</a>.</p>";
+    return;
+  }
+  const s = document.createElement("script");
+  s.src = "../games/" + slug + "/game.js";
+  s.onload = () => render(GameShell.config, info);
+  s.onerror = () => { main.innerHTML = "<h1>Couldn't load this guide</h1>"; };
+  document.body.appendChild(s);
+
+  function esc(t) { return String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
+  function render(cfg, info) {
+    const g = cfg.guide || {};
+    document.title = "Teacher guide · " + info.name + " · Algebra 1 Games";
+    const levels = cfg.levels;
+    const stageIds = [...new Set(levels.map((l) => l.stage))];
+    const range = (st) => { const idx = levels.map((l, i) => (l.stage === st ? i + 1 : 0)).filter(Boolean); return idx[0] + "–" + idx[idx.length - 1]; };
+    const totalMin = g.time || "15–20 minutes for levels 1–8; about 30 minutes for all 12";
+    let html = "";
+    html += "<h1>Teacher guide: " + info.name + "</h1>";
+    html += "<p class='lead'>" + (g.summary || info.desc) + "</p>";
+    html += "<div class='actions no-print'><a class='btn primary' href='../games/" + slug + "/'>Open the game</a><button class='btn' onclick='window.print()'>Print this guide</button></div>";
+    html += "<ul class='toc no-print' aria-label='On this page'><li><a href='#glance'>At a glance</a></li><li><a href='#goals'>Learning goals</a></li><li><a href='#stages'>How it works</a></li><li><a href='#lesson'>Lesson plan</a></li><li><a href='#misconceptions'>Misconceptions</a></li><li><a href='#key'>Answer key</a></li><li><a href='#ticket'>Exit ticket</a></li></ul>";
+
+    html += "<h2 id='glance'>At a glance</h2><table>";
+    html += "<tr><th scope='row'>Standard</th><td><span class='code'>" + info.code + "</span><div class='quote'>" + esc(info.std) + "</div>2017 Massachusetts Curriculum Framework for Mathematics, Model Algebra I." + (g.scope ? " " + g.scope : "") + "</td></tr>";
+    if (g.also) html += "<tr><th scope='row'>Also supports</th><td>" + g.also + "</td></tr>";
+    html += "<tr><th scope='row'>Math practices</th><td>" + (g.practices || "MP2 Reason abstractly and quantitatively · MP7 Look for and make use of structure") + "</td></tr>";
+    html += "<tr><th scope='row'>Time</th><td>" + totalMin + "</td></tr>";
+    html += "<tr><th scope='row'>Grouping</th><td>" + (g.grouping || "Individuals or pairs (one student drives, one predicts)") + "</td></tr>";
+    html += "<tr><th scope='row'>Prep</th><td>None. No accounts or installs. Share the link.</td></tr></table>";
+
+    html += "<h2 id='goals'>Learning goals</h2><p>By the end of the activity, students can:</p><ul>" + (g.goals || []).map((x) => "<li>" + x + "</li>").join("") + "</ul>";
+
+    html += "<h2 id='stages'>How the game works</h2><p>" + (g.howItWorks || "") + "</p>";
+    html += "<table><thead><tr><th>Stage</th><th>Levels</th><th>What students see</th><th>What it builds</th></tr></thead><tbody>";
+    stageIds.forEach((st) => {
+      const n = (g.stageNotes || {})[st] || {};
+      html += "<tr><td>" + (cfg.stages[st] || "Stage " + st) + "</td><td>" + range(st) + "</td><td>" + (n.sees || "") + "</td><td>" + (n.builds || "") + "</td></tr>";
+    });
+    html += "</tbody></table>";
+
+    html += "<h2 id='lesson'>Lesson plan (20 minutes)</h2><ol class='plan'>";
+    const lesson = g.lesson || [
+      ["Launch, 3 min.", "Project level 1 and solve it together. Ask students to predict before every move."],
+      ["Play, 10 min.", "In pairs, one student controls the game and the other predicts out loud before each move. Switch every level. Goal: reach level 8. Early finishers go for 3 stars."],
+      ["Translate, 4 min.", "Each pair copies one win screen's \"written in math\" lines into their notebook and explains one step in a sentence."],
+      ["Exit ticket, 3 min.", "Use the printable exit ticket below, on paper with no game."],
+    ];
+    lesson.forEach(([t, d]) => (html += "<li><b class='t'>" + t + "</b> " + d + "</li>"));
+    html += "</ol>";
+    if (g.discussion) html += "<h3>Discussion questions</h3><ul>" + g.discussion.map((x) => "<li>" + x + "</li>").join("") + "</ul>";
+
+    html += "<h2 id='misconceptions'>Common misconceptions and what the game does</h2><table><thead><tr><th>Misconception</th><th>What happens in the game</th></tr></thead><tbody>";
+    (g.misconceptions || []).forEach(([m, w]) => (html += "<tr><td>" + m + "</td><td>" + w + "</td></tr>"));
+    html += "</tbody></table>";
+
+    html += "<h2 id='key'>Answer key</h2><p>" + (g.keyNote || "One solution for each level. Other orders of moves may also work.") + "</p>";
+    html += "<table><thead><tr><th>Level</th><th>Problem</th><th>Solution</th><th>Answer</th></tr></thead><tbody>";
+    levels.forEach((lv, i) => {
+      const k = cfg.answerKey(lv, i);
+      html += "<tr><td>" + (i + 1) + "</td><td class='math'>" + k.prompt + "</td><td>" + k.solution + "</td><td class='math'>" + k.answer + "</td></tr>";
+    });
+    html += "</tbody></table>";
+
+    const t = g.exitTicket || { items: [], answers: [] };
+    html += "<h2 id='ticket'>Exit ticket</h2><div class='ticket'><p style='margin-top:0'><b>" + info.name + " exit ticket</b> &nbsp; Name: ______________________</p><ol>" +
+      t.items.map((x) => "<li>" + x + "</li>").join("") + "</ol></div>";
+    html += "<h3>Exit ticket answers</h3><ol>" + t.answers.map((x) => "<li>" + x + "</li>").join("") + "</ol>";
+    html += "<h3>Technical notes</h3><ul><li>Runs in any current browser, including school Chromebooks and iPads. Works on a projector.</li>" +
+      "<li>No accounts and no student data. Stars are saved only in the browser on that device (<b>Levels → Reset my stars</b> clears them).</li>" +
+      "<li>Every control is a regular button or field, so the game is playable with a keyboard. Students can jump to a level with <code>?level=5</code> at the end of the game's address.</li></ul>";
+    main.innerHTML = html;
+  }
+})();
+</script>
+</body>
+</html>
