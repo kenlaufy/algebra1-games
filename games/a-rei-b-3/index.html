@@ -3,105 +3,119 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Balance Workshop · Algebra 1 Games</title>
+<title>Balance Workshop · A-REI.B.3 · Algebra 1 Games</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
-    --ink: #1f2430;
-    --muted: #6b7280;
-    --line: #d8dce3;
-    --bg: #f5f6f8;
-    --card: #ffffff;
-    --x: #3b5bdb;
-    --unit: #f2a516;
-    --neg: #e03131;
-    --ok: #2f9e44;
-    --accent: #1c7ed6;
+    --paper: #f6f2e7;
+    --card: #fffdf7;
+    --ink: #23262d;
+    --chip: #ebe3d0;
+    --chip-edge: #cfc3a8;
+    --line: #d8cdb4;
+    --muted: #67768f;
+    --x: #5a78b8;
+    --unit: #e7b84a;
+    --neg: #c8553d;
+    --box: #c9965c;
+    --go: #4f8a5b;
+    --go-dark: #2f5a39;
+    --wood: #a47b52;
+    --sand: #dccca6;
+    --sky: #cfe1ee;
+    --head: "Fredoka", "Nunito", system-ui, sans-serif;
+    --body: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
   }
   * { box-sizing: border-box; }
-  body {
-    margin: 0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-    color: var(--ink); background: var(--bg);
-  }
+  body { margin: 0; font-family: var(--body); color: var(--ink); background: var(--paper); font-size: 17px; }
   header {
     display: flex; align-items: center; justify-content: space-between; gap: 12px;
-    padding: 14px 24px; background: var(--card); border-bottom: 1px solid var(--line);
+    max-width: 980px; margin: 0 auto; padding: 18px 20px 4px;
   }
-  header h1 { font-size: 18px; margin: 0; }
-  header .sub { color: var(--muted); font-size: 14px; }
-  main { max-width: 980px; margin: 0 auto; padding: 18px 20px 40px; }
-  .levelbar { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-  .levelbar h2 { margin: 0; font-size: 22px; }
-  .levelbar .meta { color: var(--muted); font-size: 14px; }
-  .tip { margin: 8px 0 12px; color: var(--muted); font-size: 15px; min-height: 22px; }
-  .stagecard { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 8px; }
-  svg { width: 100%; height: auto; display: block; user-select: none; }
+  header h1 { font-family: var(--head); font-weight: 700; font-size: 30px; margin: 0; letter-spacing: 0.3px; }
+  header .sub { color: var(--muted); font-size: 16px; font-weight: 600; }
+  .std { display: inline-block; font-family: var(--head); font-weight: 600; font-size: 14px; background: var(--ink);
+         color: var(--paper); border-radius: 8px; padding: 2px 9px; margin-right: 8px; vertical-align: 3px; }
+  main { max-width: 980px; margin: 0 auto; padding: 10px 20px 48px; }
+  .levelbar { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 6px; }
+  .levelbar h2 { margin: 0; font-family: var(--head); font-weight: 600; font-size: 24px; }
+  .levelbar .meta { color: var(--muted); font-size: 15px; font-weight: 600; }
+  .tip { margin: 6px 0 12px; font-size: 17px; min-height: 24px; }
+  .stagecard { background: var(--card); border: 2px solid var(--line); border-radius: 18px; padding: 10px; }
+  svg { width: 100%; height: auto; display: block; user-select: none; border-radius: 12px; }
+  svg text { font-family: var(--body); font-weight: 800; }
+  svg text.var { font-style: italic; }
   .pan-hit { cursor: pointer; }
-  .pan-hit:hover + .tray, .pan-hit.armed + .tray { stroke: var(--accent); }
   .equation {
-    text-align: center; font-size: 34px; font-weight: 600; letter-spacing: 0.5px;
-    padding: 14px 8px 6px; font-variant-numeric: tabular-nums;
+    text-align: center; font-size: 38px; font-weight: 800; padding: 14px 8px 8px;
+    font-variant-numeric: tabular-nums; font-family: var(--body);
   }
-  .equation .rel { color: var(--muted); padding: 0 14px; }
+  .equation .rel { color: var(--muted); padding: 0 16px; }
   .equation.unbalanced .rel { color: var(--neg); }
   .controls {
-    display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
-    margin-top: 14px; background: var(--card); border: 1px solid var(--line);
-    border-radius: 12px; padding: 12px 14px;
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    margin-top: 14px; background: var(--card); border: 2px solid var(--line);
+    border-radius: 18px; padding: 14px 16px;
   }
-  .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
-  .seg button {
-    border: 0; background: #fff; padding: 8px 14px; font-size: 18px; cursor: pointer; color: var(--ink);
+  .seg { display: inline-flex; gap: 6px; }
+  .seg button, .btn {
+    font-family: var(--head); font-weight: 600; font-size: 20px; color: var(--ink);
+    background: var(--chip); border: 0; border-radius: 10px; padding: 7px 16px; cursor: pointer;
+    box-shadow: 0 3px 0 var(--chip-edge); transition: transform 0.05s;
   }
-  .seg button + button { border-left: 1px solid var(--line); }
-  .seg button.on { background: var(--ink); color: #fff; }
-  .seg button:disabled { opacity: 0.4; cursor: not-allowed; }
+  .seg button:active, .btn:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--chip-edge); }
+  .seg button.on { background: var(--ink); color: var(--paper); box-shadow: 0 3px 0 #000; }
+  .seg button:disabled, .btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+  .btn { font-size: 18px; }
+  .btn.primary { background: var(--go); color: #fff; box-shadow: 0 5px 0 var(--go-dark); }
+  .btn.primary:active { box-shadow: 0 2px 0 var(--go-dark); transform: translateY(3px); }
   input[type=number] {
-    width: 70px; font-size: 18px; padding: 7px 8px; border: 1px solid var(--line); border-radius: 8px;
+    width: 74px; font-family: var(--body); font-weight: 800; font-size: 20px; padding: 6px 8px;
+    border: 2px solid var(--line); border-radius: 10px; background: #fff; color: var(--ink);
   }
-  .preview { font-size: 16px; color: var(--muted); }
-  .preview b { color: var(--ink); }
-  .btn {
-    border: 1px solid var(--line); background: #fff; border-radius: 8px; padding: 8px 14px;
-    font-size: 15px; cursor: pointer; color: var(--ink);
-  }
-  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-  .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+  .preview { font-size: 17px; color: var(--muted); font-weight: 600; }
+  .preview b { color: var(--ink); font-weight: 800; }
   .spacer { flex: 1; }
   .msg {
-    margin-top: 12px; padding: 10px 14px; border-radius: 10px; font-size: 15px; min-height: 42px;
-    background: #eef2f7;
+    margin-top: 14px; padding: 11px 16px; border-radius: 14px; font-size: 17px; font-weight: 600; min-height: 46px;
+    background: var(--chip); border: 2px solid var(--line);
   }
-  .msg.warn { background: #fff4e6; color: #a15c00; }
-  .msg.bad { background: #fff0f0; color: #b42318; }
-  .msg.good { background: #ebfbee; color: #22753a; }
-  .log { margin-top: 12px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 10px 16px; }
-  .log h3 { margin: 4px 0 6px; font-size: 14px; color: var(--muted); font-weight: 600; }
-  .log ol { margin: 0; padding-left: 22px; font-size: 16px; line-height: 1.7; font-variant-numeric: tabular-nums; }
-  .log .move { color: var(--muted); }
+  .msg.warn { background: #fbecc8; border-color: #e7c674; color: #7a5200; }
+  .msg.bad { background: #f7dcd4; border-color: #e3a291; color: #8a2a17; }
+  .msg.good { background: #dcebd9; border-color: #a9caa6; color: #2f5a39; }
+  .log { margin-top: 14px; background: var(--card); border: 2px solid var(--line); border-radius: 18px; padding: 12px 18px; }
+  .log h3 { margin: 2px 0 6px; font-family: var(--head); font-weight: 600; font-size: 17px; color: var(--muted); }
+  .log ol { margin: 0; padding-left: 24px; font-size: 18px; line-height: 1.75; font-variant-numeric: tabular-nums; font-weight: 700; }
+  .log .move { color: var(--muted); font-weight: 600; }
   .overlay {
-    position: fixed; inset: 0; background: rgba(20, 24, 33, 0.45);
+    position: fixed; inset: 0; background: rgba(35, 38, 45, 0.45);
     display: none; align-items: center; justify-content: center; padding: 20px;
   }
   .overlay.show { display: flex; }
   .panel {
-    background: #fff; border-radius: 14px; padding: 22px 26px; max-width: 560px; width: 100%;
-    max-height: 90vh; overflow: auto;
+    background: var(--paper); border: 3px solid var(--ink); border-radius: 20px; box-shadow: 0 7px 0 var(--ink);
+    padding: 22px 26px; max-width: 580px; width: 100%; max-height: 90vh; overflow: auto;
   }
-  .panel h2 { margin: 0 0 6px; }
-  .stars { font-size: 30px; letter-spacing: 4px; color: #f2a516; }
-  .stars .off { color: #d8dce3; }
-  .answer { font-size: 40px; font-weight: 700; margin: 6px 0; }
-  .panel ol { line-height: 1.7; font-size: 16px; padding-left: 22px; }
-  .check { color: var(--ok); font-weight: 600; }
-  .row { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; }
-  .levels-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 8px 0 16px; }
+  .panel h2 { margin: 0 0 4px; font-family: var(--head); font-weight: 700; font-size: 30px; }
+  .panel h3 { font-family: var(--head); font-weight: 600; }
+  .stars { font-size: 38px; letter-spacing: 6px; color: var(--unit); -webkit-text-stroke: 2px var(--ink); }
+  .stars .off { color: var(--chip); }
+  .answer { font-size: 46px; font-weight: 800; margin: 2px 0; }
+  .panel ol { line-height: 1.75; font-size: 18px; padding-left: 24px; font-weight: 700; }
+  .check { color: var(--go-dark); font-weight: 800; font-size: 18px; }
+  .row { display: flex; gap: 12px; justify-content: flex-end; margin-top: 18px; flex-wrap: wrap; }
+  .levels-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 8px 0 18px; }
   .levels-grid button {
-    border: 1px solid var(--line); background: #fff; border-radius: 10px; padding: 10px 4px;
-    cursor: pointer; font-size: 15px;
+    font-family: var(--head); font-weight: 600; font-size: 18px; color: var(--ink);
+    background: var(--chip); border: 0; border-radius: 12px; padding: 10px 4px; cursor: pointer;
+    box-shadow: 0 3px 0 var(--chip-edge);
   }
-  .levels-grid button.current { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent) inset; }
-  .levels-grid small { display: block; color: #f2a516; font-size: 12px; min-height: 14px; }
-  .stage-label { font-size: 14px; color: var(--muted); font-weight: 600; }
+  .levels-grid button.current { background: var(--ink); color: var(--paper); box-shadow: 0 3px 0 #000; }
+  .levels-grid small { display: block; color: var(--unit); font-size: 15px; min-height: 18px; -webkit-text-stroke: 0.6px var(--ink); }
+  .stage-label { font-family: var(--head); font-weight: 600; font-size: 17px; color: var(--muted); }
+  a.home { font-family: var(--head); font-weight: 600; color: var(--ink); text-decoration: none; }
   .hidden { display: none !important; }
 </style>
 </head>
@@ -109,9 +123,12 @@
 <header>
   <div>
     <h1>Balance Workshop</h1>
-    <div class="sub">Solve equations by keeping the scale balanced</div>
+    <div class="sub"><span class="std">A-REI.B.3</span>Solve linear equations by keeping the scale balanced</div>
   </div>
-  <button class="btn" id="levelsBtn">All levels</button>
+  <div style="display:flex; gap:10px; align-items:center;">
+    <a class="btn home" href="../../">All games</a>
+    <button class="btn" id="levelsBtn">Levels</button>
+  </div>
 </header>
 
 <main>
@@ -122,7 +139,7 @@
   <div class="tip" id="tip"></div>
 
   <div class="stagecard">
-    <svg id="scale" viewBox="0 0 900 430" aria-label="Balance scale"></svg>
+    <svg id="scale" viewBox="0 0 900 460" aria-label="Balance scale"></svg>
     <div class="equation" id="equation"></div>
   </div>
 
@@ -135,7 +152,7 @@
     <input type="number" id="amount" value="1" step="1" aria-label="Amount">
     <div class="seg" id="unitSeg">
       <button data-unit="c" class="on">1</button>
-      <button data-unit="x">x</button>
+      <button data-unit="x" style="font-family: var(--body); font-style: italic; font-weight: 800;">x</button>
     </div>
     <div class="preview" id="preview"></div>
     <div class="spacer"></div>
@@ -157,8 +174,8 @@
     <h2>Solved!</h2>
     <div class="answer" id="winAnswer"></div>
     <div class="stars" id="winStars"></div>
-    <div id="winSteps"></div>
-    <h3 style="margin:16px 0 4px; font-size:15px;">What you did, written in math</h3>
+    <div id="winSteps" style="font-weight:600"></div>
+    <h3 style="margin:16px 0 4px; font-size:18px;">What you did, written in math</h3>
     <ol id="winLog"></ol>
     <div class="check" id="winCheck"></div>
     <div class="row">
@@ -197,7 +214,7 @@ const LEVELS = [
   { stage: 1, L: { x: 3, c: 2 },  R: { x: 1, c: 8 },  sol: 3,  par: 3,
     tip: "Boxes on both pans. You can take boxes away too: switch the unit to x." },
   { stage: 2, L: { x: 1, c: -3 }, R: { x: 0, c: 2 },  sol: 5,  par: 1,
-    tip: "Red tiles are negative. A +1 and a −1 make a zero pair: they cancel out." },
+    tip: "The boxes are now x tiles. Red tiles are negative: a +1 and a −1 make a zero pair and cancel out." },
   { stage: 2, L: { x: 2, c: -1 }, R: { x: 1, c: 3 },  sol: 4,  par: 2,
     tip: "Watch the equation under the scale change with every move." },
   { stage: 2, L: { x: 4, c: 3 },  R: { x: 2, c: -5 }, sol: -4, par: 3,
@@ -260,6 +277,7 @@ try { stars = JSON.parse(localStorage.getItem(STORE_KEY) || "{}"); } catch (e) {
 let S = null;          // current game state
 let builder = { op: "-", unit: "c" };
 let phi = 0, targetPhi = 0, animating = false;
+let zeroPairNote = false;
 
 function copy(s) { return { x: s.x, c: s.c }; }
 
@@ -299,19 +317,15 @@ function applyTo(s, m, sideName) {
         " equal groups on the " + sideName + " pan.";
     }
     s.x /= m.n; s.c /= m.n;
-    // avoid -0
-    s.x = s.x || 0; s.c = s.c || 0;
+    s.x = s.x || 0; s.c = s.c || 0; // avoid -0
     return null;
   }
   const delta = m.op === "+" ? m.n : -m.n;
   const before = s[m.unit];
   s[m.unit] += delta;
-  if (before !== 0 && Math.sign(before) !== Math.sign(delta)) {
-    zeroPairNote = true;
-  }
+  if (before !== 0 && Math.sign(before) !== Math.sign(delta)) zeroPairNote = true;
   return null;
 }
-let zeroPairNote = false;
 
 function snapshot() { return { L: copy(S.L), R: copy(S.R) }; }
 function restore(snap) { S.L = copy(snap.L); S.R = copy(snap.R); }
@@ -328,7 +342,7 @@ function clickPan(side) {
     const err = applyTo(S[side], m, sideName);
     if (err) { restore(snap); return setMsg(err + " Pick a different move.", "bad"); }
     S.pending = { move: m, done: side, snap };
-    setMsg("The scale tipped! The " + sideName + " pan changed but the other didn't. Do " +
+    setMsg("Uh oh, the scale tipped! The " + sideName + " pan changed but the other didn't. Do " +
       fmtMove(m) + " to the " + (side === "L" ? "right" : "left") + " pan too.", "warn");
     render();
     return;
@@ -373,7 +387,7 @@ function finishStep(m, snap) {
     S.solved = true;
     render();
     setMsg("Balanced, and the box is alone!", "good");
-    setTimeout(showWin, 650);
+    setTimeout(showWin, 750);
     return;
   }
   const negAlone = (S.L.x === -1 && S.L.c === 0 && S.R.x === 0) || (S.R.x === -1 && S.R.c === 0 && S.L.x === 0);
@@ -442,7 +456,6 @@ function render() {
     " · Moves so far: " + S.steps;
   $("tip").textContent = lv.tip;
 
-  // equation line
   const eq = $("equation");
   const diff = weight(S.L) - weight(S.R);
   if (lv.stage === 1 && !S.solved) {
@@ -454,7 +467,6 @@ function render() {
     eq.classList.toggle("unbalanced", diff !== 0);
   }
 
-  // controls
   const locked = !!S.pending || S.solved;
   document.querySelectorAll("#opSeg button").forEach(b => {
     b.classList.toggle("on", b.dataset.op === builder.op);
@@ -476,12 +488,10 @@ function render() {
                : (lv.stage === 3 ? "Move: <b>" + fmtMove(m) + "</b> on both sides"
                                  : "Move: <b>" + fmtMove(m) + "</b>, then click a pan"));
 
-  // log (hidden in stage 1 until the win screen translates it)
   $("logBox").classList.toggle("hidden", lv.stage === 1);
   $("log").innerHTML = S.log.map((r, k) =>
     "<li>" + (k === 0 ? "Start: " : '<span class="move">' + r.move + ":</span> ") + r.eq + "</li>").join("");
 
-  // scale
   $("scale").classList.toggle("hidden", lv.stage === 3);
   if (diff === 0) targetPhi = 0;
   else targetPhi = Math.sign(diff) * Math.min(0.22, Math.max(0.09, Math.abs(diff) * 0.03));
@@ -489,7 +499,7 @@ function render() {
 }
 
 function startAnim() {
-  if (animating) return;
+  if (animating) { return; }
   animating = true;
   const step = () => {
     phi += (targetPhi - phi) * 0.14;
@@ -501,7 +511,10 @@ function startAnim() {
   requestAnimationFrame(step);
 }
 
-// Build the tiles for one side of the scale.
+// ---------- Cartoon drawing ----------
+const INK = "#23262d";
+const OUT = 'stroke="' + INK + '" stroke-width="3" stroke-linejoin="round"';
+
 function tilesFor(s) {
   const mystery = S.lv.stage === 1 && !S.solved;
   const items = [];
@@ -515,20 +528,16 @@ function tilesFor(s) {
   if (s.c > 0) push(s.c, "u"); else push(s.c, "nu");
   return items.map(it => {
     const big = it.kind === "x" || it.kind === "nx";
-    return Object.assign(it, { w: big ? 40 : 24, h: big ? 40 : 24, mystery });
+    return Object.assign(it, { w: big ? 42 : 25, h: big ? 42 : 25, mystery });
   });
 }
 
 function layoutTiles(items, cx, trayY, maxW) {
-  // fill rows bottom-up; big tiles first, small tiles after
   const placed = [];
   let rowY = trayY, row = [], rowW = 0, rowH = 0;
   const flush = () => {
     let x = cx - (rowW - 6) / 2;
-    row.forEach(it => {
-      placed.push(Object.assign(it, { x, y: rowY - it.h }));
-      x += it.w + 6;
-    });
+    row.forEach(it => { placed.push(Object.assign(it, { x, y: rowY - it.h })); x += it.w + 6; });
     rowY -= rowH + 6;
     row = []; rowW = 0; rowH = 0;
   };
@@ -541,56 +550,122 @@ function layoutTiles(items, cx, trayY, maxW) {
 }
 
 function tileSVG(t) {
-  const label = (txt, size) =>
-    '<text x="' + (t.x + t.w / 2) + '" y="' + (t.y + t.h / 2 + size * 0.36) + '" text-anchor="middle" font-size="' +
-    size + '" font-weight="700" fill="#fff">' + txt + "</text>";
-  const many = t.many ? '<text x="' + (t.x + t.w + 4) + '" y="' + (t.y + t.h / 2 + 6) +
-    '" font-size="16" font-weight="700" fill="#1f2430">×' + t.many + "</text>" : "";
-  if (t.kind === "x") {
-    return '<rect x="' + t.x + '" y="' + t.y + '" width="40" height="40" rx="6" fill="var(--x)"/>' +
-      label(t.mystery ? "?" : "x", 20) + many;
+  const cx = t.x + t.w / 2, cy = t.y + t.h / 2;
+  const label = (txt, size, color) =>
+    '<text' + (txt.indexOf("x") >= 0 ? ' class="var"' : "") + ' x="' + cx + '" y="' + (cy + size * 0.36) +
+    '" text-anchor="middle" font-size="' + size + '" fill="' + (color || "#fff") + '">' + txt + "</text>";
+  const many = t.many ? '<text x="' + (t.x + t.w + 5) + '" y="' + (cy + 7) +
+    '" font-size="19" font-weight="700" fill="' + INK + '">×' + t.many + "</text>" : "";
+  const rect = (fill, r) => '<rect x="' + t.x + '" y="' + t.y + '" width="' + t.w + '" height="' + t.h +
+    '" rx="' + r + '" fill="' + fill + '" ' + OUT + '/>';
+  if (t.kind === "x" || t.kind === "nx") {
+    const neg = t.kind === "nx";
+    if (t.mystery) {
+      // a cardboard mystery box with a tape stripe
+      return rect(neg ? "var(--neg)" : "var(--box)", 5) +
+        '<rect x="' + (cx - 5) + '" y="' + t.y + '" width="10" height="' + t.h + '" fill="#e9d3a6" opacity="0.85"/>' +
+        '<rect x="' + t.x + '" y="' + t.y + '" width="' + t.w + '" height="' + t.h + '" rx="5" fill="none" ' + OUT + '/>' +
+        label(neg ? MINUS + "?" : "?", 22, INK) + many;
+    }
+    return rect(neg ? "var(--neg)" : "var(--x)", 7) + label(neg ? MINUS + "x" : "x", neg ? 19 : 22) + many;
   }
-  if (t.kind === "nx") {
-    return '<rect x="' + t.x + '" y="' + t.y + '" width="40" height="40" rx="6" fill="var(--neg)"/>' +
-      label(t.mystery ? MINUS + "?" : MINUS + "x", 17) + many;
+  if (t.kind === "u") return rect("var(--unit)", 5) + many;
+  return rect("var(--neg)", 5) + label(MINUS, 20) + many;
+}
+
+function backdrop() {
+  const cloud = (x, y, s) =>
+    '<g transform="translate(' + x + ' ' + y + ') scale(' + s + ')" fill="#fff">' +
+    '<ellipse cx="0" cy="10" rx="62" ry="20"/><ellipse cx="-22" cy="-2" rx="28" ry="22"/>' +
+    '<ellipse cx="16" cy="-8" rx="32" ry="26"/></g>';
+  return (
+    '<defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">' +
+      '<stop offset="0" stop-color="#c3d9ea"/><stop offset="1" stop-color="#e6eff4"/></linearGradient></defs>' +
+    '<rect x="0" y="0" width="900" height="460" fill="url(#sky)"/>' +
+    '<circle cx="820" cy="64" r="52" fill="#f6dc86" opacity="0.35"/>' +
+    '<circle cx="820" cy="64" r="34" fill="#f3d06a"/>' +
+    cloud(120, 60, 1) + cloud(560, 40, 0.8) + cloud(330, 120, 0.6) +
+    '<path d="M 250 78 q 8 -8 16 0 q 8 -8 16 0" fill="none" stroke="' + INK + '" stroke-width="2.2" stroke-linecap="round"/>' +
+    '<rect x="0" y="404" width="900" height="56" fill="var(--sand)"/>' +
+    '<line x1="0" y1="404" x2="900" y2="404" stroke="#a8946a" stroke-width="3"/>'
+  );
+}
+
+// Our own mascot: a young engineer in a hard hat who reacts to the scale.
+function mascot(x, y, mood) {
+  const skin = "#f3cfa6";
+  let mouth, brows = "", extra = "", arms;
+  if (mood === "joy") {
+    mouth = '<path d="M -9 -48 q 9 12 18 0 z" fill="' + INK + '"/>';
+    arms = '<path d="M -16 -20 l -16 -26" ' + OUT + ' stroke-linecap="round"/><path d="M 16 -20 l 16 -26" ' + OUT + ' stroke-linecap="round"/>';
+    extra = '<text x="26" y="-82" font-size="22" fill="' + INK + '">✦</text>';
+  } else if (mood === "worry") {
+    mouth = '<ellipse cx="0" cy="-46" rx="4" ry="5" fill="' + INK + '"/>';
+    brows = '<path d="M -12 -66 l 7 3 M 12 -66 l -7 3" stroke="' + INK + '" stroke-width="2.4" stroke-linecap="round"/>';
+    extra = '<path d="M 22 -66 q 5 8 0 11 q -5 -3 0 -11 z" fill="#8cc7ea" ' + 'stroke="' + INK + '" stroke-width="1.5"/>';
+    arms = '<path d="M -16 -20 l -12 16" ' + OUT + ' stroke-linecap="round"/><path d="M 16 -20 l 12 16" ' + OUT + ' stroke-linecap="round"/>';
+  } else {
+    mouth = '<path d="M -7 -48 q 7 7 14 0" fill="none" stroke="' + INK + '" stroke-width="2.4" stroke-linecap="round"/>';
+    arms = '<path d="M -16 -20 l -12 16" ' + OUT + ' stroke-linecap="round"/><path d="M 16 -20 l 12 16" ' + OUT + ' stroke-linecap="round"/>';
   }
-  if (t.kind === "u") {
-    return '<rect x="' + t.x + '" y="' + t.y + '" width="24" height="24" rx="4" fill="var(--unit)"/>' + many;
-  }
-  return '<rect x="' + t.x + '" y="' + t.y + '" width="24" height="24" rx="4" fill="var(--neg)"/>' +
-    label(MINUS, 18) + many;
+  return (
+    '<g transform="translate(' + x + ' ' + y + ')">' +
+    '<path d="M -8 0 v 18 M 8 0 v 18" stroke="' + INK + '" stroke-width="4" stroke-linecap="round"/>' +
+    arms +
+    '<rect x="-18" y="-30" width="36" height="34" rx="9" fill="var(--x)" ' + OUT + '/>' +
+    '<rect x="-9" y="-22" width="18" height="12" rx="3" fill="#7f97c9" stroke="' + INK + '" stroke-width="2"/>' +
+    '<circle cx="0" cy="-54" r="20" fill="' + skin + '" ' + OUT + '/>' +
+    '<circle cx="-7" cy="-56" r="2.6" fill="' + INK + '"/><circle cx="7" cy="-56" r="2.6" fill="' + INK + '"/>' +
+    brows + mouth +
+    '<path d="M -22 -64 q 0 -24 22 -24 q 22 0 22 24 z" fill="var(--unit)" ' + OUT + '/>' +
+    '<rect x="-26" y="-66" width="52" height="7" rx="3" fill="var(--unit)" ' + OUT + '/>' +
+    extra +
+    "</g>"
+  );
 }
 
 function drawScale() {
   if (S.lv.stage === 3) return;
-  const cx = 450, cy = 70, arm = 300, rope = 190;
+  const cx = 450, cy = 82, arm = 300, rope = 186;
   const lx = cx - arm * Math.cos(phi), ly = cy + arm * Math.sin(phi);
   const rx = cx + arm * Math.cos(phi), ry = cy - arm * Math.sin(phi);
   const armedSide = S.pending ? (S.pending.done === "L" ? "R" : "L") : null;
 
   const pan = (px, py, side, s) => {
     const trayY = py + rope;
-    const tiles = layoutTiles(tilesFor(s), px, trayY - 4, 230);
+    const tiles = layoutTiles(tilesFor(s), px, trayY - 5, 232);
     const top = py + 14;
-    const armed = armedSide === side ? " armed" : "";
+    const armed = armedSide === side;
     return (
-      '<line x1="' + px + '" y1="' + py + '" x2="' + (px - 120) + '" y2="' + trayY + '" stroke="#9aa1ad" stroke-width="1.5"/>' +
-      '<line x1="' + px + '" y1="' + py + '" x2="' + (px + 120) + '" y2="' + trayY + '" stroke="#9aa1ad" stroke-width="1.5"/>' +
+      '<path d="M ' + px + " " + py + " L " + (px - 118) + " " + trayY + " M " + px + " " + py + " L " + (px + 118) + " " + trayY +
+        '" stroke="' + INK + '" stroke-width="2.4" fill="none"/>' +
       tiles.map(tileSVG).join("") +
-      '<rect class="pan-hit' + armed + '" data-side="' + side + '" x="' + (px - 135) + '" y="' + top +
-        '" width="270" height="' + (trayY - top + 22) + '" fill="transparent"/>' +
-      '<path class="tray" d="M ' + (px - 130) + " " + trayY + " L " + (px + 130) + " " + trayY + " L " + (px + 105) + " " +
-        (trayY + 14) + " L " + (px - 105) + " " + (trayY + 14) + ' Z" fill="#e9ecf1" stroke="' +
-        (armed ? "var(--accent)" : "#9aa1ad") + '" stroke-width="' + (armed ? 3 : 1.5) + '" pointer-events="none"/>' +
-      (armed ? '<text x="' + px + '" y="' + (trayY + 38) + '" text-anchor="middle" font-size="15" fill="var(--accent)" font-weight="600">click here</text>' : "")
+      '<rect class="pan-hit" data-side="' + side + '" x="' + (px - 138) + '" y="' + top +
+        '" width="276" height="' + (trayY - top + 26) + '" fill="transparent"/>' +
+      '<path d="M ' + (px - 132) + " " + trayY + " L " + (px + 132) + " " + trayY + " Q " + (px + 118) + " " + (trayY + 20) +
+        " " + (px + 96) + " " + (trayY + 20) + " L " + (px - 96) + " " + (trayY + 20) + " Q " + (px - 118) + " " + (trayY + 20) +
+        " " + (px - 132) + " " + trayY + ' Z" fill="' + (armed ? "#fbe7a8" : "#efe4c8") + '" ' + OUT + ' pointer-events="none"/>' +
+      (armed ? '<g pointer-events="none"><rect x="' + (px - 58) + '" y="' + (trayY + 28) + '" width="116" height="30" rx="15" fill="' + INK + '"/>' +
+        '<text x="' + px + '" y="' + (trayY + 49) + '" text-anchor="middle" font-size="17" font-weight="600" fill="#fff">click here!</text></g>' : "")
     );
   };
 
+  // beam as a thick outlined plank
+  const nx = -Math.sin(phi) * 8, ny = -Math.cos(phi) * 8;
+  const beam = [[lx + nx, ly + ny], [rx + nx, ry + ny], [rx - nx, ry - ny], [lx - nx, ly - ny]]
+    .map(p => p[0].toFixed(1) + "," + p[1].toFixed(1)).join(" ");
+
+  const mood = S.solved ? "joy" : (targetPhi !== 0 ? "worry" : "ok");
+
   $("scale").innerHTML =
-    '<polygon points="' + cx + "," + (cy + 6) + " " + (cx - 46) + ",420 " + (cx + 46) + ',420" fill="#c9ced8"/>' +
-    '<rect x="' + (cx - 120) + '" y="416" width="240" height="10" rx="4" fill="#b7bdc9"/>' +
-    '<line x1="' + lx + '" y1="' + ly + '" x2="' + rx + '" y2="' + ry + '" stroke="#5c6370" stroke-width="8" stroke-linecap="round"/>' +
-    '<circle cx="' + cx + '" cy="' + cy + '" r="9" fill="#5c6370"/>' +
+    backdrop() +
+    '<path d="M ' + (cx - 14) + " " + (cy + 4) + " L " + (cx - 24) + " 400 L " + (cx + 24) + " 400 L " + (cx + 14) + " " + (cy + 4) +
+      ' Z" fill="var(--wood)" ' + OUT + "/>" +
+    '<rect x="' + (cx - 80) + '" y="392" width="160" height="22" rx="8" fill="#8a6440" ' + OUT + "/>" +
+    mascot(cx + 120, 388, mood) +
+    '<polygon points="' + beam + '" fill="#b98b5e" ' + OUT + "/>" +
+    '<circle cx="' + cx + '" cy="' + cy + '" r="12" fill="var(--unit)" ' + OUT + "/>" +
+    '<circle cx="' + lx + '" cy="' + ly + '" r="5" fill="' + INK + '"/><circle cx="' + rx + '" cy="' + ry + '" r="5" fill="' + INK + '"/>' +
     pan(lx, ly, "L", S.L) + pan(rx, ry, "R", S.R);
 }
 
