@@ -68,6 +68,11 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
       w.document.querySelectorAll(".overlay.show").forEach(o => o.classList.remove("show"));
     }
     check("No script errors", errors.length === 0, errors.join(" | "));
+    // the teacher guide page must render, with an answer key row for every level
+    const gw = await new Promise(resolve => { frame.onload = () => resolve(frame.contentWindow); frame.src = "../teachers/guide.html?g=" + slug; });
+    let rows = 0;
+    for (let k = 0; k < 40 && !rows; k++) { await sleep(50); const key = gw.document.getElementById("key"); rows = key ? gw.document.querySelectorAll("#key ~ table")[0]?.querySelectorAll("tbody tr").length || 0 : 0; }
+    check("Teacher guide page renders", rows === 12, rows + " answer key rows");
     const fails = results.filter(r => !r.ok);
     const div = document.createElement("div");
     div.innerHTML = "<h2 class='" + (fails.length ? "fail" : "pass") + "'>" + slug + ": " + (fails.length ? fails.length + " failed" : "all " + results.length + " passed") + "</h2>" +
