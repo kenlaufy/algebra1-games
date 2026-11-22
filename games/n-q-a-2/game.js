@@ -1,0 +1,48 @@
+/* Pick the Measure · AI.N-Q.A.2 */
+(function () {
+  const LEVELS = [
+    { stage: 1, ctx: "Which car is more fuel efficient? Car A went 300 miles on 10 gallons. Car B went 360 miles on 15 gallons.",
+      steps: [["ch", "What quantity should you compare?", [["Miles per gallon", ""], ["Total miles driven", "Car B drove farther, but it used more fuel too."], ["Gallons used", "Fewer gallons might just mean a shorter trip."]]], ["in", "A: [] mpg, B: [] mpg", [30, 24]]],
+      answer: "Car A: 30 mpg vs 24 mpg", check: "300 ÷ 10 = 30, 360 ÷ 15 = 24 ✓", tip: "Totals can mislead. Define a fair quantity first." },
+    { stage: 1, ctx: "Cereal A: $4.20 for 14 oz. Cereal B: $5.40 for 20 oz.", steps: [["ch", "Fair quantity to compare:", [["Price per ounce", ""], ["Price per box", "The boxes are different sizes."], ["Ounces per box", "That ignores price."]]], ["in", "A: $[] per oz, B: $[] per oz", [0.3, 0.27]]],
+      answer: "B is the better value", check: "$0.27 < $0.30 per ounce ✓", tip: "Unit price." },
+    { stage: 1, ctx: "City A: 800,000 people on 200 km². City B: 1,500,000 people on 600 km². Which is more crowded?", steps: [["ch", "Measure:", [["People per square kilometer", ""], ["Total population", "B has more people, but much more land."], ["Total area", "Area alone says nothing about crowding."]]], ["in", "A: [] people/km², B: [] people/km²", [4000, 2500]]],
+      answer: "City A is more crowded", check: "4000 > 2500 people per km² ✓", tip: "Population density." },
+    { stage: 1, ctx: "Plan A: $40/month unlimited. Plan B: $15/month plus $0.05 per text. You send about 400 texts a month.", steps: [["ch", "What should you compare?", [["Your total cost per month", ""], ["The base price", "Plan B's base is lower, but texts add up."], ["Cost per text", "Plan A has no per-text cost; compare totals."]]], ["in", "Plan B for you: $[] per month", [35]]],
+      answer: "Plan B: $35 < $40", check: "15 + 0.05 × 400 = 35 ✓", tip: "Define the quantity that matters to YOU." },
+    { stage: 2, ctx: "Shooter 1 made 45 of 100 shots. Shooter 2 made 30 of 60.", steps: [["ch", "Who's the better shooter? Use…", [["Shooting percentage: made ÷ attempted", ""], ["Shots made", "Shooter 1 also took more shots."], ["Shots missed", "Missing also depends on how many shots were taken."]]], ["in", "Shooter 1: []%, Shooter 2: []%", [45, 50]]],
+      answer: "Shooter 2 (50%)", check: "30 ÷ 60 = 50% ✓", tip: "Rates make fair comparisons." },
+    { stage: 2, ctx: "In a plant experiment, plants were measured on different days.", steps: [["ch", "Best quantity to describe how well each plant grows:", [["Growth per day (cm/day)", ""], ["Final height only", "Plants measured on different days can't be compared that way."], ["Number of leaves", "That's a different question."]]]],
+      answer: "Growth rate in cm per day", check: "Rates account for different time spans ✓", tip: "Pick a rate when times differ." },
+    { stage: 2, ctx: "Commute times in a class (minutes): 10, 12, 15, 15, 18, 20, 90.", steps: [["in", "Mean ≈ [] min, median = [] min", [25.71, 15], { tol: 0.011 }], ["ch", "Which better describes a typical commute?", [["The median: one long commute pulls the mean up", ""], ["The mean", "The 90-minute commute drags the mean above most students' times."]]]],
+      answer: "Median: 15 minutes", check: "6 of 7 students commute 20 minutes or less ✓", tip: "Typical isn't always the average." },
+    { stage: 2, ctx: "Two countries: A's total GDP is $2 trillion with 200 million people; B's is $1 trillion with 50 million people.", steps: [["ch", "To compare how well-off people are, use…", [["GDP per person", ""], ["Total GDP", "A has more people sharing it."], ["Population", "That ignores income."]]], ["in", "A: $[] per person, B: $[] per person", [10000, 20000]]],
+      answer: "B is wealthier per person", check: "1 trillion ÷ 50 million = 20,000 ✓", tip: "Per-person measures." },
+    { stage: 3, ctx: "A runner did 5 km in 25 minutes.", steps: [["in", "Pace: [] minutes per km", [5]], ["in", "Prediction: 8 km at the same pace takes [] minutes", [40]]], answer: "5 min/km → 40 min", check: "8 × 5 = 40 ✓", tip: "Pick a measure, then predict with it." },
+    { stage: 3, ctx: "Home prices in a town (thousands of $): 210, 225, 240, 250, 260, 2400.", steps: [["ch", "To describe the typical home price…", [["Use the median: about $245,000", ""], ["Use the mean: about $598,000", "One mansion makes the mean bigger than every other home."]]], ["in", "Median = [] thousand", [245]]],
+      answer: "Median $245,000", check: "(240 + 250) ÷ 2 = 245 ✓", tip: "Choose a measure that fits the data." },
+    { stage: 3, ctx: "A batter gets a hit in 0.300 of at-bats (30%).", steps: [["in", "Predicted hits in 50 at-bats: []", [15]]], answer: "About 15 hits", check: "0.3 × 50 = 15 ✓", tip: "A rate predicts." },
+    { stage: 3, ctx: "Two bakeries: A sold 1,200 loaves with 4 workers; B sold 1,500 loaves with 6 workers.", steps: [["ch", "To compare productivity, use…", [["Loaves per worker", ""], ["Total loaves", "B has more workers."], ["Number of workers", "That's not output."]]], ["in", "A: [] per worker, B: [] per worker", [300, 250]]],
+      answer: "A is more productive per worker", check: "1200 ÷ 4 = 300 > 250 ✓", tip: "Last one: define the fair measure." },
+  ];
+  Timeline.stepGame({
+    slug: "n-q-a-2", title: "Pick the Measure", firstMove: "Choose the quantity that makes a fair comparison, then compute it for each option.",
+    subtitle: "Define appropriate quantities for describing and comparing situations",
+    stages: { 1: "Stage 1 · Fair comparisons", 2: "Stage 2 · Rates and typical values", 3: "Stage 3 · Measure, then predict" }, levels: LEVELS,
+    help: { intro: "Before you compare or describe, decide <b>what to measure</b>. Totals can mislead; rates and per-unit quantities are often fairer.",
+      steps: ["Choose the quantity that fits the question.", "Compute it for each option.", "Use it to decide or predict.", "Fewer wrong answers means more stars."], note: "Round to 2 decimal places when needed." },
+    hint: "Divide to get a per-unit quantity.",
+    guide: {
+      summary: "A 12-level game about defining appropriate quantities: unit rates, densities, percentages, per-person measures and typical values, and using them to compare situations and make predictions.",
+      also: "<span class='code'>AI.S-ID.A.2</span> choosing statistics for the shape of data.",
+      practices: "MP4 Model with mathematics · MP2 Reason abstractly and quantitatively",
+      goals: ["Define appropriate quantities for describing a situation.", "Use rates and per-unit quantities to compare fairly.", "Choose a measure of a typical value that fits the data, and use measures to predict."],
+      howItWorks: "Each level poses a comparison or description. Students choose the quantity to use (distractors are misleading totals), compute it, and decide or predict.",
+      stageNotes: { 1: { sees: "Fuel, cereal, cities, phone plans.", builds: "Rates and unit prices." }, 2: { sees: "Shooting, plants, commutes, countries.", builds: "Percentages, growth rates, median vs. mean, per-capita measures." }, 3: { sees: "Pace, home prices, batting, bakeries.", builds: "Predicting with a chosen measure." } },
+      discussion: ["Why is \"total miles\" a misleading way to compare fuel efficiency?", "When is the median a better measure than the mean?", "How did the pace measure help you predict?"],
+      misconceptions: [["Comparing totals of unequal groups", "Several levels."], ["Mean as the only typical value", "Levels 7 and 10."]],
+      exitTicket: { items: ["Store A: 12 eggs for $3.60; Store B: 18 eggs for $4.86. Better value?", "Two classes raised $450 (25 students) and $600 (40 students). Fair comparison?", "Choose a measure for \"how fast a car accelerates\"."],
+        answers: ["A: $0.30 per egg; B: $0.27 per egg. B is better.", "Dollars per student: $18 vs $15.", "For example, seconds from 0 to 60 mph, or mph gained per second."] },
+    },
+  });
+})();
