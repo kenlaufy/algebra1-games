@@ -7,14 +7,14 @@
     { stage: 1, ft: "3x " + M + " 2", gt: M + "x + 10", f: (x) => 3 * x - 2, g: (x) => -x + 10, a: 0, b: 6, exact: 3, tip: "Look down the table for equal values." },
     { stage: 1, ft: "0.5x + 3", gt: "2x " + M + " 3", f: (x) => 0.5 * x + 3, g: (x) => 2 * x - 3, a: 0, b: 6, exact: 4, tip: "Which one is ahead at first? When do they meet?" },
     { stage: 1, ft: M + "2x + 7", gt: "x " + M + " 2", f: (x) => -2 * x + 7, g: (x) => x - 2, a: 0, b: 6, exact: 3, tip: "Same idea: find the meeting point in the table." },
-    { stage: 2, ft: "2ˣ", gt: "x + 4", f: (x) => Math.pow(2, x), g: (x) => x + 4, a: 0, b: 5, root: 2.7562, tip: "Exponential vs. linear: no algebra trick solves 2ˣ = x + 4. Use the table and zoom in." },
-    { stage: 2, ft: "3ˣ", gt: "2x + 4", f: (x) => Math.pow(3, x), g: (x) => 2 * x + 4, a: 0, b: 4, root: 1.8564, tip: "Find where the bigger one switches, then zoom in." },
-    { stage: 2, ft: "100(0.5)ˣ", gt: "10x", f: (x) => 100 * Math.pow(0.5, x), g: (x) => 10 * x, a: 0, b: 5, root: 2.1946, tip: "A decaying exponential meets a growing line." },
-    { stage: 2, ft: "1.5ˣ", gt: "x + 1", f: (x) => Math.pow(1.5, x), g: (x) => x + 1, a: 1, b: 6, root: 3.9606, tip: "This exponential grows slowly at first." },
+    { stage: 2, ft: "2ˣ", gt: "x + 4", f: (x) => Math.pow(2, x), g: (x) => x + 4, a: 0, b: 5, root: 2.75621530, tip: "Exponential vs. linear: no algebra trick solves 2ˣ = x + 4. Use the table and zoom in." },
+    { stage: 2, ft: "3ˣ", gt: "2x + 4", f: (x) => Math.pow(3, x), g: (x) => 2 * x + 4, a: 0, b: 4, root: 1.86047109, tip: "Find where the bigger one switches, then zoom in." },
+    { stage: 2, ft: "100(0.5)ˣ", gt: "10x", f: (x) => 100 * Math.pow(0.5, x), g: (x) => 10 * x, a: 0, b: 5, root: 2.19060122, tip: "A decaying exponential meets a growing line." },
+    { stage: 2, ft: "1.5ˣ", gt: "x + 1", f: (x) => Math.pow(1.5, x), g: (x) => x + 1, a: 1, b: 6, root: 3.93917646, tip: "This exponential grows slowly at first." },
     { stage: 3, concept: true, tip: "Why does the crossing point solve the equation?" },
-    { stage: 3, ft: "2ˣ", gt: M + "x + 5", f: (x) => Math.pow(2, x), g: (x) => -x + 5, a: 0, b: 4, root: 1.7149, graphFirst: true, tip: "Now with the graph too. The table confirms what the graph suggests." },
-    { stage: 3, ft: "2ˣ", gt: "x + 2", f: (x) => Math.pow(2, x), g: (x) => x + 2, a: -4, b: 1, root: -1.6903, note: "One solution is x = 2 exactly. Find the other one.", tip: "Equations like this can have two solutions." },
-    { stage: 3, ft: "800(0.8)ᵗ", gt: "600 " + M + " 50t", f: (x) => 800 * Math.pow(0.8, x), g: (x) => 600 - 50 * x, a: 0, b: 5, root: 2.1979, ctx: "Phone A is worth V = 800(0.8)ᵗ dollars after t years; phone B is worth V = 600 − 50t. When are they worth the same?",
+    { stage: 3, ft: "2ˣ", gt: M + "x + 5", f: (x) => Math.pow(2, x), g: (x) => -x + 5, a: 0, b: 4, root: 1.71562073, graphFirst: true, tip: "Now with the graph too. The table confirms what the graph suggests." },
+    { stage: 3, ft: "2ˣ", gt: "x + 2", f: (x) => Math.pow(2, x), g: (x) => x + 2, a: -4, b: 1, root: -1.69009307, note: "One solution is x = 2 exactly. Find the other one.", tip: "Equations like this can have two solutions." },
+    { stage: 3, ft: "800(0.8)ᵗ", gt: "600 " + M + " 50t", f: (x) => 800 * Math.pow(0.8, x), g: (x) => 600 - 50 * x, a: 0, b: 5, root: 2.19414301, ctx: "Phone A is worth V = 800(0.8)ᵗ dollars after t years; phone B is worth V = 600 − 50t. When are they worth the same?",
       v: "t", tip: "Last one: a real question with the same method." },
   ];
   const round = (v, d) => Alg.round(v, d == null ? 2 : d);
@@ -23,6 +23,7 @@
   GameShell.register({
     slug: "a-rei-d-11",
     title: "Meeting Point",
+    firstMove: "Scan the table for a row where the two outputs match. Select that row and check your choice.",
     subtitle: "Solve f(x) = g(x) with tables and graphs",
     stages: { 1: "Stage 1 · Meet in the table", 2: "Stage 2 · Zoom in", 3: "Stage 3 · Graphs and meaning" },
     levels: LEVELS,
@@ -76,7 +77,7 @@
         rows.forEach((x, i) => {
           const fx = lv.f(x), gx = lv.g(x);
           const big = Math.abs(fx - gx) < 1e-9 ? "equal" : fx > gx ? "f" : "g";
-          const btn = api.h("button", { class: "choice" + (sel === i ? " sel" : ""), style: { minHeight: "38px", padding: "4px 10px", textAlign: "center" },
+          const btn = api.h("button", { "aria-pressed": String(sel === i), class: "choice" + (sel === i ? " sel" : ""), style: { minHeight: "44px", padding: "4px 10px", textAlign: "center" },
             on: { click: () => { sel = i; table(a, b, stp); } } }, Alg.num(x));
           t.appendChild(api.h("tr", null, api.h("td", { style: { height: "auto", padding: "2px", border: 0, background: "transparent" } }, btn),
             api.h("td", { style: { height: "auto" } }, fmt(fx)), api.h("td", { style: { height: "auto" } }, fmt(gx)),
@@ -93,23 +94,25 @@
           autoplay: () => { sel = rows.indexOf(lv.exact); }, done: "f(" + lv.exact + ") = g(" + lv.exact + ") = " + fmt(lv.f(lv.exact)) });
       } else {
         const lo1 = Math.floor(lv.root), hi1 = lo1 + 1;
+        const nearestTenth = round(lv.root, 1);
         steps.push({ type: "click", button: "Zoom in", prompt: "Click the row just before the bigger function switches.", onEnter: () => { sel = null; table(lv.a, lv.b, 1); },
           check: () => { if (sel == null) return "Click a row first."; const x = rows[sel]; if (x === lo1) return true; const s1 = Math.sign(lv.f(x) - lv.g(x)), s2 = Math.sign(lv.f(x + 1) - lv.g(x + 1));
             return s1 === s2 ? "From " + v + " = " + x + " to " + (x + 1) + ", the same function stays bigger, so they don't cross there." : "Look again at which function is bigger."; },
           autoplay: () => { sel = rows.indexOf(lo1); }, done: "The crossing is between " + lo1 + " and " + hi1 });
         steps.push({ type: "click", button: "Check", prompt: "Zoomed in to tenths. Click the " + v + " closest to the crossing.", onEnter: () => { sel = null; table(lo1, hi1, 0.1); },
           check: () => { if (sel == null) return "Click a row first."; const x = rows[sel];
-            if (Math.abs(x - lv.root) <= 0.1 + 1e-9) { chosen = x; showGraph = true; draw(); return true; }
+            if (x === nearestTenth) { chosen = x; showGraph = true; draw(); return true; }
             return "At " + v + " = " + Alg.num(x) + ", f and g are " + fmt(Math.abs(lv.f(x) - lv.g(x))) + " apart. Find where the bigger one switches."; },
-          autoplay: () => { sel = rows.findIndex((x) => Math.abs(x - lv.root) <= 0.1); }, done: "f(" + v + ") = g(" + v + ") at " + v + " ≈ " + Alg.num(Alg.round(lv.root, 1)) });
+          autoplay: () => { sel = rows.indexOf(nearestTenth); }, done: "f(" + v + ") = g(" + v + ") at " + v + " ≈ " + Alg.num(Alg.round(lv.root, 1)) });
       }
       Steps.run(api, { steps, logTitle: "Your work", result: () => ({ answer: lv.exact != null ? v + " = " + lv.exact : v + " ≈ " + Alg.num(Alg.round(lv.root, 1)),
-        check: lv.exact != null ? "f(" + lv.exact + ") = " + fmt(lv.f(lv.exact)) + " = g(" + lv.exact + ") ✓" : "At " + v + " ≈ " + Alg.num(Alg.round(lv.root, 2)) + ": f ≈ " + fmt(lv.f(lv.root)) + " and g ≈ " + fmt(lv.g(lv.root)) + " ✓" }) });
+        check: lv.exact != null ? "f(" + lv.exact + ") = " + fmt(lv.f(lv.exact)) + " = g(" + lv.exact + ") ✓" : "At your estimate, " + v + " = " + Alg.num(chosen) + ", the outputs are about " + fmt(lv.f(chosen)) + " and " + fmt(lv.g(chosen)) + ". The exact crossing lies between table rows." }) });
     },
     guide: {
       summary: "A 12-level game for solving f(x) = g(x) with tables and graphs, including linear-versus-exponential equations that algebra can't solve directly. Students find where the larger function switches, zoom the table to tenths, and connect the crossing point to the equation.",
       also: "<span class='code'>AI.F-LE.A.3</span> exponential growth eventually exceeding linear growth.",
       practices: "MP5 Use appropriate tools strategically · MP3 Construct viable arguments",
+      evidence: "Ask what the matching row tells you. Listen for the input that solves the equation and the common output that locates the crossing.",
       goals: [
         "Explain why the x-coordinate of an intersection of y = f(x) and y = g(x) solves f(x) = g(x).",
         "Find exact solutions from a table when they are whole numbers.",

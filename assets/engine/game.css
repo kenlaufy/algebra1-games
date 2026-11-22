@@ -73,6 +73,7 @@
   background: #fff; border: 2px solid var(--line); border-radius: 14px; padding: 12px 14px; cursor: pointer;
   box-shadow: 0 3px 0 var(--line); min-height: 52px;
 }
+.choice svg { display: block; max-width: 100%; height: auto; margin: 0 auto 6px; }
 .choice:hover { border-color: var(--ink); }
 .choice.sel { border-color: var(--ink); background: #fbe7a8; box-shadow: 0 3px 0 var(--ink); }
 .choice.right { border-color: var(--go); background: #dcebd9; }

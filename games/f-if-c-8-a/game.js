@@ -33,6 +33,7 @@
   GameShell.register({
     slug: "f-if-c-8-a",
     title: "Pick the Form",
+    firstMove: "The rocket question asks how high it gets. Choose the form that shows the peak, then enter the height in meters.",
     subtitle: "Use factoring and completing the square to reveal key features of quadratics",
     stages: { 1: "Stage 1 · Pick the best form", 2: "Stage 2 · Make the form you need", 3: "Stage 3 · Interpret in context" },
     levels: LEVELS,
@@ -67,6 +68,7 @@
       summary: "A 12-level game about the forms of a quadratic. Students choose which form (standard, factored, vertex) answers a question fastest, produce factored and vertex forms themselves, and interpret zeros, maximums and symmetry in context.",
       also: "<span class='code'>AI.A-SSE.B.3.a</span> and <span class='code'>AI.A-SSE.B.3.b</span>.",
       practices: "MP7 Look for and make use of structure · MP4 Model with mathematics",
+      evidence: "Ask for the rocket’s peak height and landing time. Have the student choose a form for each question and explain what its numbers tell them.",
       goals: [
         "Use factoring to show the zeros of a quadratic function and interpret them in context.",
         "Use completing the square to show the maximum or minimum and the line of symmetry.",

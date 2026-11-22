@@ -30,6 +30,7 @@
   GameShell.register({
     slug: "a-rei-b-3-a",
     title: "Radar Station",
+    firstMove: "Start at the radar base. Count the given distance in both directions, tap the two endpoints, then press Sweep.",
     subtitle: "Solve absolute value equations and inequalities",
     stages: { 1: "Stage 1 · Exactly this far", 2: "Stage 2 · Inside the zone", 3: "Stage 3 · Outside the zone" },
     levels: LEVELS,
@@ -118,6 +119,7 @@
       summary: "A 12-level game for absolute value equations and inequalities. |x − c| is shown as the distance from a radar base at c; students mark endpoints on a number line, choose open or closed circles, and decide whether the solutions are inside or outside the radar zone.",
       also: "<span class='code'>AI.A-REI.B.3</span> linear inequalities in one variable.",
       practices: "MP2 Reason abstractly and quantitatively · MP6 Attend to precision",
+      evidence: "Change “exactly three units away” to “less than three units away.” Ask which points to shade and whether the endpoints count.",
       goals: [
         "Interpret |x − c| as the distance between x and c on the number line.",
         "Solve |x − c| = r, |x − c| ≤ r and |x − c| ≥ r and graph the solutions.",

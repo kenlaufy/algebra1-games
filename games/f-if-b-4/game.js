@@ -18,6 +18,14 @@
     bounce: thumb(null, { segs: [curve((x) => 9 - 9 * Math.pow(x / 2.5, 2), 0, 2.5, 12), curve((x) => 5.5 * (1 - Math.pow((x - 4.6) / 2.1, 2)), 2.5, 6.7, 14), curve((x) => 3 * (1 - Math.pow((x - 8.2) / 1.5, 2)), 6.7, 9.7, 12)] }),
     hill: thumb(curve((x) => 9 - 0.36 * Math.pow(x - 5, 2), 0, 10)), zig: thumb([[0, 9], [3, 3], [5, 6], [10, 1]]),
   };
+  const sketchDescriptions = {
+    trap: "Rises, stays level, then falls to zero", rise: "Rises at a steady rate",
+    spike: "Rises to one point, then immediately falls", drain: "Falls steadily to zero, then stays there",
+    fill: "Rises steadily, then levels off", flat: "Stays at the same height", expo: "Rises faster and faster",
+    log: "Rises more and more slowly", line: "Rises in a straight line",
+    bounce: "Curved bounces with successively lower peaks", hill: "One smooth hill",
+    zig: "Falls, rises, then falls along straight segments",
+  };
   const LEVELS = [
     { stage: 1, ctx: "A ball's height h (meters) t seconds after it's thrown: h = −5(t − 2)² + 20.", f: (t) => -5 * Math.pow(t - 2, 2) + 20, r: [0, 4.5, 0, 24, 0.5, 4], v: ["t", "h"],
       qs: [["Maximum height: [] m", [20]], ["It reaches the maximum at t = [] s", [2]], ["It lands (h = 0) at t = [] s", [4]]], tip: "Read the key features straight off the graph." },
@@ -56,6 +64,7 @@
   GameShell.register({
     slug: "f-if-b-4",
     title: "Blind Sketch",
+    firstMove: "Find the top of the ball’s path. Read across to the height axis and enter the height in meters.",
     subtitle: "Interpret key features of graphs and tables, and sketch from descriptions",
     stages: { 1: "Stage 1 · Read the graph", 2: "Stage 2 · Sketch from words", 3: "Stage 3 · Tables and end behavior" },
     levels: LEVELS,
@@ -73,7 +82,7 @@
       const steps = [];
       if (lv.desc) {
         api.stage.appendChild(api.h("div", { class: "stage-text", style: { fontSize: "22px", lineHeight: 1.4 } }, lv.desc));
-        steps.push({ type: "choice", prompt: "Which sketch matches?", options: lv.opts.map((o, k) => ({ label: G[o[0]], ok: k === 0, why: o[1] })).sort((a, b) => (a.label < b.label ? -1 : 1)), done: "Matched the description" });
+        steps.push({ type: "choice", prompt: "Which sketch matches?", options: lv.opts.map((o, k) => ({ label: G[o[0]] + "<span>" + sketchDescriptions[o[0]] + "</span>", ok: k === 0, why: o[1] })).sort((a, b) => (a.label < b.label ? -1 : 1)), done: "Matched the description" });
       } else {
         if (lv.ctx) api.stage.appendChild(api.h("div", { class: "stage-text", style: { fontSize: "21px" } }, lv.ctx));
         if (lv.f) {
@@ -99,6 +108,7 @@
       summary: "A 12-level game about the key features of functions. Students read maximums, intercepts, intervals of increase and end behavior from graphs in context, choose sketches that match verbal descriptions, and find features in tables.",
       also: "<span class='code'>AI.F-IF.B.5</span> relating domain to context.",
       practices: "MP2 Reason abstractly and quantitatively · MP4 Model with mathematics",
+      evidence: "Ask the student to describe the peak in one sentence using both coordinates and their units. Listen for a distinction between when and how high.",
       goals: [
         "Interpret intercepts, maximums and minimums, intervals of increase and decrease, positive and negative intervals, symmetry and end behavior in context.",
         "Sketch (choose) graphs that show key features from a verbal description.",

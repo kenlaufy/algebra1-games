@@ -26,6 +26,7 @@
   GameShell.register({
     slug: "a-rei-d-12",
     title: "Territory",
+    firstMove: "Decide whether points on the boundary count. Choose a border, then tap the side containing a point that makes the inequality true.",
     subtitle: "Graph linear inequalities and systems as half-planes",
     stages: { 1: "Stage 1 · Claim a half-plane", 2: "Stage 2 · Name the territory", 3: "Stage 3 · Overlapping territories" },
     levels: LEVELS,
@@ -105,8 +106,8 @@
         const q = lv.qs[0];
         if (q.m === null) steps.push({ type: "input", prompt: "Boundary: x = []", answers: [q.k] });
         else steps.push({ type: "input", prompt: "Boundary line: y = []x + []", answers: [q.m, q.k], hint: "The slope is rise over run; the intercept is where it crosses the y-axis." });
-        steps.push({ type: "choice", prompt: "Which inequality sign?", options: ["<", "<=", ">", ">="].map((r) => ({ label: "y " + SYM[r] + " …", ok: r === q.rel,
-          why: (strict({ rel: r }) !== strict(q) ? "Look at the border: " + (strict(q) ? "dashed means the line isn't included." : "solid means the line is included.") : "Which side is shaded: above or below?") })),
+        steps.push({ type: "choice", prompt: "Which inequality sign?", options: ["<", "<=", ">", ">="].map((r) => ({ label: (q.m === null ? "x " : "y ") + SYM[r] + " …", ok: r === q.rel,
+          why: (strict({ rel: r }) !== strict(q) ? "Look at the border: " + (strict(q) ? "dashed means the line isn't included." : "solid means the line is included.") : q.m === null ? "Is the shading left or right of the vertical line?" : "Is the shading above or below the line?") })),
           done: text(q) });
       }
       if (lv.mode === "judge") lv.pts.forEach((p) => steps.push({ type: "choice", prompt: "Is (" + p[0] + ", " + p[1] + ") in the overlap?", options: [
@@ -119,6 +120,7 @@
       summary: "A 12-level game for graphing linear inequalities. Students choose solid or dashed borders and shade half-planes, write the inequality for a shaded region, and find the overlap of systems of inequalities.",
       also: "<span class='code'>AI.A-CED.A.3</span> constraints as systems of inequalities.",
       practices: "MP6 Attend to precision · MP7 Look for and make use of structure",
+      evidence: "Point to a boundary point and a point off the line. Ask the student to test both and explain the border and the shading separately.",
       goals: [
         "Graph the solutions of a linear inequality in two variables as a half-plane, with a dashed boundary for strict inequalities.",
         "Write the inequality for a given half-plane.",

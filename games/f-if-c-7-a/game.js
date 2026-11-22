@@ -21,6 +21,7 @@
   GameShell.register({
     slug: "f-if-c-7-a",
     title: "Hoops",
+    firstMove: "Find where the line crosses the vertical axis. Set x equal to zero and enter the resulting y-value.",
     subtitle: "Graph lines and parabolas; show intercepts, maximums and minimums",
     stages: { 1: "Stage 1 · Lines from intercepts", 2: "Stage 2 · Shoot with vertex form", 3: "Stage 3 · Features from standard form" },
     levels: LEVELS,
@@ -76,12 +77,13 @@
       }
       Steps.run(api, { steps, logTitle: "Landmarks", result: () => ({
         answer: lv.kind === "line" ? lv.text : lv.kind === "shot" ? pform(...lv.ans) : "Vertex (" + Alg.num(feats(lv.P).h) + ", " + Alg.num(feats(lv.P).k) + ")",
-        check: lv.kind === "shot" ? "Swish ✓" : "The graph passes through every landmark ✓" }) });
+        check: lv.kind === "shot" ? "At x = " + Alg.num(lv.hoop[0]) + ", your path reaches the hoop height of " + Alg.num(lv.hoop[1]) + " ✓" : "The graph passes through every landmark ✓" }) });
     },
     guide: {
       summary: "A 12-level game for graphing linear and quadratic functions by their key features: intercepts for lines, vertex form for basketball shots, and vertex, extreme value, zeros and y-intercept from standard form.",
       also: "<span class='code'>AI.F-IF.C.8.a</span> using forms of a quadratic to reveal features.",
       practices: "MP7 Look for and make use of structure · MP4 Model with mathematics",
+      evidence: "Ask for the two intercepts as ordered pairs. Listen for which coordinate is zero at each one and ask the student to check both in the equation.",
       goals: [
         "Graph a line from its intercepts.",
         "Write y = a(x − h)² + k from a vertex and a point, and interpret it as a path.",

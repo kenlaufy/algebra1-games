@@ -62,6 +62,7 @@
   GameShell.register({
     slug: "a-ced-a-3",
     title: "Resource Planner",
+    firstMove: "Build the ticket budget. Enter the cost of one adult ticket, the cost of one kid ticket, and the spending limit.",
     subtitle: "Represent constraints with inequalities and find plans that work",
     stages: { 1: "Stage 1 · One constraint", 2: "Stage 2 · Two constraints", 3: "Stage 3 · The best plan" },
     levels: LEVELS,
@@ -109,7 +110,7 @@
             accept: (v) => {
               const k = con.a ? v[0] / con.a : v[1] / con.b;
               if (k > 0 && Alg.close(v[0], con.a * k) && Alg.close(v[1], con.b * k) && Alg.close(v[2], con.c * k)) return true;
-              return "Match each quantity with its cost or size: each " + lv.units[0].replace(/s$/, "") + " counts " + con.a + ", each " + lv.units[1].replace(/s$/, "") + " counts " + con.b + "? Check the limit too.";
+              return "Match each quantity with its cost or size: each " + lv.units[0].replace(/s$/, "") + " counts " + con.a + ", each " + lv.units[1].replace(/s$/, "") + " counts " + con.b + ". Check the limit too.";
             }, done: conText(con, lv.v) + " (" + con.what + ")", onDone: () => { known[st[1]] = true; draw(); } };
         }
         if (st[0] === "click") return { type: "click", prompt: st[1], button: "Check plan", check: () => (pick ? st[2](pick) : "Click a point on the grid first."),
@@ -128,6 +129,7 @@
       summary: "A 12-level game about constraints. Students write budget, space and capacity constraints as linear inequalities, see the feasible region shaded, choose viable plans, judge plans as viable or non-viable (including non-whole-number plans), and find the best plan.",
       also: "<span class='code'>AI.A-REI.D.12</span> graphing systems of linear inequalities.",
       practices: "MP4 Model with mathematics · MP2 Reason abstractly and quantitatively",
+      evidence: "Ask for two ticket plans that meet the budget. Listen for a total cost, a comparison with the limit, and whole numbers of tickets.",
       goals: [
         "Represent constraints in a context with linear inequalities and systems of inequalities.",
         "Interpret points as viable or non-viable options, including the need for whole-number solutions.",

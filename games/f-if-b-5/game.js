@@ -36,6 +36,7 @@
   GameShell.register({
     slug: "f-if-b-5",
     title: "Graph Trimmer",
+    firstMove: "Decide which numbers could count finished engines. Choose the matching set of inputs, then decide how to draw them.",
     subtitle: "Relate the domain of a function to its graph and its context",
     stages: { 1: "Stage 1 · Which inputs make sense?", 2: "Stage 2 · Trim the graph", 3: "Stage 3 · Dots, lines and ranges" },
     levels: LEVELS,
@@ -119,6 +120,7 @@
       summary: "A 12-level game about domains in context. Students choose sensible domains (including the standard's engine-assembly example), trim graphs to the meaningful inputs, decide between discrete dots and continuous lines, and find the range that follows from a domain.",
       also: "<span class='code'>AI.F-IF.B.4</span> interpreting key features.",
       practices: "MP4 Model with mathematics · MP6 Attend to precision",
+      evidence: "Offer a negative number, a fraction, and a whole number of engines. Ask which inputs make sense and how that decision appears on the graph.",
       goals: [
         "Relate the domain of a function to the quantitative relationship it describes.",
         "Restrict a graph to the inputs that make sense, including situations with no natural end.",
