@@ -3,194 +3,294 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Algebra 1 Games</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<title>Algebra 1 Games · Play-based practice for Massachusetts Algebra I</title>
+<meta name="description" content="Browser games where the math is the gameplay, aligned to the 2017 Massachusetts Algebra I standards. Free, no logins, no student data collected.">
+<meta property="og:title" content="Algebra 1 Games">
+<meta property="og:description" content="Browser games where the math is the gameplay, aligned to the Massachusetts Algebra I standards.">
+<meta property="og:type" content="website">
+<link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/site.css">
 <style>
-  :root {
-    --paper: #f6f2e7;
-    --card: #fffdf7;
-    --ink: #23262d;
-    --chip: #ebe3d0;
-    --chip-edge: #cfc3a8;
-    --line: #d8cdb4;
-    --muted: #67768f;
-    --go: #4f8a5b;
-    --go-dark: #2f5a39;
-    --head: "Fredoka", "Nunito", system-ui, sans-serif;
-    --body: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+  .hero {
+    max-width: 1080px; margin: 0 auto; padding: 18px 20px 10px;
+    display: grid; grid-template-columns: 1.05fr 1fr; gap: 34px; align-items: center;
   }
-  * { box-sizing: border-box; }
-  body { margin: 0; font-family: var(--body); color: var(--ink); background: var(--paper); font-size: 17px; }
-  main { max-width: 1080px; margin: 0 auto; padding: 28px 20px 60px; }
-  h1 { font-family: var(--head); font-weight: 700; font-size: 44px; margin: 0; }
-  .lead { color: var(--muted); font-size: 19px; font-weight: 600; margin: 6px 0 4px; }
-  .progress { font-weight: 700; margin: 10px 0 6px; }
-  .bar { height: 14px; background: var(--chip); border-radius: 8px; overflow: hidden; border: 2px solid var(--ink); max-width: 420px; }
-  .bar span { display: block; height: 100%; background: var(--go); }
-  .filters { display: flex; gap: 8px; flex-wrap: wrap; margin: 22px 0 4px; }
-  .filters button {
-    font-family: var(--head); font-weight: 600; font-size: 17px; color: var(--ink);
-    background: var(--chip); border: 0; border-radius: 10px; padding: 6px 14px; cursor: pointer;
-    box-shadow: 0 3px 0 var(--chip-edge);
+  .hero h1 { font-family: var(--head); font-weight: 700; font-size: 52px; line-height: 1.05; margin: 0 0 12px; }
+  .hero p { font-size: 20px; margin: 0 0 18px; }
+  .hero .facts { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 22px; padding: 0; list-style: none; }
+  .hero .facts li { background: var(--chip); border-radius: 999px; padding: 4px 12px; font-weight: 700; font-size: 15px; }
+  .cta { display: flex; flex-wrap: wrap; gap: 12px; }
+  .feature {
+    background: var(--card); border: 3px solid var(--ink); border-radius: 20px; box-shadow: 0 7px 0 var(--ink);
+    overflow: hidden; display: block; text-decoration: none; color: var(--ink);
   }
-  .filters button.on { background: var(--ink); color: var(--paper); box-shadow: 0 3px 0 #000; }
-  h2 { font-family: var(--head); font-weight: 600; font-size: 24px; margin: 30px 0 10px; }
-  h2 small { color: var(--muted); font-size: 16px; font-weight: 500; margin-left: 6px; }
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
-  .card {
-    background: var(--card); border: 2px solid var(--line); border-radius: 16px; padding: 14px 16px 16px;
-    display: flex; flex-direction: column; gap: 6px; text-decoration: none; color: var(--ink);
+  .feature:hover { transform: translateY(-2px); box-shadow: 0 9px 0 var(--ink); }
+  .feature .art { display: block; width: 100%; border-bottom: 3px solid var(--ink); }
+  .feature .body { padding: 14px 18px 18px; }
+  .feature .name { font-family: var(--head); font-weight: 700; font-size: 28px; margin: 6px 0 2px; }
+  .feature .row { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 10px; }
+  .feature .meta { color: var(--muted); font-weight: 700; font-size: 15px; }
+  .play-pill { font-family: var(--head); font-weight: 600; font-size: 20px; color: #fff; background: var(--go);
+               border-radius: 12px; padding: 7px 22px; box-shadow: 0 5px 0 var(--go-dark); }
+
+  section.band { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+  section.band h2 { font-family: var(--head); font-weight: 600; font-size: 30px; margin: 48px 0 6px; }
+  section.band .sub { color: var(--muted); font-weight: 600; font-size: 18px; margin: 0 0 16px; }
+  .three { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .tile { background: var(--card); border: 2px solid var(--line); border-radius: 16px; padding: 16px 18px; }
+  .tile h3 { font-family: var(--head); font-weight: 600; font-size: 21px; margin: 4px 0 6px; }
+  .tile p { margin: 0; }
+  .tile .num { display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 50%;
+               background: var(--unit); border: 2.5px solid var(--ink); font-family: var(--head); font-weight: 700; }
+  .teachers { display: grid; grid-template-columns: 1.3fr 1fr; gap: 20px; align-items: start; }
+  .checks { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+  .checks li { padding-left: 30px; position: relative; font-weight: 600; }
+  .checks li::before { content: "✓"; position: absolute; left: 0; top: -1px; width: 22px; height: 22px; border-radius: 6px;
+                       background: var(--go); color: #fff; display: grid; place-items: center; font-size: 14px; font-weight: 800; }
+
+  .roadmap details { background: var(--card); border: 2px solid var(--line); border-radius: 14px; margin: 10px 0; }
+  .roadmap summary { cursor: pointer; padding: 12px 16px; font-family: var(--head); font-weight: 600; font-size: 19px;
+                     display: flex; justify-content: space-between; gap: 12px; list-style: none; }
+  .roadmap summary::-webkit-details-marker { display: none; }
+  .roadmap summary::after { content: "+"; font-size: 24px; line-height: 1; }
+  .roadmap details[open] summary::after { content: "−"; }
+  .roadmap summary small { color: var(--muted); font-family: var(--body); font-weight: 700; font-size: 15px; margin-left: auto; padding-right: 8px; align-self: center; }
+  .roadmap ul { list-style: none; margin: 0; padding: 0 16px 14px; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; }
+  .roadmap li { border-top: 1px solid var(--line); padding-top: 10px; }
+  .roadmap li b { font-family: var(--head); font-weight: 600; font-size: 17px; display: block; margin: 4px 0 2px; }
+  .roadmap li span.d { font-size: 15px; }
+  .roadmap li.ready b::after { content: " · Play now"; color: var(--go); }
+
+  @media (max-width: 860px) {
+    .hero { grid-template-columns: 1fr; gap: 24px; }
+    .hero h1 { font-size: 42px; }
+    .three, .teachers { grid-template-columns: 1fr; }
   }
-  .card.ready { border: 3px solid var(--ink); box-shadow: 0 5px 0 var(--ink); }
-  .card.ready:hover { transform: translateY(-2px); box-shadow: 0 7px 0 var(--ink); }
-  .code { align-self: flex-start; font-family: var(--head); font-weight: 600; font-size: 14px; background: var(--ink);
-          color: var(--paper); border-radius: 8px; padding: 2px 9px; }
-  .name { font-family: var(--head); font-weight: 600; font-size: 21px; }
-  .desc { font-size: 15.5px; line-height: 1.45; flex: 1; }
-  .status { font-family: var(--head); font-weight: 600; font-size: 16px; color: var(--muted); margin-top: 4px; }
-  .card.ready .status {
-    align-self: flex-start; color: #fff; background: var(--go); border-radius: 10px; padding: 5px 14px;
-    box-shadow: 0 4px 0 var(--go-dark);
+  @media (max-width: 480px) {
+    .hero h1 { font-size: 36px; }
+    .hero p { font-size: 18px; }
   }
-  .note { color: var(--muted); font-size: 15px; margin-top: 36px; max-width: 760px; line-height: 1.5; }
-  .note a { color: var(--ink); }
 </style>
 </head>
 <body>
-<main>
-  <h1>Algebra 1 Games</h1>
-  <div class="lead">One game for every Massachusetts Algebra I standard. The math is the gameplay.</div>
-  <div class="progress" id="progress"></div>
-  <div class="bar"><span id="bar"></span></div>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header">
+  <a class="brand" href="./"><img src="assets/logo.svg" alt="">Algebra 1 Games</a>
+  <nav class="site-nav" aria-label="Main">
+    <a href="./" aria-current="page">Games</a>
+    <a href="teachers/">For teachers</a>
+    <a href="privacy/">Privacy</a>
+  </nav>
+</header>
 
-  <div class="filters" id="filters">
-    <button data-f="all" class="on">All games</button>
-    <button data-f="ready">Playable now</button>
-  </div>
+<main id="main">
+  <section class="hero">
+    <div>
+      <h1>Algebra you can play.</h1>
+      <p>Short browser games where the math <em>is</em> the gameplay. Students don't answer quiz questions to unlock fun; they reason with algebra to win.</p>
+      <ul class="facts">
+        <li>Massachusetts Algebra I</li>
+        <li>No logins</li>
+        <li>No student data</li>
+        <li>Chromebooks, iPads, laptops</li>
+      </ul>
+      <div class="cta">
+        <a class="btn primary big" href="games/a-rei-b-3/">Play Balance Workshop</a>
+        <a class="btn big" href="teachers/">Teacher guide</a>
+      </div>
+    </div>
 
-  <div id="list"></div>
+    <a class="feature" href="games/a-rei-b-3/" aria-label="Play Balance Workshop">
+      <svg class="art" viewBox="0 0 600 300" aria-hidden="true">
+        <defs><linearGradient id="hsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c3d9ea"/><stop offset="1" stop-color="#e6eff4"/></linearGradient></defs>
+        <rect width="600" height="300" fill="url(#hsky)"/>
+        <circle cx="540" cy="52" r="38" fill="#f6dc86" opacity="0.35"/><circle cx="540" cy="52" r="25" fill="#f3d06a"/>
+        <g fill="#fff"><ellipse cx="100" cy="58" rx="50" ry="16"/><ellipse cx="84" cy="46" rx="22" ry="17"/><ellipse cx="112" cy="42" rx="25" ry="20"/></g>
+        <g fill="#fff"><ellipse cx="380" cy="40" rx="38" ry="12"/><ellipse cx="392" cy="31" rx="20" ry="15"/></g>
+        <rect y="262" width="600" height="38" fill="#dccca6"/><line x1="0" y1="262" x2="600" y2="262" stroke="#a8946a" stroke-width="3"/>
+        <path d="M290 70 L283 262 L317 262 L310 70 Z" fill="#a47b52" stroke="#23262d" stroke-width="3" stroke-linejoin="round"/>
+        <rect x="250" y="254" width="100" height="16" rx="6" fill="#8a6440" stroke="#23262d" stroke-width="3"/>
+        <rect x="100" y="60" width="400" height="14" rx="5" fill="#b98b5e" stroke="#23262d" stroke-width="3"/>
+        <circle cx="300" cy="67" r="10" fill="#e7b84a" stroke="#23262d" stroke-width="3"/>
+        <path d="M110 67 L40 190 M110 67 L180 190 M490 67 L420 190 M490 67 L560 190" stroke="#23262d" stroke-width="2.4"/>
+        <path d="M30 190 H190 Q182 204 168 204 H52 Q38 204 30 190 Z" fill="#efe4c8" stroke="#23262d" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M410 190 H570 Q562 204 548 204 H432 Q418 204 410 190 Z" fill="#efe4c8" stroke="#23262d" stroke-width="3" stroke-linejoin="round"/>
+        <g stroke="#23262d" stroke-width="2.6">
+          <rect x="66" y="152" width="34" height="34" rx="5" fill="#c9965c"/>
+          <rect x="106" y="162" width="22" height="22" rx="4" fill="#e7b84a"/><rect x="134" y="162" width="22" height="22" rx="4" fill="#e7b84a"/>
+          <rect x="425" y="162" width="22" height="22" rx="4" fill="#e7b84a"/><rect x="453" y="162" width="22" height="22" rx="4" fill="#e7b84a"/>
+          <rect x="481" y="162" width="22" height="22" rx="4" fill="#e7b84a"/><rect x="509" y="162" width="22" height="22" rx="4" fill="#e7b84a"/>
+          <rect x="537" y="162" width="22" height="22" rx="4" fill="#e7b84a"/>
+        </g>
+        <rect x="80" y="152" width="7" height="34" fill="#e9d3a6" opacity="0.85"/>
+        <rect x="66" y="152" width="34" height="34" rx="5" fill="none" stroke="#23262d" stroke-width="2.6"/>
+        <text x="83" y="176" text-anchor="middle" font-family="Nunito, sans-serif" font-weight="800" font-size="19" fill="#23262d">?</text>
+        <g transform="translate(375 258)">
+          <path d="M-7 0v14M7 0v14" stroke="#23262d" stroke-width="4" stroke-linecap="round"/>
+          <path d="M-14-18 l-14-22M14-18 l14-22" stroke="#23262d" stroke-width="3" stroke-linecap="round"/>
+          <rect x="-15" y="-26" width="30" height="29" rx="8" fill="#5a78b8" stroke="#23262d" stroke-width="3"/>
+          <circle cx="0" cy="-46" r="17" fill="#f3cfa6" stroke="#23262d" stroke-width="3"/>
+          <circle cx="-6" cy="-48" r="2.3" fill="#23262d"/><circle cx="6" cy="-48" r="2.3" fill="#23262d"/>
+          <path d="M-8-41q8 10 16 0z" fill="#23262d"/>
+          <path d="M-19-54q0-21 19-21q19 0 19 21z" fill="#e7b84a" stroke="#23262d" stroke-width="3"/>
+          <rect x="-23" y="-56" width="46" height="6" rx="3" fill="#e7b84a" stroke="#23262d" stroke-width="3"/>
+        </g>
+      </svg>
+      <div class="body">
+        <span class="code">AI.A-REI.B.3</span>
+        <div class="name">Balance Workshop</div>
+        <div>Solve linear equations by keeping a scale balanced. Mystery boxes become algebra tiles, then pure symbols.</div>
+        <div class="row">
+          <span class="meta">12 levels · about 15 minutes</span>
+          <span class="play-pill">Play</span>
+        </div>
+      </div>
+    </a>
+  </section>
 
-  <p class="note">
-    Standards are grouped as in the 2017 Massachusetts Curriculum Framework for Mathematics (Model Algebra I course).
-    The list was compiled from a third-party source and still needs checking against the
-    <a href="https://www.doe.mass.edu/frameworks/math/2017-06.pdf">official DESE framework</a>.
-    A-REI.B.3 was added by hand and has two games: one for equations, one for inequalities.
-  </p>
+  <section class="band" aria-labelledby="how">
+    <h2 id="how">How the games teach</h2>
+    <p class="sub">Every game follows the same three design rules.</p>
+    <div class="three">
+      <div class="tile"><span class="num">1</span><h3>The math is the move</h3><p>You can't win by guessing. On the scale, the only way to get x alone is to do the same thing to both sides.</p></div>
+      <div class="tile"><span class="num">2</span><h3>Concrete to abstract</h3><p>Levels start with pictures, add algebra tiles and live equations, and finish with symbols only.</p></div>
+      <div class="tile"><span class="num">3</span><h3>Translate it back</h3><p>After every win, the game writes the student's moves as algebra and checks the answer by substitution.</p></div>
+    </div>
+  </section>
+
+  <section class="band" aria-labelledby="teach">
+    <h2 id="teach">Built for classrooms</h2>
+    <p class="sub">Ready for a 15-minute warm-up, a station, or homework.</p>
+    <div class="teachers">
+      <ul class="checks">
+        <li>Aligned to the 2017 Massachusetts Curriculum Framework for Mathematics (Model Algebra I)</li>
+        <li>Teacher guide with lesson plan, answer key, misconceptions, and an exit ticket</li>
+        <li>No accounts, no ads, no tracking. Progress stays on the student's device</li>
+        <li>Runs in any modern browser, including school Chromebooks and iPads</li>
+        <li>Keyboard and screen-reader friendly controls</li>
+      </ul>
+      <div class="tile">
+        <h3>Teacher guide</h3>
+        <p>Learning goals, a ready-to-run lesson, discussion questions, and solutions for all 12 levels of Balance Workshop.</p>
+        <p style="margin-top:12px"><a class="btn" href="teachers/">Open the teacher guide</a></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="band roadmap" aria-labelledby="road">
+    <h2 id="road">Coming next</h2>
+    <p class="sub" id="roadSub"></p>
+    <div id="roadmap"></div>
+  </section>
 </main>
 
+<footer class="site-footer">
+  <div>Algebra 1 Games · Standards: 2017 Massachusetts Curriculum Framework for Mathematics, Model Algebra I.</div>
+  <nav aria-label="Footer"><a href="teachers/">For teachers</a><a href="privacy/">Privacy</a></nav>
+</footer>
+
 <script>
-// slug = folder under games/. ready = playable now.
+// [standard code, game name, description, folder (if playable)]
 const DOMAINS = [
   { name: "Number and Quantity", games: [
-    ["N-Q.A.1", "Unit Chain", "Link unit-conversion cards so units cancel like fractions. Mismatched units break the chain."],
-    ["N-Q.A.2", "Pick the Measure", "Choose which quantity best predicts the next result, then see if it does."],
-    ["N-Q.A.3", "Precision Check", "Report measurements at the right precision: too exact or too rough both fail."],
-    ["N-RN.A.1", "The Half-Hour Puzzle", "Cells double every hour. Predict the count at half an hour and discover 2^(1/2)."],
-    ["N-RN.A.2", "Exponent Blocks", "Split stacks of x blocks into equal groups to rewrite radicals as exponents."],
-    ["N-RN.B.3", "Counterexample Duel", "A card duel: break or defend claims about sums and products of irrational numbers."],
+    ["AI.N-RN.A.1", "The Half-Hour Puzzle", "Cells double every hour. Predict the count at half an hour and discover 2^(1/2)."],
+    ["AI.N-RN.A.2", "Exponent Blocks", "Split stacks of x blocks into equal groups to rewrite radicals as exponents."],
+    ["AI.N-RN.B.3", "Counterexample Duel", "A card duel: break or defend claims about sums and products of irrational numbers."],
+    ["AI.N-Q.A.1", "Unit Chain", "Link unit-conversion cards so units cancel like fractions."],
+    ["AI.N-Q.A.2", "Pick the Measure", "Choose which quantity best predicts the next result, then see if it does."],
+    ["AI.N-Q.A.3", "Precision Check", "Report measurements at the right precision: too exact or too rough both fail."],
   ]},
   { name: "Seeing Structure in Expressions", games: [
-    ["A-SSE.A.1.a", "Price War", "Design a plan y = a + bx that wins the customer without losing money."],
-    ["A-SSE.A.1.b", "Packing", "Pack a chunk like (x + 1) into one box and use it as a single unit."],
-    ["A-SSE.A.2", "Cut and Rearrange", "Cut a square with a hole and rebuild a² − b² as (a + b)(a − b)."],
-    ["A-SSE.B.3.a", "Zero Link", "Factor a quadratic, then mark its zeros before the graph appears."],
-    ["A-SSE.B.3.b", "Complete the Square", "Fill the missing corner of a tile square to find the minimum point."],
-    ["A-SSE.B.3.c", "Rate Showdown", "Annual or monthly interest? Rewrite the exponents to find the better deal."],
+    ["AI.A-SSE.A.1.a", "Price War", "Design a plan y = a + bx that wins the customer without losing money."],
+    ["AI.A-SSE.A.1.b", "Packing", "Pack a chunk like (x + 1) into one box and use it as a single unit."],
+    ["AI.A-SSE.A.2", "Cut and Rearrange", "Cut a square with a hole and rebuild a² − b² as (a + b)(a − b)."],
+    ["AI.A-SSE.B.3.a", "Zero Link", "Factor a quadratic, then mark its zeros before the graph appears."],
+    ["AI.A-SSE.B.3.b", "Complete the Square", "Fill the missing corner of a tile square to find the minimum point."],
+    ["AI.A-SSE.B.3.c", "Rate Showdown", "Annual or monthly interest? Rewrite the exponents to find the better deal."],
   ]},
   { name: "Arithmetic with Polynomials", games: [
-    ["A-APR.A.1.a", "Tile Multiplication", "Cover a rectangle with algebra tiles to multiply polynomials."],
-    ["A-APR.A.1.b", "Build the Rectangle", "Arrange loose tiles into a rectangle to factor and combine like terms."],
+    ["AI.A-APR.A.1.a", "Tile Multiplication", "Cover a rectangle with algebra tiles to multiply polynomials."],
+    ["AI.A-APR.A.1.b", "Build the Rectangle", "Arrange loose tiles into a rectangle to factor and combine like terms."],
   ]},
   { name: "Creating Equations", games: [
-    ["A-CED.A.1", "Countdown to Target", "Write the equation for when a goal is reached, then fast-forward to check."],
-    ["A-CED.A.2", "Drone Route", "Write equations that fly a drone through every checkpoint, with your own axis scales."],
-    ["A-CED.A.3", "Resource Planner", "Turn budgets and limits into inequalities and pick a plan that actually works."],
-    ["A-CED.A.4", "Letter Balance", "Balance a formula like V = IR to get any letter alone."],
+    ["AI.A-CED.A.1", "Countdown to Target", "Write the equation for when a goal is reached, then fast-forward to check."],
+    ["AI.A-CED.A.2", "Drone Route", "Write equations that fly a drone through every checkpoint."],
+    ["AI.A-CED.A.3", "Resource Planner", "Turn budgets and limits into inequalities and pick a plan that works."],
+    ["AI.A-CED.A.4", "Letter Balance", "Balance a formula like V = IR to get any letter alone."],
   ]},
   { name: "Reasoning with Equations and Inequalities", games: [
-    ["A-REI.A.1", "Find the Bug", "Spot the step in a worked solution that broke the rules. Plant bugs for a friend."],
-    ["A-REI.B.3", "Balance Workshop", "Keep the scale balanced while you get x alone. 12 levels from boxes to symbols.", "a-rei-b-3", true],
-    ["A-REI.B.3", "Seesaw", "Solve inequalities on a seesaw that flips when you multiply or divide by a negative.", "a-rei-b-3-ineq"],
-    ["A-REI.B.3.a", "Radar Station", "Mark the safe zone for an absolute value inequality before the radar sweeps."],
-    ["A-REI.B.4.a", "Master Key", "Complete the square with letters to build the quadratic formula yourself."],
-    ["A-REI.B.4.b", "Energy Strategy", "Pick the cheapest method for each quadratic: roots, factoring, squares or formula."],
-    ["A-REI.C.5", "Stacked Scales", "Stack copies of one balanced scale on another to cancel a variable."],
-    ["A-REI.C.6", "Intercept", "Predict where two routes cross and place your interceptor. One try."],
-    ["A-REI.C.7", "Laser Intercept", "Aim a straight-line laser at a target flying on a parabola."],
-    ["A-REI.D.10", "Star Map", "Mark the points you think solve the equation, then reveal the line."],
-    ["A-REI.D.11", "Meeting Point", "Close in on where a linear and an exponential path meet, using a table."],
-    ["A-REI.D.12", "Territory", "Take turns cutting the map with inequalities to claim the treasure."],
+    ["AI.A-REI.A.1", "Find the Bug", "Spot the step in a worked solution that broke the rules."],
+    ["AI.A-REI.B.3", "Balance Workshop", "Keep the scale balanced while you get x alone.", "a-rei-b-3"],
+    ["AI.A-REI.B.3", "Seesaw", "Solve inequalities on a seesaw that flips when you multiply or divide by a negative."],
+    ["AI.A-REI.B.3.a", "Radar Station", "Mark the safe zone for an absolute value inequality before the radar sweeps."],
+    ["AI.A-REI.B.4.a", "Master Key", "Complete the square with letters to build the quadratic formula yourself."],
+    ["AI.A-REI.B.4.b", "Energy Strategy", "Pick the cheapest method for each quadratic: roots, factoring, squares or formula."],
+    ["AI.A-REI.C.5", "Stacked Scales", "Stack copies of one balanced scale on another to cancel a variable."],
+    ["AI.A-REI.C.6", "Intercept", "Predict where two routes cross and place your interceptor."],
+    ["AI.A-REI.C.7", "Laser Intercept", "Aim a straight-line laser at a target flying on a parabola."],
+    ["AI.A-REI.D.10", "Star Map", "Mark the points you think solve the equation, then reveal the line."],
+    ["AI.A-REI.D.11", "Meeting Point", "Close in on where a linear and an exponential path meet."],
+    ["AI.A-REI.D.12", "Territory", "Take turns cutting the map with inequalities to claim the treasure."],
   ]},
   { name: "Interpreting Functions", games: [
-    ["F-IF.A.1", "Machine Inspector", "Find the broken machines that give two outputs for one input."],
-    ["F-IF.A.2", "Assembly Line", "Feed inputs through function machines and read what f(3) really means."],
-    ["F-IF.A.3", "Turn by Turn", "A sequence only exists on whole-number turns. Predict turn n."],
-    ["F-IF.B.4", "Blind Sketch", "Sketch a graph from a description, then compare with the real one."],
-    ["F-IF.B.5", "Graph Trimmer", "Trim the parts of a model that make no sense, like negative time."],
-    ["F-IF.B.6", "Speed Trap", "Estimate the average rate of change between two points to catch speeders."],
-    ["F-IF.C.7.a", "Hoops", "Set the vertex and shape of a parabola, then shoot. Three tries."],
-    ["F-IF.C.7.b", "Track Builder", "Build a ball track from piecewise, step and absolute value functions."],
-    ["F-IF.C.7.e", "Exponential Slide", "Tune a and b so the curve collects coins but never touches the floor."],
-    ["F-IF.C.8.a", "Pick the Form", "Choose the form of a quadratic that answers the question fastest."],
-    ["F-IF.C.8.b", "Read the Rate", "Bet on the growth or decay rate hiding in (1.02)^t or (0.97)^t."],
-    ["F-IF.C.9", "Function Cards", "Compare functions shown as equations, tables, graphs and words."],
+    ["AI.F-IF.A.1", "Machine Inspector", "Find the broken machines that give two outputs for one input."],
+    ["AI.F-IF.A.2", "Assembly Line", "Feed inputs through function machines and read what f(3) means."],
+    ["AI.F-IF.A.3", "Turn by Turn", "A sequence only exists on whole-number turns. Predict turn n."],
+    ["AI.F-IF.B.4", "Blind Sketch", "Sketch a graph from a description, then compare with the real one."],
+    ["AI.F-IF.B.5", "Graph Trimmer", "Trim the parts of a model that make no sense, like negative time."],
+    ["AI.F-IF.B.6", "Speed Trap", "Estimate the average rate of change between two points."],
+    ["AI.F-IF.C.7.a", "Hoops", "Set the vertex and shape of a parabola, then shoot. Three tries."],
+    ["AI.F-IF.C.7.b", "Track Builder", "Build a ball track from piecewise, step and absolute value functions."],
+    ["AI.F-IF.C.7.e", "Exponential Slide", "Tune a and b so the curve collects coins but never touches the floor."],
+    ["AI.F-IF.C.8.a", "Pick the Form", "Choose the form of a quadratic that answers the question fastest."],
+    ["AI.F-IF.C.8.b", "Read the Rate", "Bet on the growth or decay rate hiding in (1.02)^t or (0.97)^t."],
+    ["AI.F-IF.C.9", "Function Cards", "Compare functions shown as equations, tables, graphs and words."],
   ]},
   { name: "Building Functions", games: [
-    ["F-BF.A.1.a", "Ecosystem", "Watch a population for a few turns and write the rule behind it."],
-    ["F-BF.A.1.b", "Shop Simulator", "Combine revenue and cost functions to find the most profitable price."],
-    ["F-BF.A.2", "Twin Engines", "Write a sequence both recursively and explicitly. They must match."],
-    ["F-BF.B.3", "Shadow Match", "Shift and stretch a graph until it covers its shadow."],
-    ["F-BF.B.4.a", "Reverse Machine", "Build the machine that undoes another one."],
+    ["AI.F-BF.A.1.a", "Ecosystem", "Watch a population for a few turns and write the rule behind it."],
+    ["AI.F-BF.A.1.b", "Shop Simulator", "Combine revenue and cost functions to find the most profitable price."],
+    ["AI.F-BF.A.2", "Twin Engines", "Write a sequence both recursively and explicitly. They must match."],
+    ["AI.F-BF.B.3", "Shadow Match", "Shift and stretch a graph until it covers its shadow."],
+    ["AI.F-BF.B.4.a", "Reverse Machine", "Build the machine that undoes another one."],
   ]},
   { name: "Linear, Quadratic and Exponential Models", games: [
-    ["F-LE.A.1.a", "Guess the Next Number", "Bet on the next value. Linear and exponential look alike, until they don't."],
-    ["F-LE.A.1.b", "Model It: Adding", "Build models for situations that grow by the same amount each step."],
-    ["F-LE.A.1.c", "Model It: Multiplying", "Build models for situations that grow by the same percent each step."],
-    ["F-LE.A.2", "Two-Point Rebuild", "Rebuild the linear and exponential functions through two points."],
-    ["F-LE.A.3", "Contract Auction", "Bid on +100 a day or ×1.1 a day, for different contract lengths."],
-    ["F-LE.B.5", "Parameter Dials", "Predict what changing a parameter will do, then turn the dial."],
+    ["AI.F-LE.A.1.a", "Guess the Next Number", "Bet on the next value. Linear and exponential look alike, until they don't."],
+    ["AI.F-LE.A.1.b", "Model It: Adding", "Build models for situations that grow by the same amount each step."],
+    ["AI.F-LE.A.1.c", "Model It: Multiplying", "Build models for situations that grow by the same percent each step."],
+    ["AI.F-LE.A.2", "Two-Point Rebuild", "Rebuild the linear and exponential functions through two points."],
+    ["AI.F-LE.A.3", "Contract Auction", "Bid on +100 a day or ×1.1 a day, for different contract lengths."],
+    ["AI.F-LE.B.5", "Parameter Dials", "Predict what changing a parameter will do, then turn the dial."],
   ]},
-  { name: "Interpreting Data", games: [
-    ["S-ID.A.1", "Draw, Then Look", "Sketch the histogram or box plot you expect before the real one appears."],
-    ["S-ID.A.2", "Pick the Statistic", "Choose the right center and spread for skewed data, then test your choice."],
-    ["S-ID.A.3", "Outlier Bomb", "Predict how far the mean and median move when an outlier drops in."],
-    ["S-ID.B.5", "Table Puzzle", "Complete a two-way table from clues and decide if the variables are linked."],
-    ["S-ID.B.6.a", "Range Bet", "Use a fitted model to bet on a range for the next data point."],
-    ["S-ID.B.6.b", "Residual Detective", "Read residual plots to catch a model that doesn't fit."],
-    ["S-ID.B.6.c", "Drag the Line", "Fit a line by hand, then see your total error."],
-    ["S-ID.C.7", "Translation Duel", "Pick the right meaning of a slope or intercept. Write traps for a friend."],
-    ["S-ID.C.8", "Guess r", "Guess the correlation coefficient from a scatter plot."],
-    ["S-ID.C.9", "Hidden Variable", "Turn a hidden dial and watch two unrelated things move together."],
+  { name: "Interpreting Categorical and Quantitative Data", games: [
+    ["AI.S-ID.A.1", "Draw, Then Look", "Sketch the histogram or box plot you expect before the real one appears."],
+    ["AI.S-ID.A.2", "Pick the Statistic", "Choose the right center and spread for skewed data, then test your choice."],
+    ["AI.S-ID.A.3", "Outlier Bomb", "Predict how far the mean and median move when an outlier drops in."],
+    ["AI.S-ID.B.5", "Table Puzzle", "Complete a two-way table from clues and decide if the variables are linked."],
+    ["AI.S-ID.B.6.a", "Range Bet", "Use a fitted model to bet on a range for the next data point."],
+    ["AI.S-ID.B.6.b", "Residual Detective", "Read residual plots to catch a model that doesn't fit."],
+    ["AI.S-ID.B.6.c", "Drag the Line", "Fit a line by hand, then see your total error."],
+    ["AI.S-ID.C.7", "Translation Duel", "Pick the right meaning of a slope or intercept."],
+    ["AI.S-ID.C.8", "Guess r", "Guess the correlation coefficient from a scatter plot."],
+    ["AI.S-ID.C.9", "Hidden Variable", "Turn a hidden dial and watch two unrelated things move together."],
   ]},
 ];
 
-let filter = "all";
-function render() {
-  const all = DOMAINS.flatMap(d => d.games);
-  const ready = all.filter(g => g[4]).length;
-  document.getElementById("progress").textContent = ready + " of " + all.length + " games playable";
-  document.getElementById("bar").style.width = (100 * ready / all.length) + "%";
-  document.getElementById("list").innerHTML = DOMAINS.map(d => {
-    const games = d.games.filter(g => filter === "all" || g[4]);
-    if (!games.length) return "";
-    return "<h2>" + d.name + "<small>" + games.length + (games.length === 1 ? " game" : " games") + "</small></h2>" +
-      '<div class="grid">' + games.map(([code, name, desc, slug, ok]) => {
-        const inner = '<span class="code">' + code + '</span><span class="name">' + name + '</span><span class="desc">' +
-          desc + '</span><span class="status">' + (ok ? "Play" : "Coming soon") + "</span>";
-        return ok ? '<a class="card ready" href="games/' + slug + '/">' + inner + "</a>"
-                  : '<div class="card">' + inner + "</div>";
-      }).join("") + "</div>";
-  }).join("");
-}
-document.getElementById("filters").addEventListener("click", e => {
-  const b = e.target.closest("button"); if (!b) return;
-  filter = b.dataset.f;
-  document.querySelectorAll("#filters button").forEach(x => x.classList.toggle("on", x === b));
-  render();
-});
-render();
+const all = DOMAINS.flatMap(d => d.games);
+const ready = all.filter(g => g[3]).length;
+const standards = new Set(all.map(g => g[0])).size;
+document.getElementById("roadSub").textContent =
+  "One game for every Model Algebra I standard: " + all.length + " games across " + standards +
+  " standards. " + ready + " playable now, " + (all.length - ready) + " in development.";
+document.getElementById("roadmap").innerHTML = DOMAINS.map(d => {
+  const n = d.games.length, r = d.games.filter(g => g[3]).length;
+  return "<details><summary>" + d.name + "<small>" + n + (n === 1 ? " game" : " games") +
+    (r ? " · " + r + " playable" : "") + "</small></summary><ul>" +
+    d.games.map(([code, name, desc, slug]) =>
+      '<li class="' + (slug ? "ready" : "") + '"><span class="code">' + code + "</span>" +
+      (slug ? '<b><a href="games/' + slug + '/">' + name + "</a></b>" : "<b>" + name + "</b>") +
+      '<span class="d">' + desc + "</span></li>").join("") +
+    "</ul></details>";
+}).join("");
 </script>
 </body>
 </html>
