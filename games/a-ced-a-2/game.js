@@ -121,7 +121,7 @@
           row.appendChild(api.h("span", { html: p.replace(/\b([a-zA-Z])\b/g, "<i>$1</i>") }));
           if (k < parts.length - 1) { const f = api.h("input", { type: "text", inputmode: "decimal", "aria-label": "Box " + (k + 1) }); inputs.push(f); row.appendChild(f); }
         });
-        const fly = api.button("Fly!", () => onFly(inputs), "primary");
+        const fly = api.button("Fly!", () => onFly(inputs, fly), "primary");
         inputs.forEach((f) => f.addEventListener("keydown", (e) => { if (e.key === "Enter") fly.click(); }));
         api.controls.append(row, fly);
         api.autoplay = () => { inputs.forEach((f, k) => (f.value = vals()[k])); fly.click(); return {}; };
@@ -139,14 +139,23 @@
         controls();
         if (phase === "eq") api.msg("Now write the equation for " + lv.v[1] + " in terms of " + lv.v[0] + ".", "good");
       }
-      function onFly(inputs) {
+      function onFly(inputs, fly) {
         const v = inputs.map((f) => Alg.parseNum(f.value));
         if (v.some(Number.isNaN)) return api.msg("Fill every box with a number (decimals and fractions like 1/2 are fine).", "warn");
         if (lv.form === "std" && v[0] === 0 && v[1] === 0) return api.msg("At least one coefficient must be nonzero.", "warn");
+        fly.disabled = true;
+        inputs.forEach(input => { input.readOnly = true; });
+        api.msg("Flying your route…");
         flown = v; t = 0;
-        api.tween(0, 1, 1200, (u) => { t = u; draw(); }, () => {
+        api.tween(0, 1, 1200, (u) => {
+          if (fly.isConnected) { t = u; draw(); }
+        }, () => {
+          // Restarting or changing levels replaces this button and cancels the result.
+          if (!fly.isConnected) return;
           const missed = lv.pts.filter((pt) => !hits(lv, v, pt));
           if (missed.length) {
+            fly.disabled = false;
+            inputs.forEach(input => { input.readOnly = false; });
             mistakes++;
             const pt = missed[0];
             const f = fnOf(lv, v);

@@ -85,9 +85,10 @@
             const dx = Math.abs(pick[0] - lv.sol[0]) / step[0], dy = Math.abs(pick[1] - lv.sol[1]) / step[1];
             if (dx <= tol && dy <= tol) { marked = pick; draw(); return true; }
             const f0 = yOf(lv.l[0])(pick[0]), f1 = yOf(lv.l[1])(pick[0]);
+            if (dx <= tol) return "You chose " + pt(pick) + ". Keep the same horizontal position and move " + (pick[1] > lv.sol[1] ? "down" : "up") + " toward the crossing.";
             return "At " + (lv.ctx ? "m" : "x") + " = " + Alg.num(pick[0]) + " the routes are at " + Alg.num(Alg.round(f0, 2)) + " and " + Alg.num(Alg.round(f1, 2)) + ". They cross where those are equal.";
           },
-          autoplay: () => { pick = lv.approx ? [Math.round(lv.sol[0] * 2) / 2, Math.round(lv.sol[1] * 2) / 2] : lv.sol.slice(); }, done: lv.approx ? "Estimate: about " + pt([Math.round(lv.sol[0] * 2) / 2, Math.round(lv.sol[1] * 2) / 2]) : "Crossing at " + pt(lv.sol) });
+          autoplay: () => { pick = lv.approx ? [Math.round(lv.sol[0] * 2) / 2, Math.round(lv.sol[1] * 2) / 2] : lv.sol.slice(); }, get done() { return (lv.approx ? "Your estimate: " : "Crossing at ") + pt(marked); } });
         if (lv.hidden || lv.approx || lv.ctx) {
           const xv = lv.ctx ? "m" : "x", yv = lv.ctx ? "C" : "y";
           steps.push({ type: "input", prompt: "Solve exactly: " + xv + " = [], " + yv + " = []", answers: lv.sol, hint: "Set the two expressions for " + yv + " equal (or substitute), then solve for " + xv + ". Put " + xv + " back in to get " + yv + ".",
