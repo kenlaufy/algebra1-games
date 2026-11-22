@@ -3,7 +3,7 @@
 Browser games for the Massachusetts Algebra I standards, where the math *is* the gameplay. Students don't answer quiz questions to unlock fun; they reason with algebra to win.
 
 - **For teachers and schools.** Each game has a teacher guide with a lesson plan, misconceptions, an answer key, and an exit ticket.
-- **No logins, no student data.** No accounts, cookies, analytics, ads, or third-party requests. See [privacy](privacy/index.html).
+- **No accounts or analytics.** Games save progress in the browser. Classes use teacher-managed progress codes. See [privacy](privacy/index.html).
 - **Runs anywhere.** Plain static web pages that work on Chromebooks, iPads, and laptops.
 
 ## What's included
@@ -15,6 +15,7 @@ Browser games for the Massachusetts Algebra I standards, where the math *is* the
 | Teacher guides: searchable index with copyable student links, generated guides, Balance Workshop's custom guide | [`teachers/`](teachers/index.html) |
 | Student version: "My class" (join with a class code, see assigned games, hand in a progress code) | [`class/`](class/index.html) |
 | Teacher version: classes, join codes, progress dashboard, CSV export, backups | [`classes/`](classes/index.html) |
+| District pilot and technology review | [`teachers/pilot.html`](teachers/pilot.html) |
 | Privacy statement | [`privacy/`](privacy/index.html) |
 | Layout and retry checks: three viewport widths, every playable game | [`tests/playthrough.html`](tests/playthrough.html) |
 | Automated checks: plays every level of every ready game and opens its teacher guide |
