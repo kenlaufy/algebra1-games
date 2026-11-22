@@ -1,6 +1,8 @@
 /* Open playthrough.html on the same origin as the games. */
 (async function () {
-  const games = A1G_CATALOG.domains.flatMap(domain => domain.games).filter(game => game.ready);
+  // ?g=slug1,slug2 limits the run to those games
+  const only = (/[?&]g=([a-z0-9,-]+)/.exec(location.search) || [])[1];
+  const games = A1G_CATALOG.domains.flatMap(domain => domain.games).filter(game => game.ready && (!only || only.split(",").includes(game.slug)));
   const widths = [320, 390, 1100];
   const balanceMoves = [
     [["-",2,"c"]], [["/",2]], [["-",1,"c"],["/",2]], [["-",1,"x"],["-",2,"c"],["/",2]],

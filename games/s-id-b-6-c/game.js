@@ -99,12 +99,12 @@
             api.win({ answer: right === 1 ? "Curved: don't fit a line" : "No association: don't fit a line", stars: mistakes === 0 ? 3 : mistakes === 1 ? 2 : 1,
               check: "Only fit a line when the scatter plot suggests one ✓" });
           } } }, o[0]);
-          btn._right = k === right;
+          btn._ok = k === right;
           grid.appendChild(btn);
         });
         api.controls.append(api.h("div", { style: { fontSize: "19px", fontWeight: 700, width: "100%" } }, "Does this scatter plot suggest a linear association?"), grid);
         api.autoplay = () => {
-          [...grid.children].find((x) => x._right).click();
+          [...grid.children].find((x) => x._ok).click();
           if (lv.linear) { m = snap(best.m, mStep); b = snap(best.b, bStep); sm.inp.value = m; sb.inp.value = b; check.click(); }
           return {};
         };

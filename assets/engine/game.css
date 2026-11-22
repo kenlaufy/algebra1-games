@@ -191,3 +191,23 @@
   .stagecard.enlarged { overflow-x: auto; }
   .stagecard.enlarged svg { width: 840px; max-width: none; }
 }
+
+/* ---------- Unit color, breadcrumb and star strip ---------- */
+.crumb { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 800; margin-bottom: 2px; }
+.crumb a { color: var(--muted); text-decoration: none; display: inline-flex; align-items: center; min-height: 32px; }
+.crumb a::before { content: "←"; margin-right: 6px; }
+.crumb a:hover { color: var(--ink); text-decoration: underline; }
+.crumb span { color: var(--u, var(--muted)); }
+.crumb span::before { content: "·"; color: var(--muted); margin-right: 8px; }
+.game-head .code { background: var(--u, var(--ink)); color: #fff; }
+.game-main .levelbar { border-bottom: 3px solid var(--u, var(--line)); padding-bottom: 8px; }
+.levelbar .lvl { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.pips { display: flex; align-items: center; gap: 4px; }
+.pip { width: 14px; height: 14px; border-radius: 4px; background: var(--chip); border: 2px solid var(--chip-edge); }
+.pip.s1 { background: #f3dfa6; border-color: #d9b85a; }
+.pip.s2 { background: #ecca6c; border-color: #c9a23e; }
+.pip.s3 { background: var(--unit); border-color: #b48a26; }
+.pip.cur { outline: 2.5px solid var(--ink); outline-offset: 1.5px; }
+.pip-total { margin-left: 8px; font-weight: 800; font-size: 15px; color: var(--muted); white-space: nowrap; }
+.next-game { text-decoration: none; }
+@media (max-width: 480px) { .pip { width: 11px; height: 11px; border-radius: 3px; } .pips { gap: 3px; } }

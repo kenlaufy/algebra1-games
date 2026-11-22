@@ -8,13 +8,49 @@
 <link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
 <link rel="stylesheet" href="../assets/site.css">
 <style>
-  .domain h2 small { color: var(--muted); font-family: var(--body); font-size: 15px; font-weight: 700; margin-left: 6px; }
+  .page { max-width: 980px; }
+  .steps3 { list-style: none; counter-reset: s; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 0; margin: 18px 0 8px; }
+  .steps3 li { counter-increment: s; background: var(--card); border: 2px solid var(--line); border-radius: 16px; padding: 14px 16px 14px 60px; position: relative; }
+  .steps3 li::before { content: counter(s); position: absolute; left: 14px; top: 14px; width: 34px; height: 34px; border-radius: 50%;
+                       display: grid; place-items: center; background: var(--unit); border: 2.5px solid var(--ink); font: 700 18px var(--head); }
+  .steps3 b { display: block; font: 600 19px/1.2 var(--head); margin-bottom: 2px; }
+  .steps3 span { font-size: 15.5px; }
+
+  .finder { position: sticky; top: 0; z-index: 5; background: var(--paper); padding: 12px 0; border-bottom: 2px solid var(--line); margin-top: 22px; }
+  .finder input { width: 100%; min-height: 48px; font: inherit; font-size: 17px; color: var(--ink); background: #fff; border: 2px solid var(--muted); border-radius: 12px; padding: 10px 14px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; padding-top: 10px; }
+  .chip { display: inline-flex; align-items: center; gap: 7px; font: 700 15px/1 var(--body); color: var(--ink); background: var(--card);
+          border: 2px solid var(--line); border-radius: 999px; padding: 8px 13px; min-height: 40px; cursor: pointer; }
+  .chip i { width: 11px; height: 11px; border-radius: 50%; background: var(--u, var(--ink)); }
+  .chip[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  @media (max-width: 700px) { .chips { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; } .chips::-webkit-scrollbar { display: none; } .chip { flex: none; } }
+  .count { color: var(--muted); font-weight: 700; margin: 12px 0 0; }
+
+  .domain { margin-top: 26px; scroll-margin-top: 140px; }
+  .domain h2 { margin: 0 0 10px; padding-bottom: 6px; border-bottom: 3px solid var(--u); display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; font-size: 24px; }
+  .domain h2 i { width: 14px; height: 14px; border-radius: 4px; background: var(--u); display: inline-block; }
+  .domain h2 small { color: var(--muted); font-family: var(--body); font-size: 15px; font-weight: 700; }
   .glist { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
-  .glist li { background: var(--card); border: 2px solid var(--line); border-radius: 12px; padding: 10px 14px;
-              display: flex; gap: 10px 14px; align-items: center; flex-wrap: wrap; }
-  .glist .nm { font-family: var(--head); font-weight: 600; font-size: 18px; flex: 1; min-width: 180px; }
-  .glist .soon { color: var(--muted); font-weight: 700; font-size: 15px; }
-  .glist a.btn { min-height: 38px; padding: 5px 12px; font-size: 16px; }
+  .glist li { background: var(--card); border: 2px solid var(--line); border-radius: 14px; padding: 12px 14px;
+              display: grid; grid-template-columns: 46px 1fr auto; gap: 4px 14px; align-items: center; }
+  .glist li > svg { width: 46px; height: 46px; background: var(--t); border: 2px solid var(--ink); border-radius: 12px; padding: 4px; grid-row: span 2; }
+  .glist .nm { font: 600 19px/1.2 var(--head); }
+  .glist .code { background: var(--u); color: #fff; margin-right: 6px; vertical-align: 2px; }
+  .glist .d { font-size: 15px; color: var(--muted); font-weight: 600; grid-column: 2; }
+  .glist .acts { grid-row: 1 / span 2; grid-column: 3; display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+  .glist .btn { min-height: 40px; padding: 5px 12px; font-size: 16px; }
+  .btn.copied { background: var(--go); color: #fff; box-shadow: 0 3px 0 var(--go-dark); }
+  .tips { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .tips .panel-box { margin: 0; }
+  .tips h3 { margin: 0 0 4px; }
+  .tips p { margin: 0; font-size: 16px; }
+  @media (max-width: 760px) {
+    .steps3, .tips { grid-template-columns: 1fr; }
+    .glist li { grid-template-columns: 40px 1fr; }
+    .glist li > svg { width: 40px; height: 40px; grid-row: auto; }
+    .glist .d { grid-column: 1 / -1; }
+    .glist .acts { grid-row: auto; grid-column: 1 / -1; justify-content: flex-start; }
+  }
 </style>
 </head>
 <body>
@@ -29,32 +65,79 @@
 </header>
 <main id="main" class="page">
   <h1>For teachers</h1>
-  <p class="lead">Every game has a guide with the standard's official wording, learning goals, a 20-minute lesson plan, common misconceptions, an answer key for all 12 levels, and a printable exit ticket.</p>
-  <div class="panel-box">
-    <b>Using the games in class</b>
-    <ul style="margin:6px 0 0">
-      <li>No accounts, installs or student data. Share the game link.</li>
-      <li>Each game takes 15–20 minutes for the first 8 levels, so it fits a warm-up or a station.</li>
-      <li>Add <code>?level=5</code> to a game's address to send students straight to a level.</li>
-    </ul>
+  <p class="lead">One game for every Model Algebra I standard. Every game has a guide with the standard's official wording, a 20-minute lesson plan, common misconceptions, an answer key for all 12 levels, and a printable exit ticket.</p>
+  <ol class="steps3">
+    <li><b>Find your standard</b><span>Search by code, topic or game name below.</span></li>
+    <li><b>Open the guide</b><span>Lesson plan, answer key and exit ticket, ready to print.</span></li>
+    <li><b>Share the link</b><span>Copy the student link into Google Classroom, Canvas or a slide.</span></li>
+  </ol>
+
+  <div class="finder" role="search" aria-label="Find a guide">
+    <label class="sr-only" for="q">Search guides</label>
+    <input id="q" type="search" placeholder="Search: A-REI.B.3, residuals, exponential, factoring…" autocomplete="off" aria-controls="list">
+    <div class="chips" id="chips" role="group" aria-label="Filter by unit"></div>
   </div>
+  <p class="count" id="count" role="status" aria-live="polite"></p>
   <div id="list"></div>
+  <p id="none" class="panel-box" hidden><b>No games match.</b> Try a standard code like F-IF.A.2, or a shorter word.</p>
+
+  <h2>Classroom tips</h2>
+  <div class="tips">
+    <div class="panel-box"><h3>Send students to one level</h3><p>Add <code>?level=5</code> to the end of a student link to open level 5. Each guide's answer key links to every level, which also helps when projecting.</p></div>
+    <div class="panel-box"><h3>Timing</h3><p>Levels 1–8 take about 15–20 minutes, so a game fits a warm-up or a station. All 12 levels take about 30 minutes.</p></div>
+    <div class="panel-box"><h3>Stars and privacy</h3><p>No accounts and nothing collected. Stars are saved only in the browser on that device; students can clear them from the Levels menu.</p></div>
+    <div class="panel-box"><h3>Devices</h3><p>Runs in any current browser: Chromebooks, iPads, laptops and phones. Every control works with a keyboard.</p></div>
+  </div>
 </main>
 <footer class="site-footer">
   <div>Algebra 1 Games · Standards: 2017 Massachusetts Curriculum Framework for Mathematics, Model Algebra I.</div>
   <nav aria-label="Footer"><a href="../">Games</a><a href="../privacy/">Privacy</a></nav>
 </footer>
 <script src="../assets/engine/catalog.js"></script>
+<script src="../assets/engine/look.js"></script>
 <script>
-document.getElementById("list").innerHTML = A1G_CATALOG.domains.map(d => {
-  const ready = d.games.filter(g => g.ready).length;
-  return "<section class='domain'><h2>" + d.name + "<small>" + ready + " of " + d.games.length + " ready</small></h2><ul class='glist'>" +
-    d.games.map(g => "<li><span class='code'>" + g.code + "</span><span class='nm'>" + g.name + "</span>" +
-      (g.ready
-        ? "<a class='btn' href='" + (g.guide ? "../" + g.guide : "guide.html?g=" + g.slug) + "'>Teacher guide</a><a class='btn primary' href='../games/" + g.slug + "/'>Play</a>"
-        : "<span class='soon'>Coming soon</span>") + "</li>").join("") +
-    "</ul></section>";
-}).join("");
+(function () {
+  const L = A1G_LOOK;
+  const domains = A1G_CATALOG.domains;
+  const total = domains.reduce((n, d) => n + d.games.length, 0);
+  const q = document.getElementById("q"), chips = document.getElementById("chips"), list = document.getElementById("list");
+  let unit = "";
+  const esc = t => String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
+  const style = d => { const u = L.unit(d.name); return "--u:" + u.color + ";--t:" + u.tint; };
+  const chip = (v, label, color) => '<button type="button" class="chip" data-unit="' + esc(v) + '" aria-pressed="' + (v === unit) + '"' + (color ? ' style="--u:' + color + '"' : "") + ">" + (color ? "<i></i>" : "") + esc(label) + "</button>";
+  chips.innerHTML = chip("", "All units") + domains.map(d => chip(d.name, L.unit(d.name).short, L.unit(d.name).color)).join("");
+  chips.addEventListener("click", e => {
+    const b = e.target.closest(".chip"); if (!b) return;
+    unit = b.dataset.unit; chips.querySelectorAll(".chip").forEach(c => c.setAttribute("aria-pressed", String(c.dataset.unit === unit))); render();
+  });
+  const norm = t => t.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+  function render() {
+    const words = norm(q.value).split(/\s+/).filter(Boolean);
+    let shown = 0;
+    list.innerHTML = domains.filter(d => !unit || d.name === unit).map(d => {
+      const games = d.games.filter(g => { const t = norm([g.name, g.desc, g.code, g.std, d.name].join(" ")); return words.every(w => t.includes(w)); });
+      shown += games.length;
+      if (!games.length) return "";
+      return "<section class='domain' style='" + style(d) + "'><h2><i aria-hidden='true'></i>" + esc(d.name) + "<small>" + games.length + (games.length === 1 ? " game" : " games") + "</small></h2><ul class='glist'>" +
+        games.map(g => "<li>" + L.icon(g.engine) + "<div class='nm'><span class='code'>" + g.code + "</span>" + esc(g.name) + "</div><div class='d'>" + esc(g.desc) + "</div>" +
+          "<div class='acts'><a class='btn' href='" + (g.guide ? "../" + g.guide : "guide.html?g=" + g.slug) + "'>Teacher guide</a>" +
+          "<button type='button' class='btn copy' data-slug='" + g.slug + "' aria-label='Copy student link for " + esc(g.name) + "'>Copy student link</button>" +
+          "<a class='btn primary' href='../games/" + g.slug + "/'>Play</a></div></li>").join("") + "</ul></section>";
+    }).join("");
+    document.getElementById("count").textContent = shown === total ? "All " + total + " games" : shown + " of " + total + " games";
+    document.getElementById("none").hidden = shown > 0;
+  }
+  // copy an absolute link to the game for posting on a class page
+  list.addEventListener("click", async e => {
+    const b = e.target.closest(".copy"); if (!b) return;
+    const url = new URL("../games/" + b.dataset.slug + "/", location.href).href;
+    let ok = false;
+    try { await navigator.clipboard.writeText(url); ok = true; } catch (err) { window.prompt("Copy this link for students:", url); }
+    if (ok) { const old = b.textContent; b.textContent = "Copied!"; b.classList.add("copied"); setTimeout(() => { b.textContent = old; b.classList.remove("copied"); }, 1600); }
+  });
+  q.addEventListener("input", render);
+  render();
+})();
 </script>
 </body>
 </html>

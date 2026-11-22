@@ -10,12 +10,12 @@ Browser games for the Massachusetts Algebra I standards, where the math *is* the
 
 | Page | Path |
 | --- | --- |
-| Home page: featured game, playable games, every standard | [`index.html`](index.html) |
+| Home page: games grouped by unit, search, each student's saved stars, "continue where you left off" | [`index.html`](index.html) |
 | Games, one folder per standard (12 levels each) | `games/<standard-code>/` |
-| Teacher guides: index, generated guides, Balance Workshop's custom guide | [`teachers/`](teachers/index.html) |
+| Teacher guides: searchable index with copyable student links, generated guides, Balance Workshop's custom guide | [`teachers/`](teachers/index.html) |
 | Privacy statement | [`privacy/`](privacy/index.html) |
 | Layout and retry checks: three viewport widths, every playable game | [`tests/playthrough.html`](tests/playthrough.html) |
-| Automated checks: plays every level of every ready game | [`tests/run.html`](tests/run.html) |
+| Automated checks: plays every level of every ready game and opens its teacher guide | [`tests/run.html`](tests/run.html) |
 
 ## How a game is built
 
@@ -24,6 +24,7 @@ Every game except Balance Workshop is two files: `games/<slug>/index.html` (gene
 | File | What it does |
 | --- | --- |
 | `catalog.js` | Every game: standard code, official standard wording, name, and whether it's ready |
+| `look.js` | Unit colors and short names, a picture for each kind of game, and the stars saved on this device |
 | `game-shell.js` | Page layout, levels, help, stars, win screen, keyboard handling, test hooks |
 | `steps.js` | Step-by-step reasoning games: choices, fill-in templates, feedback, autoplay |
 | `cartoon.js` | Shared art: sky, mascot, algebra tiles, balance scale |

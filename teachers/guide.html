@@ -17,6 +17,8 @@
   .ticket ol li { margin: 10px 0 28px; }
   .actions { display: flex; gap: 10px; flex-wrap: wrap; margin: 16px 0 0; }
   td .math, li .math { white-space: normal; }
+  .page .code { background: var(--u, var(--ink)); color: #fff; }
+  .page h2 { border-bottom: 3px solid var(--u, var(--line)); padding-bottom: 4px; }
   @media print { .ticket { break-inside: avoid; } h2 { break-after: avoid; } }
 </style>
 </head>
@@ -37,6 +39,7 @@
 </footer>
 <script>window.GAME_GUIDE_MODE = true;</script>
 <script src="../assets/engine/catalog.js"></script>
+<script src="../assets/engine/look.js"></script>
 <script src="../assets/engine/algebra.js"></script>
 <script src="../assets/engine/cartoon.js"></script>
 <script src="../assets/engine/plane.js"></script>
@@ -72,7 +75,7 @@
     let html = "";
     html += "<h1>Teacher guide: " + info.name + "</h1>";
     html += "<p class='lead'>" + (g.summary || info.desc) + "</p>";
-    html += "<div class='actions no-print'><a class='btn primary' href='../games/" + slug + "/'>Open the game</a><button class='btn' onclick='window.print()'>Print this guide</button></div>";
+    html += "<div class='actions no-print'><a class='btn primary' href='../games/" + slug + "/'>Open the game</a><button class='btn' id='copyLink' type='button'>Copy student link</button><button class='btn' onclick='window.print()'>Print this guide</button></div>";
     html += "<ul class='toc no-print' aria-label='On this page'><li><a href='#glance'>At a glance</a></li><li><a href='#goals'>Learning goals</a></li><li><a href='#stages'>How it works</a></li><li><a href='#lesson'>Lesson plan</a></li><li><a href='#misconceptions'>Misconceptions</a></li><li><a href='#key'>Answer key</a></li><li><a href='#ticket'>Exit ticket</a></li></ul>";
 
     html += "<h2 id='glance'>At a glance</h2><table>";
@@ -113,7 +116,7 @@
     html += "<table><thead><tr><th>Level</th><th>Problem</th><th>Solution</th><th>Answer</th></tr></thead><tbody>";
     levels.forEach((lv, i) => {
       const k = cfg.answerKey(lv, i);
-      html += "<tr><td>" + (i + 1) + "</td><td class='math'>" + k.prompt + "</td><td>" + k.solution + "</td><td class='math'>" + k.answer + "</td></tr>";
+      html += "<tr><td><a href='../games/" + slug + "/?level=" + (i + 1) + "' aria-label='Open level " + (i + 1) + "'>" + (i + 1) + "</a></td><td class='math'>" + k.prompt + "</td><td>" + k.solution + "</td><td class='math'>" + k.answer + "</td></tr>";
     });
     html += "</tbody></table>";
 
@@ -125,6 +128,13 @@
       "<li>No accounts and no student data. Stars are saved only in the browser on that device (<b>Levels → Reset my stars</b> clears them).</li>" +
       "<li>Every control is a regular button or field, so the game is playable with a keyboard. Students can jump to a level with <code>?level=5</code> at the end of the game's address.</li></ul>";
     main.innerHTML = html;
+    const place = window.A1G_LOOK && A1G_LOOK.place(slug);
+    if (place) { const u = A1G_LOOK.unit(place.domain.name); document.documentElement.style.setProperty("--u", u.color); }
+    document.getElementById("copyLink").addEventListener("click", async (e) => {
+      const b = e.currentTarget, url = new URL("../games/" + slug + "/", location.href).href;
+      try { await navigator.clipboard.writeText(url); b.textContent = "Copied!"; setTimeout(() => (b.textContent = "Copy student link"), 1600); }
+      catch (err) { window.prompt("Copy this link for students:", url); }
+    });
   }
 })();
 </script>
