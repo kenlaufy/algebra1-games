@@ -6,7 +6,7 @@
     .map((o, i, all) => (i === right ? o : null)).filter(Boolean).concat([["Linear: equal differences", "The differences aren't all equal."], ["Exponential: equal ratios", "The ratios aren't all equal."], ["Neither", "One of the patterns does hold."]].filter((_, i) => i !== right));
   const LEVELS = [
     { stage: 1, ctx: "Equal steps in x. What happens to y?", table: tab([0, 1, 2, 3, 4], [3, 5, 7, 9, 11], 4),
-      steps: [["in", "Differences: 5 − 3 = [], 7 − 5 = [], 9 − 7 = []", [2, 2, 2]], ["ch", "So y is…", KIND(0)], ["in", "Bet on the next value: y = []", [11]]], answer: "Linear: +2 each step", check: "9 + 2 = 11 ✓", tip: "Compute the differences between neighbours." },
+      steps: [["in", "Differences: 5 − 3 = [], 7 − 5 = [], 9 − 7 = []", [2, 2, 2]], ["ch", "So y is…", KIND(0)], ["in", "Bet on the next value: y = []", [11]]], answer: "Linear: +2 each step", check: "9 + 2 = 11 ✓", tip: "Compute the differences between neighbors." },
     { stage: 1, ctx: "Equal steps in x.", table: tab([0, 1, 2, 3, 4], [2, 6, 18, 54, 162], 4),
       steps: [["in", "Ratios: 6 ÷ 2 = [], 18 ÷ 6 = [], 54 ÷ 18 = []", [3, 3, 3]], ["ch", "So y is…", KIND(1)], ["in", "Next value: y = []", [162]]], answer: "Exponential: ×3 each step", check: "54 × 3 = 162 ✓", tip: "When differences grow, try ratios." },
     { stage: 1, ctx: "Equal steps in x.", table: tab([0, 1, 2, 3, 4], [100, 80, 64, 51.2, 40.96], 4),
@@ -31,11 +31,11 @@
       steps: [["in", "Differences: −5, []", [-4.5]], ["ch", "So y is…", KIND(1)], ["in", "Next value: []", [36.45]]], answer: "Exponential ×0.9", check: "40.5 × 0.9 = 36.45 ✓", tip: "Last one: decide carefully." },
   ];
   Timeline.stepGame({
-    slug: "f-le-a-1-a", title: "Guess the Next Number", firstMove: "Subtract neighbouring values to find the differences, then decide what kind of growth it is.", subtitle: "Linear functions grow by equal differences; exponential functions by equal factors",
+    slug: "f-le-a-1-a", title: "Guess the Next Number", firstMove: "Subtract neighboring values to find the differences, then decide what kind of growth it is.", subtitle: "Linear functions grow by equal differences; exponential functions by equal factors",
     stages: { 1: "Stage 1 · Differences or ratios?", 2: "Stage 2 · Prove it", 3: "Stage 3 · Look-alikes" }, levels: LEVELS,
     help: { intro: "Over equal steps in x, a <b>linear</b> function always adds the same amount and an <b>exponential</b> function always multiplies by the same factor.",
-      steps: ["Compute differences (subtract neighbours) or ratios (divide neighbours).", "Decide: linear, exponential, or neither.", "Bet on the next value.", "Fewer wrong answers means more stars."], note: "Decimals are fine." },
-    hint: "Subtract neighbouring values for differences; divide them for ratios.",
+      steps: ["Compute differences (subtract neighbors) or ratios (divide neighbors).", "Decide: linear, exponential, or neither.", "Bet on the next value.", "Fewer wrong answers means more stars."], note: "Decimals are fine." },
+    hint: "Subtract neighboring values for differences; divide them for ratios.",
     guide: {
       summary: "A 12-level game showing that linear functions grow by equal differences and exponential functions by equal factors over equal intervals. Students compute differences and ratios from tables, classify functions, prove both facts algebraically, and handle look-alikes.",
       also: "<span class='code'>AI.F-LE.A.1.b</span> and <span class='code'>AI.F-LE.A.1.c</span>.",

@@ -33,7 +33,7 @@
       steps: ["Compare the values in the table or on the graph.", "Find the first input where the exponential pulls ahead.", "Think about the length of the contract.", "Fewer wrong answers means more stars."], note: "\"Eventually\" can take a long time." },
     hint: "Compare the two rows at each input.",
     guide: {
-      summary: "A 12-level game showing with tables and graphs that a quantity increasing exponentially eventually exceeds one increasing linearly, quadratically or as any polynomial, while short contracts may favor linear growth.",
+      summary: "A 12-level game that uses tables and graphs to show how a quantity growing exponentially eventually overtakes one growing linearly, quadratically or as any polynomial, while short contracts may favor linear growth.",
       also: "<span class='code'>AI.A-REI.D.11</span> where two functions meet.",
       practices: "MP3 Construct viable arguments · MP5 Use appropriate tools strategically",
       goals: ["Observe with tables and graphs that exponential growth eventually exceeds linear, quadratic and polynomial growth.", "Find the input where an exponential first overtakes another function.", "Explain why, in terms of the growing rate of change."],
