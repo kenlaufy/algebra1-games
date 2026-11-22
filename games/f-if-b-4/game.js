@@ -93,9 +93,10 @@
         }
         if (lv.table) {
           const t = api.h("table", { class: "area", "aria-label": "Table of values" });
-          t.appendChild(api.h("tr", null, api.h("th", null, "x"), ...lv.table.map((r) => api.h("td", { style: { height: "auto", fontWeight: 800 } }, Alg.num(r[0])))));
-          t.appendChild(api.h("tr", null, api.h("th", null, "f(x)"), ...lv.table.map((r) => api.h("td", { style: { height: "auto", fontWeight: 800 } }, Alg.num(r[1])))));
-          api.stage.appendChild(t);
+          t.appendChild(api.h("tr", null, api.h("th", null, "x"), ...lv.table.map((r) => api.h("td", { style: { height: "auto", minWidth: "54px", fontWeight: 800, fontSize: "18px" } }, Alg.num(r[0])))));
+          t.appendChild(api.h("tr", null, api.h("th", null, "f(x)"), ...lv.table.map((r) => api.h("td", { style: { height: "auto", minWidth: "54px", fontWeight: 800, fontSize: "18px" } }, Alg.num(r[1])))));
+          t.style.borderSpacing = "4px";
+          api.stage.appendChild(api.h("div", { style: { overflowX: "auto" } }, t));   // value tables scroll inside the card on narrow screens
         }
         lv.qs.forEach((q) => {
           if (Array.isArray(q)) steps.push({ type: "input", prompt: q[0], answers: q[1], unordered: !!q[2], hint: "Look at the graph or table carefully: where is it highest, lowest, or crossing zero?" });

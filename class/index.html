@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My class · Algebra 1 Games</title>
+<meta name="description" content="Join your teacher's class with a class code and hand in your progress. No logins.">
+<link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/site.css">
+<style>
+  .page { max-width: 860px; }
+  .card { background: var(--card); border: 2.5px solid var(--ink); border-radius: 18px; box-shadow: 0 5px 0 var(--ink); padding: 18px 20px; margin: 16px 0; }
+  .card h2 { margin-top: 0; }
+  .field { display: grid; gap: 6px; margin: 0 0 14px; }
+  .field label { font-weight: 800; }
+  .field small { color: var(--muted); font-weight: 600; }
+  .field input { min-height: 52px; font: 800 22px var(--body); padding: 8px 14px; border: 2px solid var(--muted); border-radius: 12px; background: #fff; color: var(--ink); width: 100%; max-width: 360px; }
+  #code { letter-spacing: 3px; text-transform: uppercase; font-family: var(--head); }
+  .err { color: var(--neg); font-weight: 700; min-height: 1.4em; margin: 0 0 8px; }
+  .classhead { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: flex-start; }
+  .classhead .who { font-size: 18px; }
+  .pill { display: inline-block; background: var(--chip); border-radius: 999px; padding: 3px 12px; font-weight: 800; font-family: var(--head); letter-spacing: 1px; }
+  .alist { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+  .alist li { display: grid; grid-template-columns: 46px 1fr auto; gap: 4px 14px; align-items: center; background: #fff; border: 2px solid var(--line); border-radius: 14px; padding: 10px 14px; }
+  .alist li > svg { width: 46px; height: 46px; background: var(--t); border: 2px solid var(--ink); border-radius: 12px; padding: 4px; grid-row: span 2; }
+  .alist .nm { font: 600 19px var(--head); }
+  .alist .pr { grid-column: 2; display: flex; gap: 8px; align-items: center; font-size: 14px; font-weight: 800; color: var(--muted); }
+  .alist .bar { width: 120px; height: 8px; background: var(--chip); border-radius: 99px; overflow: hidden; }
+  .alist .bar b { display: block; height: 100%; background: var(--unit); }
+  .alist .btn { grid-row: 1 / span 2; grid-column: 3; }
+  .codebox { width: 100%; min-height: 90px; font: 700 15px/1.4 ui-monospace, Menlo, Consolas, monospace; padding: 10px 12px; border: 2px dashed var(--ink); border-radius: 12px; background: #fff; color: var(--ink); word-break: break-all; resize: vertical; }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 10px; }
+  .steps { margin: 6px 0 0; padding-left: 22px; }
+  .steps li { margin: 4px 0; }
+  .quiet { color: var(--muted); font-weight: 600; font-size: 15px; }
+  @media (max-width: 560px) {
+    .alist li { grid-template-columns: 40px 1fr; } .alist li > svg { width: 40px; height: 40px; grid-row: auto; }
+    .alist .btn { grid-row: auto; grid-column: 1 / -1; }
+    .alist .pr { grid-column: 1 / -1; }
+    .card { padding: 16px 14px; }
+  }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header">
+  <a class="brand" href="../"><img src="../assets/logo.svg" alt="">Algebra 1 Games</a>
+  <nav class="site-nav" aria-label="Main"><a href="../">Games</a><a href="./" aria-current="page">My class</a></nav>
+</header>
+<main id="main" class="page">
+  <h1>My class</h1>
+  <div id="view"><p>Loading…</p></div>
+</main>
+<footer class="site-footer">
+  <div>Algebra 1 Games · No logins. Your class code and nickname stay on this device.</div>
+  <nav aria-label="Footer"><a href="../">Games</a><a href="../privacy/">Privacy</a></nav>
+</footer>
+<script src="../assets/site-nav.js"></script>
+<script src="../assets/engine/catalog.js"></script>
+<script src="../assets/engine/look.js"></script>
+<script src="../assets/engine/classes.js"></script>
+<script>
+(function () {
+  const CL = A1G_CLASS, L = A1G_LOOK, view = document.getElementById("view");
+  const esc = t => String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
+  const allGames = A1G_CATALOG.domains.flatMap(d => d.games.map(g => ({ ...g, domain: d.name }))).filter(g => g.ready);
+  const q = new URLSearchParams(location.search);
+
+  function joinForm(prefill) {
+    const p = prefill || {};
+    view.innerHTML =
+      "<p class='lead'>Join your teacher's class to see your assigned games and hand in your progress. No account needed.</p>" +
+      "<form class='card' id='joinForm' novalidate>" +
+      (p.name ? "<h2>Join " + esc(p.name) + "</h2>" : "<h2>Join a class</h2>") +
+      "<div class='field'><label for='code'>Class code</label><input id='code' autocomplete='off' autocapitalize='characters' spellcheck='false' placeholder='ABC-123' maxlength='8' value='" + esc(p.code ? CL.prettyCode(p.code) : "") + "'><small>Your teacher will show you a 6-character code.</small></div>" +
+      "<div class='field'><label for='nick'>Your nickname or class number</label><input id='nick' autocomplete='off' maxlength='24' placeholder='e.g. 14 or Blue Fox'><small>Use what your teacher asked for. Please don't type your full name.</small></div>" +
+      "<p class='err' id='err' role='alert'></p><button class='btn primary big' type='submit'>Join class</button></form>";
+    const form = document.getElementById("joinForm");
+    (p.code ? form.nick : form.code).focus();
+    form.code.addEventListener("input", () => { const c = CL.normCode(form.code.value); form.code.value = c.length > 3 ? c.slice(0, 3) + "-" + c.slice(3, 6) : c; });
+    form.addEventListener("submit", e => {
+      e.preventDefault();
+      const err = document.getElementById("err");
+      if (!CL.validCode(form.code.value)) { err.textContent = "That class code doesn't look right. It has 6 letters and numbers, like K7M-Q4P."; form.code.focus(); return; }
+      if (!CL.cleanNick(form.nick.value)) { err.textContent = "Type the nickname or number your teacher asked for."; form.nick.focus(); return; }
+      const samePrefill = p.code && CL.normCode(p.code) === CL.normCode(form.code.value);
+      CL.join({ code: form.code.value, nick: form.nick.value, name: samePrefill ? p.name : "", games: samePrefill ? p.games : [], calc: samePrefill ? p.calc : true });
+      A1G_NAV.setRole("student");
+      history.replaceState(null, "", location.pathname);
+      show(true);
+    });
+  }
+
+  function gameRow(g) {
+    const p = L.progress(g.slug), u = L.unit(g.domain);
+    const next = (() => { const s = L.stars(g.slug); let n = 1; while (n <= 12 && s[n - 1]) n++; return n > 12 ? 1 : n; })();
+    return "<li style='--t:" + u.tint + "'>" + L.icon(g.engine) + "<div class='nm'>" + esc(g.name) + "</div>" +
+      "<div class='pr'><span class='bar' aria-hidden='true'><b style='width:" + Math.round(100 * p.stars / 36) + "%'></b></span>★ " + p.stars + "/36 · " + p.solved + " of 12 levels</div>" +
+      "<a class='btn " + (p.solved === 12 ? "" : "primary") + "' href='../games/" + g.slug + "/" + (next > 1 ? "?level=" + next : "") + "'>" + (p.solved === 12 ? "Play again" : p.solved ? "Continue" : "Play") + "</a></li>";
+  }
+
+  function show(justJoined) {
+    let me = CL.mine();
+    // the teacher posted a new join link for this same class: pick up the new name, games and calculator setting
+    if (me && q.get("join") && CL.normCode(q.get("join")) === CL.normCode(me.code)) {
+      me = CL.join({ code: me.code, nick: me.nick, name: q.get("name") || me.name, games: (q.get("games") || "").split(",").filter(Boolean), calc: q.get("calc") !== "0" });
+      history.replaceState(null, "", location.pathname);
+    }
+    if (!me) return joinForm(q.get("join") ? { code: q.get("join"), name: q.get("name") || "", games: (q.get("games") || "").split(",").filter(Boolean), calc: q.get("calc") !== "0" } : null);
+    const assigned = allGames.filter(g => (me.games || []).includes(g.slug));
+    const played = allGames.filter(g => !assigned.includes(g) && L.progress(g.slug).solved);
+    view.innerHTML =
+      (justJoined ? "<p class='panel-box' role='status'><b>You joined" + (me.name ? " " + esc(me.name) : " the class") + ".</b> Play your games, then hand in your progress when your teacher asks.</p>" : "") +
+      "<section class='card'><div class='classhead'><div><h2 style='margin:0'>" + esc(me.name || "My class") + "</h2>" +
+      "<div class='who'>Class code <span class='pill'>" + esc(me.code) + "</span> · You are <b>" + esc(me.nick) + "</b></div></div>" +
+      "<button class='btn' type='button' id='leave'>Leave class</button></div>" +
+      (me.calc === false ? "<p class='quiet'>Your teacher has turned off the calculator for this class.</p>" : "") + "</section>" +
+      "<section class='card'><h2>" + (assigned.length ? "Assigned games" : "Your games") + "</h2>" +
+      (assigned.length ? "<ul class='alist'>" + assigned.map(gameRow).join("") + "</ul>"
+        : "<p class='quiet' style='margin-top:0'>Your teacher hasn't assigned specific games here. Play any game from the <a href='../#games'>games page</a>.</p>") +
+      (played.length ? "<h3>Other games you've played</h3><ul class='alist'>" + played.map(gameRow).join("") + "</ul>" : "") + "</section>" +
+      "<section class='card' id='handin'><h2>Hand in my progress</h2>" +
+      "<ol class='steps'><li>Press <b>Make my progress code</b>.</li><li>Press <b>Copy</b>.</li><li>Paste it where your teacher asked: Google Classroom, a form, or an email.</li></ol>" +
+      "<div class='row'><button class='btn primary big' type='button' id='make'>Make my progress code</button></div>" +
+      "<div id='out' hidden style='margin-top:14px'><label class='sr-only' for='codeOut'>Your progress code</label><textarea id='codeOut' class='codebox' readonly></textarea>" +
+      "<div class='row'><button class='btn primary' type='button' id='copy'>Copy</button><span class='quiet' id='made'></span></div></div>" +
+      "<p class='quiet'>The code only holds your nickname, your class code and your stars. It updates each time you make a new one.</p></section>";
+    document.getElementById("leave").addEventListener("click", () => {
+      if (!confirm("Leave " + (me.name || "this class") + "? Your stars stay on this device.")) return;
+      CL.leave(); show();
+    });
+    document.getElementById("make").addEventListener("click", () => {
+      const code = CL.progressCode();
+      document.getElementById("out").hidden = false;
+      const box = document.getElementById("codeOut"); box.value = code; box.focus(); box.select();
+      document.getElementById("made").textContent = "Made " + new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+    });
+    document.getElementById("copy").addEventListener("click", async e => {
+      const box = document.getElementById("codeOut"), b = e.currentTarget;
+      try { await navigator.clipboard.writeText(box.value); b.textContent = "Copied!"; }
+      catch (err) { box.select(); document.execCommand && document.execCommand("copy"); b.textContent = "Copied!"; }
+      setTimeout(() => (b.textContent = "Copy"), 1600);
+    });
+  }
+
+  // A join link for a different class than the one this device is in: offer to switch.
+  const me = CL.mine();
+  if (me && q.get("join") && CL.normCode(q.get("join")) !== CL.normCode(me.code)) {
+    view.innerHTML = "<div class='card'><h2>Switch classes?</h2><p>This device is in <b>" + esc(me.name || me.code) + "</b>. The link you opened is for <b>" + esc(q.get("name") || CL.prettyCode(q.get("join"))) + "</b>.</p>" +
+      "<div class='row'><button class='btn primary' id='sw'>Join the new class</button><a class='btn' href='./'>Stay in " + esc(me.name || "my class") + "</a></div></div>";
+    document.getElementById("sw").addEventListener("click", () => { CL.leave(); show(); });
+  } else show();
+})();
+</script>
+</body>
+</html>

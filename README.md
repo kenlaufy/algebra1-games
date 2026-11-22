@@ -13,9 +13,13 @@ Browser games for the Massachusetts Algebra I standards, where the math *is* the
 | Home page: games grouped by unit, search, each student's saved stars, "continue where you left off" | [`index.html`](index.html) |
 | Games, one folder per standard (12 levels each) | `games/<standard-code>/` |
 | Teacher guides: searchable index with copyable student links, generated guides, Balance Workshop's custom guide | [`teachers/`](teachers/index.html) |
+| Student version: "My class" (join with a class code, see assigned games, hand in a progress code) | [`class/`](class/index.html) |
+| Teacher version: classes, join codes, progress dashboard, CSV export, backups | [`classes/`](classes/index.html) |
 | Privacy statement | [`privacy/`](privacy/index.html) |
 | Layout and retry checks: three viewport widths, every playable game | [`tests/playthrough.html`](tests/playthrough.html) |
-| Automated checks: plays every level of every ready game and opens its teacher guide | [`tests/run.html`](tests/run.html) |
+| Automated checks: plays every level of every ready game and opens its teacher guide |
+| Layout checks: every page and every game level at 320, 375, 768 and 1280 px | [`tests/layout.html`](tests/layout.html) |
+| Class and calculator checks: join codes, progress codes, imports, backups, calculator math | [`tests/classes.html`](tests/classes.html) | [`tests/run.html`](tests/run.html) |
 
 ## How a game is built
 
@@ -24,6 +28,8 @@ Every game except Balance Workshop is two files: `games/<slug>/index.html` (gene
 | File | What it does |
 | --- | --- |
 | `catalog.js` | Every game: standard code, official standard wording, name, and whether it's ready |
+| `calc.js` | The in-game calculator (its own parser, no `eval`); off with `?calc=0` or per class |
+| `classes.js` | Classes without logins: join codes, progress codes, the teacher's dashboard data |
 | `look.js` | Unit colors and short names, a picture for each kind of game, and the stars saved on this device |
 | `game-shell.js` | Page layout, levels, help, stars, win screen, keyboard handling, test hooks |
 | `steps.js` | Step-by-step reasoning games: choices, fill-in templates, feedback, autoplay |
@@ -31,6 +37,12 @@ Every game except Balance Workshop is two files: `games/<slug>/index.html` (gene
 | `algebra.js` | Formatting and parsing for numbers, terms, polynomials and fractions |
 
 A game is marked playable by adding `ready: true` to its catalog entry. `tests/run.html` then plays all 12 levels through the real controls using the game's answer key.
+
+## Student and teacher versions, and classes
+
+`assets/site-nav.js` draws the menu for the version chosen on this device (stored as `a1g-role`, no accounts): students see **Games · My class**, teachers see **Games · Guides · Classes**, and a footer link switches between them. Elements marked `teacher-only` or `student-only` show in one version only.
+
+Classes need no server. A teacher makes a class on the Classes page and gets a join code. Students join on My class with the code and a nickname or roster number. When asked, a student makes a progress code (plain text listing their stars, with a checksum) and hands it in through Google Classroom, a form or email; the teacher pastes the codes into the class dashboard. Class data lives in the teacher's browser, with a downloadable backup.
 
 ## One game per standard
 

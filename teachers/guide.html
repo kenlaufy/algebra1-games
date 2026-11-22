@@ -16,7 +16,8 @@
   .ticket { border: 2px dashed var(--ink); border-radius: 14px; padding: 14px 20px; background: #fff; }
   .ticket ol li { margin: 10px 0 28px; }
   .actions { display: flex; gap: 10px; flex-wrap: wrap; margin: 16px 0 0; }
-  td .math, li .math { white-space: normal; }
+  .page td .math, .page li .math, .page td.math { white-space: normal; }
+  #main table td { overflow-wrap: anywhere; }
   .page .code { background: var(--u, var(--ink)); color: #fff; }
   .page h2 { border-bottom: 3px solid var(--u, var(--line)); padding-bottom: 4px; }
   @media print { .ticket { break-inside: avoid; } h2 { break-after: avoid; } }
@@ -37,6 +38,8 @@
   <div>Algebra 1 Games · Standards: 2017 Massachusetts Curriculum Framework for Mathematics, Model Algebra I.</div>
   <nav aria-label="Footer"><a href="./">All teacher guides</a><a href="../privacy/">Privacy</a></nav>
 </footer>
+<script>try { localStorage.setItem("a1g-role", "teacher"); } catch (e) {}</script>
+<script src="../assets/site-nav.js"></script>
 <script>window.GAME_GUIDE_MODE = true;</script>
 <script src="../assets/engine/catalog.js"></script>
 <script src="../assets/engine/look.js"></script>

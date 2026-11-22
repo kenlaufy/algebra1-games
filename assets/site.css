@@ -85,7 +85,8 @@ a { color: var(--ink); }
   color: var(--muted); font-size: 15px; display: flex; gap: 10px 24px; flex-wrap: wrap; justify-content: space-between;
 }
 .site-footer a { color: var(--ink); font-weight: 700; }
-.site-footer nav { display: flex; gap: 18px; flex-wrap: wrap; }
+.site-footer nav { display: flex; gap: 4px 18px; flex-wrap: wrap; align-items: center; }
+.site-footer nav a { display: inline-flex; align-items: center; min-height: 44px; }
 
 /* ---------- Buttons and chips ---------- */
 .btn {
@@ -159,3 +160,53 @@ a { color: var(--ink); }
 }
 
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+/* ---------- Phones: brand and menu on one row ---------- */
+@media (max-width: 480px) {
+  .site-header { padding: 10px 12px 2px; gap: 6px; }
+  .brand { font-size: 17px; gap: 7px; flex: none; }
+  .brand img { width: 30px; height: 30px; }
+  .site-nav { gap: 2px; flex-wrap: nowrap; }
+  .site-nav a { font-size: 15px; padding: 6px 8px; white-space: nowrap; }
+  .site-nav a.nav-extra { display: none; }      /* Privacy stays in the footer */
+}
+@media (max-width: 350px) {
+  .brand span.brand-text { display: none; }
+}
+@media (max-width: 420px) {
+  html[data-role="teacher"] .brand span.brand-text { display: none; }   /* three menu links need the room */
+}
+
+/* ---------- Student and teacher versions ---------- */
+html[data-role="student"] .teacher-only { display: none !important; }
+html[data-role="teacher"] .student-only { display: none !important; }
+.role-switch { font: inherit; font-weight: 700; color: var(--ink); background: none; border: 0; padding: 0; text-decoration: underline; cursor: pointer; min-height: 44px; display: inline-flex; align-items: center; text-align: left; }
+
+/* ---------- In-game calculator (assets/engine/calc.js) ---------- */
+.calc-toggle svg { flex: none; }
+.calc-toggle.on { background: var(--ink); color: var(--paper); box-shadow: 0 3px 0 #000; }
+.calc { position: fixed; right: 18px; bottom: 18px; z-index: 40; width: 330px; max-width: calc(100vw - 24px);
+        background: var(--card); border: 3px solid var(--ink); border-radius: 18px; box-shadow: 0 8px 0 var(--ink), 0 14px 30px rgba(0,0,0,.18); padding: 10px 12px 12px; }
+.calc[hidden] { display: none; }
+.calc-bar { display: flex; align-items: center; justify-content: space-between; cursor: move; touch-action: none; margin: -2px 0 6px; }
+.calc-bar h2 { font: 600 19px var(--head); margin: 0; }
+.calc-x { width: 40px; height: 40px; border: 0; border-radius: 10px; background: var(--chip); font: 700 24px/1 var(--body); cursor: pointer; color: var(--ink); }
+.calc-hist { list-style: none; margin: 0; padding: 0; max-height: 92px; overflow-y: auto; }
+.calc-hist button { width: 100%; text-align: right; background: none; border: 0; padding: 2px 4px; font: 700 15px var(--body); color: var(--muted); cursor: pointer; border-radius: 6px; font-variant-numeric: tabular-nums; }
+.calc-hist button:hover { background: var(--chip); color: var(--ink); }
+.calc-in { width: 100%; font: 800 24px var(--body); text-align: right; padding: 8px 10px; border: 2px solid var(--line); border-radius: 12px; background: #fff; color: var(--ink); min-height: 50px; font-variant-numeric: tabular-nums; }
+.calc-out { text-align: right; font: 800 18px var(--body); color: var(--go); min-height: 28px; padding: 3px 4px 6px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.calc-out.err { color: var(--neg); font-size: 15px; }
+.calc-keys { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.calc-k { min-height: 46px; border: 0; border-radius: 10px; background: var(--chip); box-shadow: 0 3px 0 var(--chip-edge); font: 600 20px var(--head); color: var(--ink); cursor: pointer; }
+.calc-k.num { background: #fff; box-shadow: 0 3px 0 var(--line); border: 1.5px solid var(--line); }
+.calc-k.eq { background: var(--go); color: #fff; box-shadow: 0 3px 0 var(--go-dark); }
+.calc-k.clr { color: var(--neg); }
+.calc-k:active { transform: translateY(2px); box-shadow: none; }
+@media (max-width: 700px) {
+  .calc { left: 0 !important; right: 0 !important; top: auto !important; bottom: 0 !important; width: auto; max-width: none; border-radius: 18px 18px 0 0; border-bottom: 0; box-shadow: 0 -6px 24px rgba(0,0,0,.2); padding-bottom: max(12px, env(safe-area-inset-bottom)); }
+  .calc-hist { max-height: 46px; }
+  .calc-k { min-height: 44px; font-size: 19px; }
+  .calc-bar { cursor: default; }
+}
+@media print { .calc, .calc-toggle { display: none !important; } }

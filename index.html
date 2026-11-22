@@ -88,6 +88,13 @@
   .card-actions { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 2px; }
   .card-actions .btn { min-height: 42px; padding: 6px 16px; position: relative; z-index: 1; }
   .guide-link { position: relative; z-index: 1; font-size: 14.5px; font-weight: 800; color: var(--muted); padding: 10px 2px; }
+  button.guide-link { font-family: inherit; background: none; border: 0; text-decoration: underline; cursor: pointer; min-height: 44px; }
+  .card-actions .btn { margin-right: auto; }
+  .classbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 14px; padding: 12px 16px; border-radius: 14px; background: var(--ink); color: var(--paper); text-decoration: none; font-weight: 700; }
+  .classbar b { font-family: var(--head); font-weight: 600; font-size: 19px; }
+  .classbar span:last-child { margin-left: auto; text-decoration: underline; }
+  .assigned { position: absolute; top: 10px; left: 72px; background: var(--ink); color: var(--paper); font: 800 12px var(--body); border-radius: 6px; padding: 2px 7px; }
+  @media (max-width: 480px) { .assigned { left: 58px; } }
   .empty { background: var(--card); border: 2px dashed var(--line); border-radius: 16px; padding: 18px 20px; margin-top: 18px; }
 
   /* how and classroom */
@@ -122,7 +129,8 @@
     .ggrid { grid-template-columns: 1fr 1fr; gap: 10px; }
     .gtop { padding: 10px; } .gtop svg { width: 42px; height: 42px; }
     .gbody { padding: 10px 12px 12px; } .gcard h4 { font-size: 18px; } .gcard p { display: none; }
-    .card-actions .guide-link { display: none; } .card-actions .btn { width: 100%; }
+    .card-actions { flex-wrap: wrap; gap: 0 12px; } .card-actions .btn { width: 100%; } .guide-link { padding: 8px 0 0; font-size: 13.5px; min-height: 36px; }
+    .prog { font-size: 13px; gap: 6px; } .prog .bar { display: none; } .prog .extra { display: none; } .prog .done { margin-right: auto; }
   }
   @media (max-width: 340px) { .ggrid { grid-template-columns: 1fr; } }
 </style>
@@ -143,9 +151,13 @@
     <div>
       <h1>Algebra you can <em>play.</em></h1>
       <p class="lede">Balance a scale, fly a drone, fit a line. Every move you make is the math.</p>
-      <div class="paths">
-        <a class="path students" href="#games"><b>I'm a student</b><span>Pick a game and earn stars</span></a>
-        <a class="path" href="teachers/"><b>I'm a teacher</b><span>Guides, answer keys, exit tickets</span></a>
+      <div class="paths student-only">
+        <a class="path students" href="#games" data-role-set="student"><b>I'm a student</b><span>Pick a game and earn stars</span></a>
+        <a class="path" href="teachers/" data-role-set="teacher"><b>I'm a teacher</b><span>Classes, guides, answer keys</span></a>
+      </div>
+      <div class="paths teacher-only">
+        <a class="path students" href="classes/"><b>My classes</b><span>Make a class code, see progress</span></a>
+        <a class="path" href="teachers/"><b>Teacher guides</b><span>Lesson plans, answer keys, exit tickets</span></a>
       </div>
       <ul class="facts">
         <li>63 games · every MA Algebra I standard</li>
@@ -214,6 +226,7 @@
       </div>
       <div class="chips" id="chips" role="group" aria-label="Filter by unit"></div>
     </div>
+    <a class="classbar student-only" id="classbar" href="class/" hidden></a>
     <p class="game-count" id="gameCount" role="status" aria-live="polite" aria-atomic="true"></p>
     <div id="units"></div>
     <div id="emptyGames" class="empty" hidden><b>No games match.</b> Try a shorter word, or <button class="btn" id="clearFilters" type="button">show all games</button></div>
@@ -230,7 +243,7 @@
     </div>
   </section>
 
-  <section class="band" aria-labelledby="teach">
+  <section class="band teacher-only" aria-labelledby="teach">
     <h2 id="teach">Built for classrooms</h2>
     <p class="sub">Ready for a 15-minute warm-up, a station, or homework.</p>
     <div class="teachers">
@@ -252,8 +265,9 @@
 
 <footer class="site-footer">
   <div>Algebra 1 Games · Standards: 2017 Massachusetts Curriculum Framework for Mathematics, Model Algebra I.</div>
-  <nav aria-label="Footer"><a href="teachers/">For teachers</a><a href="privacy/">Privacy</a></nav>
+  <nav aria-label="Footer"><a class="teacher-only" href="teachers/">Teacher guides</a><a href="privacy/">Privacy</a></nav>
 </footer>
+<script src="assets/site-nav.js"></script>
 
 <script src="assets/engine/catalog.js"></script>
 <script src="assets/engine/look.js"></script>
@@ -288,16 +302,24 @@
     const s = L.stars(g.slug);
     let next = 1; while (next <= 12 && s[next - 1]) next++;
     const bar = '<span class="bar" aria-hidden="true"><b style="width:' + Math.round(100 * p.stars / p.max) + '%"></b></span>';
-    if (p.solved === 12) return { html: '<span class="done">✓ All 12 levels</span>' + bar + "★ " + p.stars + "/36", label: "Play again", level: 1 };
-    return { html: bar + "★ " + p.stars + "/36 · " + p.solved + " of 12", label: "Continue", level: next };
+    if (p.solved === 12) return { html: '<span class="done">✓ Done</span>' + bar + "★ " + p.stars + "/36", label: "Play again", level: 1 };
+    return { html: bar + "★ " + p.stars + '/36<span class="extra"> · ' + p.solved + " of 12</span>", label: "Continue", level: next };
+  }
+  let myClass = null; try { myClass = JSON.parse(localStorage.getItem("a1g-class") || "null"); } catch (e) {}
+  const assigned = new Set(myClass && myClass.games || []);
+  if (myClass) {
+    const bar = document.getElementById("classbar");
+    bar.hidden = false;
+    bar.innerHTML = "<span>My class:</span><b>" + esc(myClass.name || myClass.code) + "</b><span>" + (assigned.size ? assigned.size + (assigned.size === 1 ? " assigned game" : " assigned games") : "") + "</span><span>Hand in progress</span>";
   }
   function card(g, d) {
     const pr = progress(g);
     const href = "games/" + g.slug + "/" + (pr.level > 1 ? "?level=" + pr.level : "");
-    return '<article class="gcard" style="' + style(d) + '"><div class="gtop">' + L.icon(g.engine) + '<span class="code">' + g.code.replace("AI.", "") + "</span></div>" +
+    return '<article class="gcard" style="' + style(d) + '"><div class="gtop">' + L.icon(g.engine) + (assigned.has(g.slug) ? '<span class="assigned student-only">Assigned</span>' : "") + '<span class="code">' + g.code.replace("AI.", "") + "</span></div>" +
       '<div class="gbody"><h4><a href="' + href + '">' + esc(g.name) + "</a></h4><p>" + esc(g.desc) + '</p><div class="prog">' + pr.html + "</div>" +
       '<div class="card-actions"><a class="btn primary" href="' + href + '" tabindex="-1" aria-hidden="true">' + pr.label + "</a>" +
-      '<a class="guide-link" href="' + (g.guide || "teachers/guide.html?g=" + g.slug) + '" aria-label="Teacher guide for ' + esc(g.name) + '">Teacher guide</a></div></div></article>';
+      '<a class="guide-link teacher-only" href="' + (g.guide || "teachers/guide.html?g=" + g.slug) + '" aria-label="Teacher guide for ' + esc(g.name) + '">Guide</a>' +
+      '<button type="button" class="guide-link copy teacher-only" data-slug="' + g.slug + '" aria-label="Copy student link for ' + esc(g.name) + '">Copy link</button></div></div></article>';
   }
   const norm = t => t.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
   function render() {
@@ -314,13 +336,21 @@
     document.getElementById("emptyGames").hidden = shown > 0;
   }
   search.addEventListener("input", render);
+  // teacher version: copy a student link from any card
+  units.addEventListener("click", async e => {
+    const b = e.target.closest(".copy"); if (!b) return;
+    const url = new URL("games/" + b.dataset.slug + "/", location.href).href;
+    try { await navigator.clipboard.writeText(url); b.textContent = "Copied!"; setTimeout(() => (b.textContent = "Copy link"), 1500); }
+    catch (err) { window.prompt("Copy this link for students:", url); }
+  });
+  document.querySelectorAll("[data-role-set]").forEach(a => a.addEventListener("click", () => A1G_NAV.setRole(a.dataset.roleSet)));
   document.getElementById("clearFilters").addEventListener("click", () => { search.value = ""; unit = ""; chips.querySelectorAll(".chip").forEach(c => c.setAttribute("aria-pressed", String(c.dataset.unit === ""))); render(); search.focus(); });
   render();
 
   // continue where the student left off
   let last = null; try { last = localStorage.getItem("a1g-last"); } catch (e) {}
   const place = last && L.place(last);
-  if (place && place.game.ready) {
+  if (place && place.game.ready && A1G_NAV.role() === "student") {
     const g = place.game, d = place.domain, pr = progress(g), p = L.progress(g.slug);
     const done = p.solved === 12;
     const href = done && place.next ? "games/" + place.next.slug + "/" : "games/" + g.slug + "/" + (pr.level > 1 ? "?level=" + pr.level : "");
