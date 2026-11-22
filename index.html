@@ -271,7 +271,7 @@ document.getElementById("clearFilters").addEventListener("click", () => {
 renderGames();
 document.getElementById("roadSub").textContent =
   "One game for every Model Algebra I standard: " + all.length + " games across " + standards +
-  " standards. " + ready.length + " playable now, " + (all.length - ready.length) + " in development.";
+  " standards" + (ready.length === all.length ? ", all playable now." : ". " + ready.length + " playable now, " + (all.length - ready.length) + " in development.");
 document.getElementById("roadmap").innerHTML = A1G_CATALOG.domains.map(d => {
   const n = d.games.length, r = d.games.filter(g => g.ready).length;
   return "<details><summary>" + d.name + "<small>" + n + (n === 1 ? " game" : " games") +

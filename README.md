@@ -14,7 +14,7 @@ Browser games for the Massachusetts Algebra I standards, where the math *is* the
 | Games, one folder per standard (12 levels each) | `games/<standard-code>/` |
 | Teacher guides: index, generated guides, Balance Workshop's custom guide | [`teachers/`](teachers/index.html) |
 | Privacy statement | [`privacy/`](privacy/index.html) |
-| Layout and retry checks: three viewport widths, all 29 playable games | [`tests/playthrough.html`](tests/playthrough.html) |
+| Layout and retry checks: three viewport widths, every playable game | [`tests/playthrough.html`](tests/playthrough.html) |
 | Automated checks: plays every level of every ready game | [`tests/run.html`](tests/run.html) |
 
 ## How a game is built
@@ -33,7 +33,7 @@ A game is marked playable by adding `ready: true` to its catalog entry. `tests/r
 
 ## One game per standard
 
-Every Model Algebra I standard gets its own game in `games/<standard-code>/`. The home page roadmap lists all 63 planned games across the 62 standards (A-REI.B.3 has two: equations and inequalities). The standard codes and wording were checked against the official [2017 Massachusetts Curriculum Framework for Mathematics](https://www.doe.mass.edu/frameworks/math/2017-06.pdf), Model Algebra I (pages 110–117).
+Every Model Algebra I standard gets its own game in `games/<standard-code>/`. All 63 games are playable, across the 62 standards (A-REI.B.3 has two: equations and inequalities). The standard codes and wording were checked against the official [2017 Massachusetts Curriculum Framework for Mathematics](https://www.doe.mass.edu/frameworks/math/2017-06.pdf), Model Algebra I (pages 110–117).
 
 Games that work the same way share code and art through six "engines":
 
