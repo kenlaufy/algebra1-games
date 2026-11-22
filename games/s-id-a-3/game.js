@@ -1,0 +1,47 @@
+/* Outlier Bomb · AI.S-ID.A.3 */
+(function () {
+  const D = window.DataLab;
+  const bomb = (before, after, o) => ({ vb: "0 0 900 260", html: D.dotPlot(before, o), after: D.dotPlot(after, Object.assign({ color: "#5a78b8" }, o)), label: "Dot plot" });
+  const MOVE = [["The mean moves much more than the median", ""], ["The median moves more", "The median only shifts by one position at most."], ["Neither changes", "Adding a value changes the total, so the mean changes."]];
+  const LEVELS = [
+    { stage: 1, ctx: "Data: 4, 5, 5, 6, 6, 6, 7, 7, 8 (mean 6, median 6). Bomb: a 30 drops in!", pic: bomb([4, 5, 5, 6, 6, 6, 7, 7, 8], [4, 5, 5, 6, 6, 6, 7, 7, 8, 30], { min: 0, max: 32, step: 4, label: "value" }),
+      steps: [["ch", "Predict:", MOVE], ["in", "New mean = [], new median = []", [8.4, 6]]], answer: "Mean 6 → 8.4, median stays 6", check: "(54 + 30) ÷ 10 = 8.4 ✓", tip: "Predict before the bomb lands." },
+    { stage: 1, ctx: "Data: 10, 12, 13, 14, 15, 16, 18 (mean 14, median 14). Bomb: a 1 drops in.", pic: bomb([10, 12, 13, 14, 15, 16, 18], [1, 10, 12, 13, 14, 15, 16, 18], { min: 0, max: 20, step: 2, label: "value" }),
+      steps: [["ch", "Predict:", MOVE], ["in", "New mean (2 decimal places) ≈ [], new median = []", [12.38, 13.5], { tol: 0.006 }]], answer: "Mean 14 → 12.38, median 14 → 13.5", check: "99 ÷ 8 = 12.375 ✓", tip: "A low outlier pulls the other way." },
+    { stage: 1, ctx: "Data: 20, 22, 24, 26, 28. Bomb: an 80.", pic: bomb([20, 22, 24, 26, 28], [20, 22, 24, 26, 28, 80], { min: 15, max: 85, step: 5, label: "value" }),
+      steps: [["in", "IQR before = [], IQR after = []", [6, 6], { hint: "Quartiles are medians of the lower and upper halves." }], ["ch", "And the standard deviation?", [["It jumps a lot", ""], ["It stays about the same", "SD uses every distance from the mean, including the 80's."], ["It shrinks", "A far-away value increases spread."]]]],
+      answer: "IQR stays 6; SD jumps", check: "IQR resists outliers; SD doesn't ✓", tip: "Spread statistics react differently." },
+    { stage: 1, ctx: "Test scores: 55, 78, 80, 82, 85, 88, 90. What if the 55 is removed?", steps: [["in", "Mean with 55 ≈ [], without ≈ [] (2 decimal places)", [79.71, 83.83], { tol: 0.006 }], ["ch", "So one low score…", [["pulls the class mean down about 4 points", ""], ["doesn't matter", "It moves the mean by over 4 points."]]]], answer: "79.71 → 83.83", check: "558 ÷ 7, 503 ÷ 6 ✓", tip: "Outliers in reverse." },
+    { stage: 2, ctx: "Two classes' quiz scores.", pic: { vb: "0 0 900 270", html: D.boxPlot([{ data: [6, 7, 7, 8, 8, 9, 9, 10, 2], label: "Class A" }, { data: [5, 6, 7, 7, 8, 8, 9, 9, 10], label: "Class B", color: "#f2c98a" }], { min: 0, max: 11, label: "score" }), label: "Two box plots" },
+      steps: [["in", "Medians: A [], B []", [8, 8]], ["ch", "Class A has one score of 2. Fair comparison?", [["Same median; A has one unusually low score", ""], ["Class A did much worse", "Their typical scores match; one student is the difference."], ["Class B did worse", "Medians are equal."]]]], answer: "Same center; one low outlier in A", check: "Describe outliers explicitly ✓", tip: "Interpret in context." },
+    { stage: 2, ctx: "A student's height is recorded as 1700 cm in a class data set.", steps: [["ch", "What should you do?", [["It's a typo (probably 170 cm): fix or remove it", ""], ["Keep it: it's data", "No person is 17 meters tall. It's an error."], ["Average it with the others", "That spreads the error through everything."]]],
+      ["ch", "A different set has a real world-record time that's far from the rest. Should you delete it?", [["No: keep it, and use statistics that resist outliers", ""], ["Yes: outliers are always mistakes", "Real extreme values are part of the story."]]]], answer: "Fix errors; keep real outliers", check: "Investigate before deleting ✓", tip: "Not every outlier is a mistake." },
+    { stage: 2, ctx: "Describe the shape.", pic: { vb: "0 0 900 260", html: D.dotPlot([2, 6, 7, 8, 8, 9, 9, 9, 10, 10], { min: 0, max: 11, label: "score" }), label: "Dot plot" },
+      steps: [["ch", "Shape:", [["Skewed left: a tail toward low values", ""], ["Skewed right", "The tail points to the small values."], ["Symmetric", "One side has a long tail."]]], ["ch", "So compared with the median, the mean is…", [["lower", ""], ["higher", "A left tail pulls the mean down."]]]], answer: "Skewed left; mean < median", check: "Tails pull the mean ✓", tip: "Shape, center, spread." },
+    { stage: 2, ctx: "A company says the \"average\" salary is $95,000. Salaries: eight at $40,000 and the CEO at $535,000.", steps: [["in", "Mean = $[], median = $[]", [95000, 40000]], ["ch", "Which describes a typical employee?", [["The median, $40,000", ""], ["The mean, $95,000", "Only the CEO earns more than $40,000."]]]], answer: "Median $40,000", check: "(8·40000 + 535000) ÷ 9 = 95,000 ✓", tip: "Averages can mislead." },
+    { stage: 3, ctx: "A data set has 9 values with mean 20. A 70 is added.", steps: [["in", "New mean = (9 × 20 + 70) ÷ 10 = []", [25]]], answer: "25", check: "250 ÷ 10 = 25 ✓", tip: "Predict a mean without the data." },
+    { stage: 3, ctx: "Data: 12, 14, 15, 15, 16, 17, 18, 30. Is 30 an outlier? Use the 1.5 × IQR rule.", steps: [["in", "Q1 = [], Q3 = [], IQR = []", [14.5, 17.5, 3]], ["in", "Upper fence = Q3 + 1.5 × IQR = []", [22]], ["ch", "So 30 is…", [["an outlier (above 22)", ""], ["not an outlier", "30 is beyond the fence of 22."]]]], answer: "30 is an outlier", check: "30 > 22 ✓", tip: "A rule for spotting outliers." },
+    { stage: 3, ctx: "Two delivery companies. Fast Co: median 2 days, IQR 1 day, one delivery took 30 days. Steady Co: median 3 days, IQR 0.5 days, no outliers.", steps: [["ch", "Best comparison:", [["Fast Co is usually quicker; Steady Co is more predictable", ""], ["Steady Co is faster", "Its median is higher."], ["Fast Co is always better", "Its spread and the 30-day outlier matter."]]]], answer: "Trade-off between speed and predictability", check: "Center, spread and outliers together ✓", tip: "Interpret the differences." },
+    { stage: 3, ctx: "Daily screen time (hours): 1, 2, 2, 3, 3, 3, 4, 14.", steps: [["in", "Median = [], mean = []", [3, 4]], ["ch", "Best one-sentence summary:", [["Typical screen time is about 3 hours; one person's 14 hours is an outlier", ""], ["The average person uses 4 hours", "Only one person uses more than 4 hours."], ["Everyone uses 3 to 14 hours", "Seven of eight are at 4 or less."]]]], answer: "Median 3 h, one outlier", check: "32 ÷ 8 = 4 ✓", tip: "Last one: summarize honestly." },
+  ];
+  Timeline.stepGame({
+    slug: "s-id-a-3", title: "Outlier Bomb", firstMove: "Predict which statistic moves more before the outlier lands, then compute the new values.",
+    subtitle: "Interpret shape, center and spread, accounting for outliers",
+    stages: { 1: "Stage 1 · Predict the blast", 2: "Stage 2 · Interpret in context", 3: "Stage 3 · Rules and summaries" }, levels: LEVELS,
+    help: { intro: "An outlier is a value far from the rest. Some statistics (mean, SD) react strongly to outliers; others (median, IQR) barely move.",
+      steps: ["Predict what the outlier will do.", "Compute the new statistics. The new plot appears when you finish.", "Describe the data in context: shape, center, spread, outliers.", "Fewer wrong answers means more stars."], note: "Round to 2 decimal places when asked." },
+    hint: "Recompute with the new value included.",
+    guide: {
+      summary: "A 12-level game about outliers: predicting how means, medians, standard deviations and IQRs respond to extreme values, deciding whether to remove an outlier, spotting outliers with the 1.5 × IQR rule, and interpreting differences in shape, center and spread in context.",
+      also: "<span class='code'>AI.S-ID.A.2</span> choosing statistics.",
+      practices: "MP3 Construct viable arguments · MP6 Attend to precision",
+      goals: ["Interpret differences in shape, center and spread in context.", "Account for the effect of outliers on center and spread.", "Decide how to handle outliers, and identify them with the 1.5 × IQR rule."],
+      howItWorks: "Most stage 1 levels drop an outlier into a dot plot: students predict which statistic moves more, then compute; the new plot appears when solved. Later levels interpret box plots, salaries and delivery times, and apply the outlier rule.",
+      stageNotes: { 1: { sees: "Outliers added or removed.", builds: "Mean vs. median; SD vs. IQR." }, 2: { sees: "Classes, errors, skewed shapes, salaries.", builds: "Interpretation and judgment." }, 3: { sees: "Predicting means; the outlier rule; summaries.", builds: "Fluency and honest summaries." } },
+      discussion: ["Why does the median barely move when an outlier is added?", "When is it OK to remove an outlier?", "Which statistic would a company prefer to advertise, and why should readers be careful?"],
+      misconceptions: [["Outliers are always errors", "Level 6."], ["The mean is always the typical value", "Levels 8 and 12."], ["IQR reacts like SD", "Level 3."]],
+      exitTicket: { items: ["Data 5, 6, 7, 8, 9: add 50. What happens to the mean and median?", "Is 40 an outlier in 10, 12, 13, 14, 15, 16, 40?", "Write a sentence comparing two sets with equal medians but different IQRs."],
+        answers: ["Mean 7 → 14.17; median 7 → 7.5.", "Q1 = 12, Q3 = 16, IQR = 4; fence 22, so yes.", "Their typical values are the same, but one is much more spread out."] },
+    },
+  });
+})();

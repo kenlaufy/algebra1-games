@@ -46,9 +46,13 @@
         let tableBox = null, svg = null;
         if (lv.table) { tableBox = h("div"); api.stage.appendChild(tableBox); tableBox.appendChild(TL.table(h, lv.table, false)); }
         if (lv.chart) { svg = api.svg("0 0 900 360", "Graph"); api.stage.appendChild(svg); svg.innerHTML = TL.chart(lv.chart, lv.chart.reveal !== "end"); }
+        // a ready-made picture: lv.pic = { vb, html, label, after? (html shown once solved) }
+        let pic = null;
+        if (lv.pic) { pic = api.svg(lv.pic.vb || "0 0 900 300", lv.pic.label || "Diagram"); pic.innerHTML = lv.pic.html; api.stage.appendChild(pic); }
         const reveal = () => {
           if (tableBox) { tableBox.innerHTML = ""; tableBox.appendChild(TL.table(h, lv.table, true)); }
           if (svg) svg.innerHTML = TL.chart(lv.chart, true);
+          if (pic && lv.pic.after) pic.innerHTML = lv.pic.after;
         };
         const steps = lv.steps.map((st) => {
           if (st[0] === "ch") return { type: "choice", prompt: st[1], options: st[2].map((o, k) => ({ label: o[0], ok: k === 0, why: o[1] })), done: st[1] + " " + st[2][0][0] };
