@@ -70,7 +70,7 @@
 </header>
 <main id="main" class="page"><p>Loading…</p></main>
 <dialog class="projector" id="projector" aria-label="Class code for the screen">
-  <div><p>Go to <b>My class</b> on Algebra 1 Games and type this code:</p><div class="pcode" id="projCode"></div><p class="url" id="projUrl"></p><p><button class="btn big" id="projClose" type="button">Close</button></p></div>
+  <div><p>Go to <b>My class</b> on Algebra 1 Games and type this code:</p><p>Short codes do not carry assigned games or calculator settings.</p><div class="pcode" id="projCode"></div><p class="url" id="projUrl"></p><p><button class="btn big" id="projClose" type="button">Close</button></p></div>
 </dialog>
 <footer class="site-footer">
   <div>Algebra 1 Games · Class data stays in this browser. Download a backup to move it to another device.</div>
@@ -176,14 +176,14 @@
     if (!c) { main.innerHTML = "<h1>Class not found</h1><p>This browser doesn't have class " + esc(CL.prettyCode(code)) + ". If you made it on another device, load a backup on the <a href='./'>Classes page</a>.</p>"; return; }
     const link = CL.joinLink(c, ROOT);
     main.innerHTML = "<p class='no-print'><a href='./'>← All classes</a></p><h1>" + esc(c.name) + "</h1>" +
-      "<section class='card bold no-print'><div class='joinbox'><div class='bigcode' aria-label='Class code " + esc(c.code.split("").join(" ")) + "'>" + esc(c.code) + "</div><div><b>How students join</b><p class='quiet' style='margin:4px 0 10px'>On Algebra 1 Games they choose <b>My class</b>, type this code and their nickname or roster number. Or post the join link, which also fills in the class name" + (c.games.length ? " and assigned games" : "") + ".</p>" +
-      "<div class='row'><button class='btn primary' id='cpLink' type='button'>Copy join link</button><button class='btn' id='proj' type='button'>Show code on screen</button><button class='btn' id='edit' type='button'>Edit class</button></div></div></div>" +
+      "<section class='card bold no-print'><div class='joinbox'><div class='bigcode' aria-label='Class code " + esc(c.code.split("").join(" ")) + "'>" + esc(c.code) + "</div><div><b>How students join</b><p class='quiet' style='margin:4px 0 10px'>Post the class link so students receive the assigned games and calculator setting. The short join code carries neither setting.</p>" +
+      "<div class='row'><button class='btn primary' id='cpLink' type='button'>Copy class link with assignments</button><a class='btn' href='" + esc(link + "&preview=1") + "' target='_blank' rel='noopener'>Test student link</a><button class='btn' id='proj' type='button'>Show join code only</button><button class='btn' id='edit' type='button'>Edit class</button></div></div></div>" +
       "<p class='quiet' style='margin-bottom:0'>" + (c.games.length ? c.games.length + " assigned " + (c.games.length === 1 ? "game" : "games") : "No games assigned") + " · Calculator " + (c.calc === false ? "off" : "on") + ". If you change these, students who already joined need the new join link.</p></section>" +
       "<section class='card no-print'><h2>Collect progress</h2><p class='quiet' style='margin-top:0'>Ask students to press <b>Hand in my progress</b> on their My class page and paste the code where you collect work. Then paste everything here: one code or a whole column of form responses at once.</p>" +
       "<label class='sr-only' for='paste'>Progress codes</label><textarea class='paste' id='paste' placeholder='Paste progress codes here (they start with A1G1~)'></textarea><div class='row' style='margin-top:10px'><button class='btn primary' id='add' type='button'>Add to dashboard</button></div><div id='res' role='status'>" + (flash || "") + "</div></section>" +
       "<section><div class='row' style='justify-content:space-between'><h2 style='margin:18px 0 6px'>Progress</h2><div class='row no-print'><button class='btn' id='csv' type='button'>Download CSV</button><button class='btn' type='button' onclick='window.print()'>Print</button></div></div>" + dashboard(c) + "</section>" +
       "<section class='card no-print' style='margin-top:26px'><h3>Delete this class</h3><p class='quiet'>Removes the class and its progress from this browser. Students' own stars are not affected.</p><button class='btn' id='del' type='button'>Delete class</button></section>";
-    document.getElementById("cpLink").addEventListener("click", e => copy(link, e.currentTarget, "Copy join link"));
+    document.getElementById("cpLink").addEventListener("click", e => copy(link, e.currentTarget, "Copy class link with assignments"));
     document.getElementById("proj").addEventListener("click", () => {
       document.getElementById("projCode").textContent = c.code; document.getElementById("projUrl").textContent = ROOT.replace(/^https?:\/\//, "") + "class/";
       document.getElementById("projector").showModal();

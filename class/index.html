@@ -120,27 +120,54 @@
         : "<p class='quiet' style='margin-top:0'>Your teacher hasn't assigned specific games here. Play any game from the <a href='../#games'>games page</a>.</p>") +
       (played.length ? "<h3>Other games you've played</h3><ul class='alist'>" + played.map(gameRow).join("") + "</ul>" : "") + "</section>" +
       "<section class='card' id='handin'><h2>Hand in my progress</h2>" +
-      "<ol class='steps'><li>Press <b>Make my progress code</b>.</li><li>Press <b>Copy</b>.</li><li>Paste it where your teacher asked: Google Classroom, a form, or an email.</li></ol>" +
-      "<div class='row'><button class='btn primary big' type='button' id='make'>Make my progress code</button></div>" +
-      "<div id='out' hidden style='margin-top:14px'><label class='sr-only' for='codeOut'>Your progress code</label><textarea id='codeOut' class='codebox' readonly></textarea>" +
-      "<div class='row'><button class='btn primary' type='button' id='copy'>Copy</button><span class='quiet' id='made'></span></div></div>" +
-      "<p class='quiet'>The code only holds your nickname, your class code and your stars. It updates each time you make a new one.</p></section>";
+      "<ol class='steps'><li><button class='btn primary' type='button' id='copy'>Copy progress code</button></li>" +
+      "<li>Paste into your teacher’s assignment.</li></ol>" +
+      "<p class='quiet' id='copyStatus' role='status'></p>" +
+      "<div id='out' hidden><label for='codeOut'>Your progress code</label><textarea id='codeOut' class='codebox' readonly></textarea></div>" +
+      "<p class='quiet'>The code contains your class code, classroom alias, hand-in time, and saved stars.</p></section>";
     document.getElementById("leave").addEventListener("click", () => {
       if (!confirm("Leave " + (me.name || "this class") + "? Your stars stay on this device.")) return;
       CL.leave(); show();
     });
-    document.getElementById("make").addEventListener("click", () => {
-      const code = CL.progressCode();
-      document.getElementById("out").hidden = false;
-      const box = document.getElementById("codeOut"); box.value = code; box.focus(); box.select();
-      document.getElementById("made").textContent = "Made " + new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
-    });
     document.getElementById("copy").addEventListener("click", async e => {
-      const box = document.getElementById("codeOut"), b = e.currentTarget;
-      try { await navigator.clipboard.writeText(box.value); b.textContent = "Copied!"; }
-      catch (err) { box.select(); document.execCommand && document.execCommand("copy"); b.textContent = "Copied!"; }
-      setTimeout(() => (b.textContent = "Copy"), 1600);
+      const button = e.currentTarget;
+      const status = document.getElementById("copyStatus");
+      const out = document.getElementById("out");
+      const code = CL.progressCode();
+      if (!code) {
+        status.textContent = "Join your class again to make a progress code.";
+        return;
+      }
+      if (button.getAttribute("aria-busy") === "true") return;
+      button.setAttribute("aria-busy", "true");
+      status.textContent = "";
+      out.hidden = true;
+      try {
+        await navigator.clipboard.writeText(code);
+        status.textContent = "Copied! Paste into your teacher’s assignment.";
+      } catch (err) {
+        out.hidden = false;
+        const box = document.getElementById("codeOut");
+        box.value = code;
+        status.textContent = "Copy the selected code manually, then paste it into your teacher’s assignment.";
+        box.focus();
+        box.select();
+      } finally {
+        button.removeAttribute("aria-busy");
+      }
     });
+  }
+
+  if (q.get("preview") === "1" && CL.validCode(q.get("join"))) {
+    const assigned = new Set((q.get("games") || "").split(","));
+    const names = allGames.filter(g => assigned.has(g.slug)).map(g => "<li>" + esc(g.name) + "</li>").join("");
+    view.innerHTML = "<section class='card'><h2>Student link preview</h2>" +
+      "<p>This is what the class link sets up for students. Previewing keeps your current class selection.</p>" +
+      "<p><b>" + esc(q.get("name") || "My class") + "</b> · " + esc(CL.prettyCode(q.get("join"))) + "</p>" +
+      "<p>Calculator " + (q.get("calc") === "0" ? "off" : "on") + "</p>" +
+      (names ? "<h3>Assigned games</h3><ul>" + names + "</ul>" : "<p>No games assigned.</p>") +
+      "</section>";
+    return;
   }
 
   // A join link for a different class than the one this device is in: offer to switch.
