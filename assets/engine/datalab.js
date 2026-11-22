@@ -39,9 +39,9 @@
     for (let v = min; v <= max + 1e-9; v += step) {
       const x = X(v);
       s += '<line x1="' + x + '" y1="' + Y + '" x2="' + x + '" y2="' + (Y + 7) + '" stroke="' + INK + '" stroke-width="2"/>';
-      s += '<text x="' + x + '" y="' + (Y + 24) + '" text-anchor="middle" font-size="14" fill="' + INK + '">' + fmt(v) + "</text>";
+      s += '<text class="ct" x="' + x + '" y="' + (Y + 24) + '" text-anchor="middle" font-size="14" fill="' + INK + '">' + fmt(v) + "</text>";
     }
-    if (label) s += '<text x="' + ((L + R) / 2) + '" y="' + (Y + 46) + '" text-anchor="middle" font-size="16" fill="' + INK + '">' + label + "</text>";
+    if (label) s += '<text class="ct" x="' + ((L + R) / 2) + '" y="' + (Y + 46) + '" text-anchor="middle" font-size="16" fill="' + INK + '">' + label + "</text>";
     return s;
   }
   const frame = (w, h) => '<rect width="' + w + '" height="' + h + '" rx="12" fill="#fffdf7"/>';
@@ -75,7 +75,7 @@
       const a = o.min + i * o.width;
       if (c) s += '<rect x="' + X(a) + '" y="' + (Y - H(c)) + '" width="' + (X(a + o.width) - X(a)) + '" height="' + H(c) + '" fill="#e7b84a" stroke="' + INK + '" stroke-width="2.5"/>';
     });
-    for (let c = 0; c <= ymax; c++) s += '<text x="' + (L - 10) + '" y="' + (Y - H(c) + 5) + '" text-anchor="end" font-size="13" fill="' + INK + '">' + c + "</text>";
+    for (let c = 0; c <= ymax; c++) s += '<text class="ct" x="' + (L - 10) + '" y="' + (Y - H(c) + 5) + '" text-anchor="end" font-size="13" fill="' + INK + '">' + c + "</text>";
     s += '<line x1="' + L + '" y1="' + T + '" x2="' + L + '" y2="' + Y + '" stroke="' + INK + '" stroke-width="2"/>';
     return s;
   };
@@ -88,7 +88,7 @@
     let s = frame(o.w, Y + 60) + axisX(L, R, Y, o.min, o.max, o.step || 1, o.label, X);
     sets.forEach((set, i) => {
       const q = D.quartiles(set.data), cy = 30 + i * rowH + 40;
-      s += '<text x="' + (L - 14) + '" y="' + (cy + 5) + '" text-anchor="end" font-size="16" fill="' + INK + '">' + (set.label || "") + "</text>";
+      s += '<text class="ct" x="' + (L - 14) + '" y="' + (cy + 5) + '" text-anchor="end" font-size="16" fill="' + INK + '">' + (set.label || "") + "</text>";
       s += '<line x1="' + X(q.min) + '" y1="' + cy + '" x2="' + X(q.q1) + '" y2="' + cy + '" stroke="' + INK + '" stroke-width="2.5"/>';
       s += '<line x1="' + X(q.q3) + '" y1="' + cy + '" x2="' + X(q.max) + '" y2="' + cy + '" stroke="' + INK + '" stroke-width="2.5"/>';
       s += '<rect x="' + X(q.q1) + '" y="' + (cy - 22) + '" width="' + (X(q.q3) - X(q.q1)) + '" height="44" fill="' + (set.color || "#8fa6d6") + '" stroke="' + INK + '" stroke-width="2.5"/>';

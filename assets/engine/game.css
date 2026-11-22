@@ -211,3 +211,23 @@
 .pip-total { margin-left: 8px; font-weight: 800; font-size: 15px; color: var(--muted); white-space: nowrap; }
 .next-game { text-decoration: none; }
 @media (max-width: 480px) { .pip { width: 11px; height: 11px; border-radius: 3px; } .pips { gap: 3px; } }
+
+/* ---------- Phones: readable graph labels and a compact header ---------- */
+@media (max-width: 600px) {
+  .stagecard svg text.ct { font-size: 24px; }
+  .stagecard svg text.ct.var { font-size: 27px; }
+  .stagecard svg text.ct[paint-order] { font-size: 24px; }
+  .game-head { padding-top: 2px; gap: 8px; }
+  .game-head h1 { font-size: 27px; line-height: 1.1; }
+  .game-head .sub { font-size: 0; line-height: 1; }          /* keep the standard chip, drop the long subtitle */
+  .game-head .sub .code { font-size: 13px; margin-top: 4px; }
+  .crumb { font-size: 14px; margin-bottom: 0; }
+  .crumb a { min-height: 28px; }
+  .head-actions { gap: 8px; }
+  .head-actions .btn { font-size: 16px; min-height: 40px; padding: 6px 12px; }
+  .game-main { padding-top: 4px; }
+  .levelbar h2 { font-size: 21px; }
+  .levelbar .meta { font-size: 14px; }
+  .first-move { margin: 8px 0; padding: 8px 12px; font-size: 15.5px; }
+  .tip { margin: 4px 0 8px; font-size: 16px; }
+}

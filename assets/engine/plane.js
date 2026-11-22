@@ -32,14 +32,14 @@
       s += '<line x1="' + p.X(ay) + '" y1="' + T + '" x2="' + p.X(ay) + '" y2="' + B + '" stroke="' + INK + '" stroke-width="2.5"/>';
       xs.forEach((x) => {
         if (Math.abs((x / p.xtick) - Math.round(x / p.xtick)) > 1e-9 || (x === ay && ay !== p.xmin)) return;
-        s += '<text x="' + p.X(x) + '" y="' + Math.min(B + 22, p.Y(ax) + 22) + '" text-anchor="middle" font-size="14" fill="' + INK + '">' + fmt(x) + "</text>";
+        s += '<text class="ct" x="' + p.X(x) + '" y="' + Math.min(B + 22, p.Y(ax) + 22) + '" text-anchor="middle" font-size="14" fill="' + INK + '">' + fmt(x) + "</text>";
       });
       ys.forEach((y) => {
         if (Math.abs((y / p.ytick) - Math.round(y / p.ytick)) > 1e-9 || (y === ax && ax !== p.ymin)) return;
-        s += '<text x="' + (Math.max(L, p.X(ay)) - 8) + '" y="' + (p.Y(y) + 5) + '" text-anchor="end" font-size="14" fill="' + INK + '">' + fmt(y) + "</text>";
+        s += '<text class="ct" x="' + (Math.max(L, p.X(ay)) - 8) + '" y="' + (p.Y(y) + 5) + '" text-anchor="end" font-size="14" fill="' + INK + '">' + fmt(y) + "</text>";
       });
-      s += '<text x="' + (R - 4) + '" y="' + (p.Y(ax) - 8) + '" text-anchor="end" font-size="17" class="var" fill="' + INK + '">' + (opt.xlabel || p.xlabel) + "</text>";
-      s += '<text x="' + (p.X(ay) + 8) + '" y="' + (T + 16) + '" font-size="17" class="var" fill="' + INK + '">' + (opt.ylabel || p.ylabel) + "</text>";
+      s += '<text x="' + (R - 4) + '" y="' + (p.Y(ax) - 8) + '" text-anchor="end" font-size="17" class="var ct" fill="' + INK + '">' + (opt.xlabel || p.xlabel) + "</text>";
+      s += '<text x="' + (p.X(ay) + 8) + '" y="' + (T + 16) + '" font-size="17" class="var ct" fill="' + INK + '">' + (opt.ylabel || p.ylabel) + "</text>";
       return s;
     };
 
@@ -75,7 +75,7 @@
         const alignRight = p.X(x) > (L + R) / 2;
         const labelX = p.X(x) + (alignRight ? -12 : 12);
         const labelY = p.Y(y) < T + 20 ? p.Y(y) + 24 : p.Y(y) - 12;
-        s += '<text text-anchor="' + (alignRight ? "end" : "start") + '" x="' + labelX + '" y="' + labelY + '" paint-order="stroke" stroke="#fffdf7" stroke-width="3" font-size="16" fill="' + INK + '" pointer-events="none">' + o.label + "</text>";
+        s += '<text class="ct" text-anchor="' + (alignRight ? "end" : "start") + '" x="' + labelX + '" y="' + labelY + '" paint-order="stroke" stroke="#fffdf7" stroke-width="3" font-size="16" fill="' + INK + '" pointer-events="none">' + o.label + "</text>";
       }
       return s;
     };
@@ -136,7 +136,7 @@
       for (let v = n.min; v <= n.max + 1e-9; v += n.step) {
         const r = round(v);
         s += '<line x1="' + n.X(r) + '" y1="' + (Y - 9) + '" x2="' + n.X(r) + '" y2="' + (Y + 9) + '" stroke="' + INK + '" stroke-width="2"/>';
-        if (Math.abs(r / n.label - Math.round(r / n.label)) < 1e-9) s += '<text x="' + n.X(r) + '" y="' + (Y + 32) + '" text-anchor="middle" font-size="15" fill="' + INK + '">' + fmt(r) + "</text>";
+        if (Math.abs(r / n.label - Math.round(r / n.label)) < 1e-9) s += '<text class="ct" x="' + n.X(r) + '" y="' + (Y + 32) + '" text-anchor="middle" font-size="15" fill="' + INK + '">' + fmt(r) + "</text>";
       }
       return s;
     };

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Classes · Algebra 1 Games</title>
+<meta name="description" content="Make a class code, share it with students, and see their progress. No logins and no server: everything stays on your device.">
+<link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/site.css">
+<style>
+  .page { max-width: 1080px; }
+  .card { background: var(--card); border: 2px solid var(--line); border-radius: 16px; padding: 16px 18px; margin: 14px 0; }
+  .card.bold { border: 2.5px solid var(--ink); box-shadow: 0 5px 0 var(--ink); }
+  .card h2, .card h3 { margin-top: 0; }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .quiet { color: var(--muted); font-weight: 600; font-size: 15px; }
+  .clist { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 14px; margin: 14px 0; }
+  .ccard { background: var(--card); border: 2.5px solid var(--ink); border-radius: 16px; box-shadow: 0 5px 0 var(--ink); padding: 14px 16px; display: grid; gap: 6px; text-decoration: none; color: var(--ink); }
+  .ccard:hover { transform: translateY(-2px); box-shadow: 0 7px 0 var(--ink); }
+  .ccard b { font: 600 22px var(--head); }
+  .pill { display: inline-block; background: var(--ink); color: var(--paper); border-radius: 8px; padding: 2px 10px; font: 600 16px var(--head); letter-spacing: 1.5px; }
+  .field { display: grid; gap: 6px; margin: 0 0 14px; }
+  .field > label, .field > span { font-weight: 800; }
+  .field input[type=text] { min-height: 48px; font: 700 18px var(--body); padding: 8px 12px; border: 2px solid var(--muted); border-radius: 10px; background: #fff; color: var(--ink); max-width: 420px; }
+  .check { display: flex; gap: 10px; align-items: center; font-weight: 700; min-height: 40px; }
+  .check input { width: 22px; height: 22px; accent-color: var(--go); }
+  details.unit { border: 2px solid var(--line); border-radius: 12px; background: #fff; margin: 6px 0; }
+  details.unit summary { cursor: pointer; padding: 10px 14px; font-weight: 800; display: flex; gap: 8px; align-items: center; }
+  details.unit summary i { width: 12px; height: 12px; border-radius: 3px; background: var(--u); }
+  details.unit summary small { color: var(--muted); margin-left: auto; }
+  .gpick { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr)); gap: 2px 14px; padding: 0 14px 10px; }
+  .gpick label { display: flex; gap: 8px; align-items: center; min-height: 40px; font-weight: 600; }
+  .gpick input { width: 20px; height: 20px; accent-color: var(--go); flex: none; }
+  .gpick .code { font-size: 12px; }
+  .joinbox { display: grid; grid-template-columns: auto 1fr; gap: 18px; align-items: center; }
+  .bigcode { font: 700 44px/1 var(--head); letter-spacing: 4px; background: var(--ink); color: var(--paper); border-radius: 16px; padding: 14px 20px; text-align: center; }
+  textarea.paste { width: 100%; min-height: 110px; font: 600 14px/1.4 ui-monospace, Menlo, Consolas, monospace; padding: 10px 12px; border: 2px solid var(--muted); border-radius: 12px; background: #fff; color: var(--ink); }
+  .note { border-radius: 12px; padding: 10px 14px; font-weight: 700; margin-top: 10px; }
+  .note.ok { background: #e0eee3; color: #1f4a2a; } .note.warn { background: #fbecc8; color: #6b4700; }
+  .tablewrap { overflow-x: auto; border: 2px solid var(--line); border-radius: 14px; background: #fff; }
+  table.dash { border-collapse: collapse; width: 100%; font-size: 15px; }
+  table.dash th, table.dash td { padding: 8px 10px; border-bottom: 1px solid var(--line); text-align: left; white-space: nowrap; }
+  table.dash thead th { background: var(--chip); font-family: var(--head); font-weight: 600; position: sticky; top: 0; vertical-align: bottom; }
+  table.dash thead th.g { white-space: normal; min-width: 92px; max-width: 120px; font-size: 14px; line-height: 1.2; }
+  table.dash th[scope=row] { font-weight: 800; position: sticky; left: 0; background: #fff; }
+  table.dash tbody tr:hover td, table.dash tbody tr:hover th { background: #fbf8ef; }
+  .cell { display: grid; gap: 3px; min-width: 70px; }
+  .cell .bar { height: 7px; background: var(--chip); border-radius: 99px; overflow: hidden; }
+  .cell .bar b { display: block; height: 100%; }
+  .cell.none { color: #9aa3b0; }
+  .cell.done .bar b { background: var(--go); } .cell.part .bar b { background: var(--unit); }
+  .xbtn { border: 0; background: none; color: var(--muted); font: 800 18px var(--body); cursor: pointer; min-width: 36px; min-height: 36px; border-radius: 8px; }
+  .xbtn:hover { background: var(--chip); color: var(--neg); }
+  .legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 14px; font-weight: 700; color: var(--muted); margin: 8px 2px 0; }
+  .legend i { display: inline-block; width: 22px; height: 7px; border-radius: 9px; margin-right: 6px; vertical-align: 2px; }
+  .projector { position: fixed; inset: 0; z-index: 60; background: var(--paper); display: grid; place-items: center; text-align: center; padding: 20px; }
+  .projector[hidden] { display: none; }
+  .projector .pcode { font: 700 min(18vw, 190px)/1 var(--head); letter-spacing: .08em; }
+  .projector p { font-size: min(4vw, 30px); font-weight: 700; margin: 10px 0; }
+  .projector .url { font: 700 min(3vw, 24px) ui-monospace, Menlo, monospace; word-break: break-all; color: var(--muted); }
+  @media (max-width: 640px) { .joinbox { grid-template-columns: 1fr; } .bigcode { font-size: 36px; } }
+  @media print { .no-print, .site-header, .site-footer { display: none !important; } .tablewrap { border: 0; overflow: visible; } table.dash thead th { position: static; } }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header">
+  <a class="brand" href="../"><img src="../assets/logo.svg" alt="">Algebra 1 Games</a>
+  <nav class="site-nav" aria-label="Main"><a href="../">Games</a><a href="../teachers/">Guides</a><a href="./" aria-current="page">Classes</a></nav>
+</header>
+<main id="main" class="page"><p>Loading…</p></main>
+<div class="projector" id="projector" hidden role="dialog" aria-modal="true" aria-label="Class code for the screen">
+  <div><p>Go to <b>My class</b> on Algebra 1 Games and type this code:</p><div class="pcode" id="projCode"></div><p class="url" id="projUrl"></p><p><button class="btn big" id="projClose" type="button">Close</button></p></div>
+</div>
+<footer class="site-footer">
+  <div>Algebra 1 Games · Class data stays in this browser. Download a backup to move it to another device.</div>
+  <nav aria-label="Footer"><a href="../teachers/">Teacher guides</a><a href="../privacy/">Privacy</a></nav>
+</footer>
+<script>try { localStorage.setItem("a1g-role", "teacher"); } catch (e) {}</script>
+<script src="../assets/site-nav.js"></script>
+<script src="../assets/engine/catalog.js"></script>
+<script src="../assets/engine/look.js"></script>
+<script src="../assets/engine/classes.js"></script>
+<script>
+(function () {
+  const CL = A1G_CLASS, L = A1G_LOOK, main = document.getElementById("main");
+  const ROOT = new URL("../", location.href).href;
+  const esc = t => String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
+  const domains = A1G_CATALOG.domains.map(d => ({ ...d, games: d.games.filter(g => g.ready) }));
+  const bySlug = Object.fromEntries(domains.flatMap(d => d.games.map(g => [g.slug, { ...g, domain: d.name }])));
+  const when = t => { const d = new Date(t), today = new Date(); return d.toDateString() === today.toDateString() ? "today " + d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) : d.toLocaleDateString([], { month: "short", day: "numeric" }); };
+  async function copy(text, btn, label) {
+    try { await navigator.clipboard.writeText(text); btn.textContent = "Copied!"; } catch (e) { window.prompt("Copy this:", text); }
+    setTimeout(() => (btn.textContent = label), 1600);
+  }
+
+  // ---------- game picker used by "new class" and "edit" ----------
+  function picker(selected) {
+    return domains.map(d => {
+      const u = L.unit(d.name), n = d.games.filter(g => selected.includes(g.slug)).length;
+      return "<details class='unit' style='--u:" + u.color + "'" + (n ? " open" : "") + "><summary><i aria-hidden='true'></i>" + esc(d.name) + "<small>" + (n ? n + " chosen" : d.games.length + " games") + "</small></summary><div class='gpick'>" +
+        d.games.map(g => "<label><input type='checkbox' name='g' value='" + g.slug + "'" + (selected.includes(g.slug) ? " checked" : "") + "><span><span class='code'>" + g.code.replace("AI.", "") + "</span> " + esc(g.name) + "</span></label>").join("") + "</div></details>";
+    }).join("");
+  }
+  function classForm(c) {
+    return "<div class='field'><label for='cname'>Class name</label><input type='text' id='cname' maxlength='60' placeholder='e.g. Period 3 Algebra' value='" + esc(c ? c.name : "") + "'></div>" +
+      "<div class='field'><span>Assigned games <span class='quiet'>(optional: students see these first on their My class page)</span></span>" + picker(c ? c.games : []) + "</div>" +
+      "<label class='check'><input type='checkbox' id='ccalc'" + (!c || c.calc !== false ? " checked" : "") + "> Allow the in-game calculator</label>";
+  }
+  const formValues = () => ({ name: document.getElementById("cname").value, games: [...main.querySelectorAll("input[name=g]:checked")].map(i => i.value), calc: document.getElementById("ccalc").checked });
+
+  // ---------- list of classes ----------
+  function list() {
+    const all = Object.values(CL.all()).sort((a, b) => b.created - a.created);
+    main.innerHTML = "<h1>Classes</h1><p class='lead'>Make a class code, share it, and see how far each student has gotten. No logins, no server: this page keeps everything in this browser.</p>" +
+      "<ol class='quiet' style='font-size:16px'><li>Make a class and show students the code (or post the join link).</li><li>Students join on <b>My class</b> with the code and a nickname or roster number.</li><li>When you want an update, students press <b>Hand in my progress</b> and paste their code into Google Classroom, a form or an email.</li><li>Paste all the codes into your class page to see the dashboard.</li></ol>" +
+      "<div class='row'><button class='btn primary big' id='new' type='button'>New class</button></div>" +
+      (all.length ? "<div class='clist'>" + all.map(c => {
+        const n = Object.keys(c.students).length, last = Math.max(0, ...Object.values(c.students).map(s => s.time));
+        return "<a class='ccard' href='?c=" + encodeURIComponent(c.code) + "'><b>" + esc(c.name) + "</b><span><span class='pill'>" + esc(c.code) + "</span></span><span class='quiet'>" + n + (n === 1 ? " student" : " students") + " · " + (c.games.length ? c.games.length + " assigned games" : "no games assigned") + (last ? " · last hand-in " + when(last) : "") + "</span></a>";
+      }).join("") + "</div>" : "<p class='card quiet'>No classes on this device yet.</p>") +
+      "<section class='card no-print'><h2>Backup and other devices</h2><p class='quiet' style='margin-top:0'>Classes are saved only in this browser. Download a backup to keep them safe or to open them on another computer. Clearing the browser's data deletes them.</p>" +
+      "<div class='row'><button class='btn' id='dl' type='button'>Download backup</button><label class='btn' for='ul'>Load a backup</label><input type='file' id='ul' accept='.json,application/json' class='sr-only'></div><p id='bk' role='status' class='quiet'></p></section>";
+    document.getElementById("new").addEventListener("click", newClass);
+    document.getElementById("dl").addEventListener("click", () => {
+      const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([CL.backup()], { type: "application/json" }));
+      a.download = "algebra1-games-classes-" + new Date().toISOString().slice(0, 10) + ".json"; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    });
+    document.getElementById("ul").addEventListener("change", async e => {
+      const f = e.target.files[0]; if (!f) return;
+      try { const n = CL.restore(await f.text()); list(); document.getElementById("bk").textContent = "Loaded " + n + (n === 1 ? " class." : " classes."); }
+      catch (err) { document.getElementById("bk").textContent = err.message || "Couldn't read that file."; }
+    });
+  }
+  function newClass() {
+    main.innerHTML = "<p><a href='./'>← All classes</a></p><h1>New class</h1><form class='card bold' id='f'>" + classForm(null) + "<div class='row'><button class='btn primary big' type='submit'>Make class code</button><a class='btn' href='./'>Cancel</a></div></form>";
+    document.getElementById("cname").focus();
+    document.getElementById("f").addEventListener("submit", e => { e.preventDefault(); const v = formValues(); const c = CL.create(v.name, v.games, v.calc); location.search = "?c=" + encodeURIComponent(c.code); });
+  }
+
+  // ---------- one class ----------
+  function cellFor(stars) {
+    if (!stars) return "<div class='cell none'>—</div>";
+    const s = CL.summary(stars), cls = s.solved === 12 ? "done" : "part";
+    return "<div class='cell " + cls + "' title='" + s.solved + " of 12 levels, " + s.stars + " of 36 stars'><span><b>" + s.solved + "</b>/12 · ★" + s.stars + "</span><span class='bar'><b style='width:" + Math.round(100 * s.solved / 12) + "%'></b></span></div>";
+  }
+  function dashboard(c) {
+    const students = Object.entries(c.students).sort((a, b) => a[1].nick.localeCompare(b[1].nick, undefined, { numeric: true }));
+    if (!students.length) return "<p class='card quiet'>No progress handed in yet. When students paste their progress codes, paste them above.</p>";
+    let cols = c.games.filter(s => bySlug[s]);
+    let note = "";
+    if (!cols.length) { cols = Object.keys(bySlug).filter(s => students.some(([, st]) => st.stars[s])); note = "<p class='quiet'>No games are assigned, so the table shows every game any student has played.</p>"; }
+    const head = "<tr><th scope='col'>Student</th><th scope='col'>Handed in</th>" + cols.map(s => "<th scope='col' class='g'><span class='code' style='font-size:11px'>" + bySlug[s].code.replace("AI.", "") + "</span><br>" + esc(bySlug[s].name) + "</th>").join("") + (c.games.length ? "<th scope='col'>Assigned done</th>" : "") + "<th scope='col'><span class='sr-only'>Remove</span></th></tr>";
+    const rows = students.map(([key, st]) => {
+      const done = c.games.filter(s => CL.summary(st.stars[s]).solved === 12).length;
+      return "<tr><th scope='row'>" + esc(st.nick) + "</th><td>" + when(st.time) + "</td>" + cols.map(s => "<td>" + cellFor(st.stars[s]) + "</td>").join("") +
+        (c.games.length ? "<td><b>" + done + "</b> of " + c.games.length + "</td>" : "") +
+        "<td class='no-print'><button class='xbtn' data-del='" + esc(key) + "' aria-label='Remove " + esc(st.nick) + "' title='Remove'>×</button></td></tr>";
+    }).join("");
+    return note + "<div class='tablewrap'><table class='dash'><thead>" + head + "</thead><tbody>" + rows + "</tbody></table></div>" +
+      "<div class='legend'><span><i style='background:var(--go)'></i>all 12 levels</span><span><i style='background:var(--unit)'></i>in progress</span><span>— not started</span><span>Cells show levels solved and stars earned.</span></div>";
+  }
+  function csv(c) {
+    const cols = (c.games.length ? c.games : Object.keys(bySlug)).filter(s => bySlug[s]);
+    const q = v => '"' + String(v).replace(/"/g, '""') + '"';
+    const lines = [["Student", "Handed in"].concat(cols.flatMap(s => [bySlug[s].name + " levels", bySlug[s].name + " stars"])).map(q).join(",")];
+    Object.values(c.students).sort((a, b) => a.nick.localeCompare(b.nick, undefined, { numeric: true })).forEach(st => {
+      lines.push([st.nick, new Date(st.time).toLocaleString()].concat(cols.flatMap(s => { const m = CL.summary(st.stars[s]); return [m.solved, m.stars]; })).map(q).join(","));
+    });
+    const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([lines.join("\n")], { type: "text/csv" }));
+    a.download = c.name.replace(/[^\w -]+/g, "").trim() + " progress.csv"; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  }
+  function one(code, flash) {
+    const c = CL.get(code);
+    if (!c) { main.innerHTML = "<h1>Class not found</h1><p>This browser doesn't have class " + esc(CL.prettyCode(code)) + ". If you made it on another device, load a backup on the <a href='./'>Classes page</a>.</p>"; return; }
+    const link = CL.joinLink(c, ROOT);
+    main.innerHTML = "<p class='no-print'><a href='./'>← All classes</a></p><h1>" + esc(c.name) + "</h1>" +
+      "<section class='card bold no-print'><div class='joinbox'><div class='bigcode' aria-label='Class code " + esc(c.code.split("").join(" ")) + "'>" + esc(c.code) + "</div><div><b>How students join</b><p class='quiet' style='margin:4px 0 10px'>On Algebra 1 Games they choose <b>My class</b>, type this code and their nickname or roster number. Or post the join link, which also fills in the class name" + (c.games.length ? " and assigned games" : "") + ".</p>" +
+      "<div class='row'><button class='btn primary' id='cpLink' type='button'>Copy join link</button><button class='btn' id='proj' type='button'>Show code on screen</button><button class='btn' id='edit' type='button'>Edit class</button></div></div></div>" +
+      "<p class='quiet' style='margin-bottom:0'>" + (c.games.length ? c.games.length + " assigned " + (c.games.length === 1 ? "game" : "games") : "No games assigned") + " · Calculator " + (c.calc === false ? "off" : "on") + ". If you change these, students who already joined need the new join link.</p></section>" +
+      "<section class='card no-print'><h2>Collect progress</h2><p class='quiet' style='margin-top:0'>Ask students to press <b>Hand in my progress</b> on their My class page and paste the code where you collect work. Then paste everything here: one code or a whole column of form responses at once.</p>" +
+      "<label class='sr-only' for='paste'>Progress codes</label><textarea class='paste' id='paste' placeholder='Paste progress codes here (they start with A1G1~)'></textarea><div class='row' style='margin-top:10px'><button class='btn primary' id='add' type='button'>Add to dashboard</button></div><div id='res' role='status'>" + (flash || "") + "</div></section>" +
+      "<section><div class='row' style='justify-content:space-between'><h2 style='margin:18px 0 6px'>Progress</h2><div class='row no-print'><button class='btn' id='csv' type='button'>Download CSV</button><button class='btn' type='button' onclick='window.print()'>Print</button></div></div>" + dashboard(c) + "</section>" +
+      "<section class='card no-print' style='margin-top:26px'><h3>Delete this class</h3><p class='quiet'>Removes the class and its progress from this browser. Students' own stars are not affected.</p><button class='btn' id='del' type='button'>Delete class</button></section>";
+    document.getElementById("cpLink").addEventListener("click", e => copy(link, e.currentTarget, "Copy join link"));
+    document.getElementById("proj").addEventListener("click", () => {
+      document.getElementById("projCode").textContent = c.code; document.getElementById("projUrl").textContent = ROOT.replace(/^https?:\/\//, "") + "class/";
+      const p = document.getElementById("projector"); p.hidden = false; document.getElementById("projClose").focus();
+    });
+    document.getElementById("add").addEventListener("click", () => {
+      const text = document.getElementById("paste").value;
+      if (!CL.findCodes(text).length) { document.getElementById("res").innerHTML = "<p class='note warn'>No progress codes found. They start with A1G1~.</p>"; return; }
+      const r = CL.importText(text, c.code), msgs = [];
+      if (r.added || r.updated) msgs.push("<p class='note ok'>Added " + r.added + " new " + (r.added === 1 ? "student" : "students") + ", updated " + r.updated + ".</p>");
+      if (r.same) msgs.push("<p class='note warn'>" + r.same + (r.same === 1 ? " code was" : " codes were") + " the same or older than what's already here.</p>");
+      if (r.otherClass.length) msgs.push("<p class='note warn'>" + r.otherClass.length + (r.otherClass.length === 1 ? " code is" : " codes are") + " for a different class (" + esc([...new Set(r.otherClass)].join(", ")) + ").</p>");
+      if (r.bad) msgs.push("<p class='note warn'>" + r.bad + (r.bad === 1 ? " code was" : " codes were") + " damaged or cut off. Ask " + (r.bad === 1 ? "that student" : "those students") + " to copy it again.</p>");
+      one(c.code, msgs.join(""));
+    });
+    document.getElementById("csv").addEventListener("click", () => csv(c));
+    main.querySelectorAll("[data-del]").forEach(b => b.addEventListener("click", () => {
+      const st = c.students[b.dataset.del]; if (!st || !confirm("Remove " + st.nick + " from this dashboard?")) return;
+      CL.removeStudent(c.code, b.dataset.del); one(c.code);
+    }));
+    document.getElementById("del").addEventListener("click", () => {
+      if (!confirm("Delete " + c.name + " and its progress from this browser? This can't be undone unless you have a backup.")) return;
+      CL.remove(c.code); location.search = "";
+    });
+    document.getElementById("edit").addEventListener("click", () => {
+      main.innerHTML = "<p><a href='?c=" + encodeURIComponent(c.code) + "'>← Back to " + esc(c.name) + "</a></p><h1>Edit " + esc(c.name) + "</h1><form class='card bold' id='f'>" + classForm(c) +
+        "<div class='row'><button class='btn primary big' type='submit'>Save</button><a class='btn' href='?c=" + encodeURIComponent(c.code) + "'>Cancel</a></div></form>";
+      document.getElementById("f").addEventListener("submit", e => { e.preventDefault(); const v = formValues(); CL.update(c.code, { name: v.name.trim() || c.name, games: v.games, calc: v.calc }); one(c.code, "<p class='note ok'>Saved. Post the join link again so students get the changes.</p>"); });
+    });
+  }
+  document.getElementById("projClose").addEventListener("click", () => { document.getElementById("projector").hidden = true; document.getElementById("proj")?.focus(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") document.getElementById("projector").hidden = true; });
+
+  const code = new URLSearchParams(location.search).get("c");
+  code ? one(code) : list();
+})();
+</script>
+</body>
+</html>

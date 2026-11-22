@@ -19,11 +19,13 @@ cat > "games/$slug/index.html" <<HTML
 <body>
 <script src="../../assets/engine/catalog.js"></script>
 <script src="../../assets/engine/look.js"></script>
+<script src="../../assets/site-nav.js"></script>
 <script src="../../assets/engine/algebra.js"></script>
 <script src="../../assets/engine/cartoon.js"></script>
 <script src="../../assets/engine/plane.js"></script>
 <script src="../../assets/engine/timeline.js"></script>
 <script src="../../assets/engine/datalab.js"></script>
+<script src="../../assets/engine/calc.js"></script>
 <script src="../../assets/engine/game-shell.js"></script>
 <script src="../../assets/engine/steps.js"></script>
 <script src="game.js"></script>

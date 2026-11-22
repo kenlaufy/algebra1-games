@@ -110,7 +110,9 @@
     body.appendChild(h("footer", { class: "site-footer" },
       h("div", null, "Aligned to the 2017 Massachusetts Curriculum Framework for Mathematics, Model Algebra I" + (code ? ", standard " + code : "") + "."),
       h("nav", { "aria-label": "Footer" },
-        h("a", { href: root + "teachers/guide.html?g=" + cfg.slug }, "Teacher guide"), h("a", { href: root + "privacy/" }, "Privacy"))));
+        h("a", { class: "teacher-only", href: root + "teachers/guide.html?g=" + cfg.slug }, "Teacher guide"), h("a", { href: root + "privacy/" }, "Privacy"))));
+    if (window.A1G_NAV) window.A1G_NAV.apply();
+    if (window.A1G_CALC) window.A1G_CALC.mount(document.querySelector(".head-actions"));
 
     // overlays
     const help = cfg.help || {};

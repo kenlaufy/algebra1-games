@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Layout checks · Algebra 1 Games</title>
+<link rel="stylesheet" href="../assets/site.css">
+<style>
+  body { padding: 20px; }
+  .fail { color: #b3261e; } .pass { color: #346d42; }
+  #frames iframe { border: 1px solid #ccc; margin: 4px; vertical-align: top; background: #fff; }
+  li small { color: var(--muted); }
+</style>
+</head>
+<body>
+<h1>Layout checks</h1>
+<p>Open from a local web server. Loads every page, and every level of every game, at phone, tablet and desktop widths. It flags sideways scrolling, content wider than the screen, text cut off inside controls, and tap targets smaller than 40 px. Use <code>?g=slug1,slug2</code> to check selected games, or <code>?w=320,1280</code> to choose widths.</p>
+<p id="summary">Running…</p>
+<ul id="results"></ul>
+<div id="frames"></div>
+<script src="../assets/engine/catalog.js"></script>
+<script>
+(async function () {
+  const q = (k) => (new RegExp("[?&]" + k + "=([a-z0-9,.-]+)").exec(location.search) || [])[1];
+  const only = q("g");
+  const widths = (q("w") || "320,375,768,1280").split(",").map(Number);
+  const games = A1G_CATALOG.domains.flatMap((d) => d.games).filter((g) => g.ready && (!only || only.split(",").includes(g.slug)));
+  const pages = only ? [] : ["../", "../teachers/", "../teachers/guide.html?g=f-if-a-2", "../teachers/guide.html?g=s-id-b-6-b", "../teachers/a-rei-b-3/", "../privacy/", "../class/", "../classes/"].concat(/github\.io$/.test(location.hostname) ? ["../404.html"] : []);
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  let problems = 0, checks = 0;
+  const report = (label, issues) => {
+    checks++;
+    const li = document.createElement("li");
+    if (issues.length) { problems++; li.className = "fail"; li.innerHTML = "✗ " + label + "<br><small>" + issues.slice(0, 6).join("<br>") + "</small>"; document.getElementById("results").append(li); }
+  };
+  const describe = (el) => el.tagName.toLowerCase() + (el.id ? "#" + el.id : "") + (el.className && typeof el.className === "string" ? "." + el.className.trim().split(/\s+/).join(".") : "") + (el.textContent ? " “" + el.textContent.trim().slice(0, 30) + "”" : "");
+  function inspect(w) {
+    const d = w.document, vw = d.documentElement.clientWidth, issues = [];
+    if (d.documentElement.scrollWidth > vw + 1) issues.push("page scrolls sideways: " + d.documentElement.scrollWidth + " px wide in a " + vw + " px screen");
+    const seen = new Set();
+    d.querySelectorAll("body *").forEach((el) => {
+      const cs = w.getComputedStyle(el);
+      if (cs.display === "none" || cs.visibility === "hidden" || el.closest("[hidden], .overlay:not(.show), svg, table, .chips, pre, code, .sr-only")) return;
+      const r = el.getBoundingClientRect();
+      if (!r.width || !r.height) return;
+      // something sticking out past the right edge (and not inside a scroll box)
+      if (r.right > vw + 1 && !seen.has(el.parentElement)) { seen.add(el); issues.push("wider than the screen: " + describe(el) + " (right edge " + Math.round(r.right) + ")"); }
+      // text cut off inside a control
+      if (el.matches("button, .btn, a.btn, .chip, .choice") && el.scrollWidth > el.clientWidth + 2 && cs.overflow !== "visible") issues.push("text cut off: " + describe(el));
+      // small tap targets (buttons only; inline links in text are fine)
+      if (el.matches("button, .btn, .chip, select, input:not([type=hidden]):not([type=range])") && r.height < 40 && !el.closest(".pips, .crumb, td")) issues.push("small tap target (" + Math.round(r.height) + " px tall): " + describe(el));
+    });
+    return [...new Set(issues)];
+  }
+  async function load(frame, url) {
+    await new Promise((resolve) => { frame.onload = resolve; frame.src = url; });
+    await sleep(250);
+    return frame.contentWindow;
+  }
+  for (const width of widths) {
+    const frame = document.createElement("iframe");
+    frame.width = width; frame.height = width < 700 ? 760 : 900;
+    document.getElementById("frames").append(frame);
+    for (const p of pages) report(width + " px · " + p.replace("../", "/"), inspect(await load(frame, p)));
+    for (const g of games) {
+      const w = await load(frame, "../games/" + g.slug + "/?test=1");
+      const api = w.GameShell && w.GameShell.api;
+      if (!api) { report(width + " px · " + g.name + " · start", inspect(w)); continue; }
+      const all = [];
+      for (let i = 0; i < 12; i++) {
+        api.goto(i); await sleep(20);
+        inspect(w).forEach((x) => all.push("level " + (i + 1) + ": " + x));
+      }
+      report(width + " px · " + g.name, [...new Set(all)]);
+    }
+    frame.remove();
+  }
+  document.getElementById("summary").innerHTML = problems
+    ? "<span class='fail'>" + problems + " of " + checks + " page checks found problems</span>"
+    : "<span class='pass'>All " + checks + " page checks passed</span>";
+  document.title = (problems ? "FAIL" : "PASS") + " · Layout checks";
+})();
+</script>
+</body>
+</html>

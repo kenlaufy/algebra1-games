@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Class tests · Algebra 1 Games</title>
+<link rel="stylesheet" href="../assets/site.css">
+<style>body { padding: 20px; } .fail { color: #b3261e; } .pass { color: #346d42; }</style>
+</head>
+<body>
+<h1>Class and calculator tests</h1>
+<p>Checks join codes, progress codes (round trip, damage, unusual nicknames), importing into a dashboard, backups, and the calculator's math. It saves and restores this browser's own Algebra 1 Games data around the run.</p>
+<p id="summary">Running…</p>
+<ul id="results"></ul>
+<script src="../assets/engine/catalog.js"></script>
+<script src="../assets/engine/look.js"></script>
+<script src="../assets/engine/classes.js"></script>
+<script src="../assets/engine/calc.js"></script>
+<script>
+(function () {
+  const CL = A1G_CLASS, C = A1G_CALC;
+  const saved = {}; Object.keys(localStorage).filter(k => /^(a1g-|balance-)/.test(k)).forEach(k => { saved[k] = localStorage.getItem(k); localStorage.removeItem(k); });
+  let fails = 0, n = 0;
+  const check = (name, ok, detail) => { n++; if (!ok) fails++; const li = document.createElement("li"); li.className = ok ? "pass" : "fail"; li.textContent = (ok ? "✓ " : "✗ ") + name + (ok || detail == null ? "" : " (" + detail + ")"); document.getElementById("results").append(li); };
+  try {
+    // join codes
+    const codes = Array.from({ length: 200 }, CL.newCode);
+    check("Join codes look like ABC-123 and avoid 0/O/1/I/L", codes.every(c => /^[A-HJKMNP-Z2-9]{3}-[A-HJKMNP-Z2-9]{3}$/.test(c)), codes.find(c => !/^[A-HJKMNP-Z2-9]{3}-[A-HJKMNP-Z2-9]{3}$/.test(c)));
+    check("Join codes are random", new Set(codes).size === codes.length);
+    check("Typed codes are tidied", CL.prettyCode(" nqt zng ") === "NQT-ZNG" && CL.validCode("nqtzng") && !CL.validCode("NQT-ZN0"));
+
+    // teacher makes a class, student joins and plays
+    const cls = CL.create("Period 3", ["f-if-a-2", "a-rei-b-3"], false);
+    check("Class created with settings", cls.name === "Period 3" && cls.games.length === 2 && cls.calc === false && CL.get(cls.code));
+    const link = CL.joinLink(cls, location.origin + "/");
+    check("Join link carries code, name, games and calculator", /join=/.test(link) && /name=Period\+3/.test(link) && /games=f-if-a-2%2Ca-rei-b-3/.test(link) && /calc=0/.test(link), link);
+    const nick = "Zoë ~ #1 & co";
+    CL.join({ code: cls.code.toLowerCase(), nick, name: "Period 3", games: cls.games, calc: false });
+    localStorage.setItem("a1g-stars-f-if-a-2", JSON.stringify({ 0: 3, 1: 2, 2: 1, 11: 3 }));
+    localStorage.setItem("balance-workshop-stars", JSON.stringify({ 0: 3, 1: 3 }));
+    check("Calculator follows the class setting", C.allowed() === false);
+    const code = CL.progressCode();
+    check("Progress code is URL-safe text", /^A1G1~[A-Za-z0-9~%._-]+$/.test(code), code);
+    const p = CL.parse(code);
+    check("Round trip keeps the nickname", p.nick === nick, p.nick);
+    check("Round trip keeps the class", p.classCode === cls.code);
+    check("Round trip keeps every level's stars", JSON.stringify(p.stars["f-if-a-2"]) === JSON.stringify([3, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 3]) && JSON.stringify(p.stars["a-rei-b-3"]) === JSON.stringify([3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]), JSON.stringify(p.stars));
+    check("Games with no stars are left out", Object.keys(p.stars).length === 2);
+    check("Time is about now", Math.abs(p.time - Date.now()) < 120000);
+    check("A cut-off code is caught", !!CL.parse(code.slice(0, -6)).error);
+    check("A changed star is caught", !!CL.parse(code.replace(/f-if-a-2\.(.)/, (m, ch) => "f-if-a-2." + (ch === "A" ? "B" : "A"))).error);
+    check("Codes are found inside other text", CL.findCodes("Name: x\n" + code + "\nthanks").length === 1);
+
+    // teacher imports
+    let r = CL.importText("Responses:\n" + code + "\n" + code.slice(0, 40) + "\nhello", cls.code);
+    check("Import adds the student and reports the damaged code", r.added === 1 && r.bad === 1, JSON.stringify(r));
+    r = CL.importText(code, cls.code);
+    check("Re-pasting the same code changes nothing", r.same === 1 && r.added === 0 && r.updated === 0, JSON.stringify(r));
+    const other = CL.create("Period 5", [], true);
+    r = CL.importText(code, other.code);
+    check("A code for another class isn't added to this one", r.otherClass.length === 1 && !Object.keys(CL.get(other.code).students).length, JSON.stringify(r));
+    const st = CL.get(cls.code).students[nick.toLowerCase()];
+    check("Dashboard summary counts levels and stars", CL.summary(st.stars["f-if-a-2"]).solved === 4 && CL.summary(st.stars["f-if-a-2"]).stars === 9);
+
+    // backup and restore
+    const backup = CL.backup();
+    localStorage.removeItem("a1g-classes");
+    check("Restore brings classes back", CL.restore(backup) === 2 && CL.get(cls.code) && CL.get(cls.code).students[nick.toLowerCase()]);
+    let threw = false; try { CL.restore('{"hello":1}'); } catch (e) { threw = true; }
+    check("Restore rejects other files", threw);
+    CL.leave();
+    check("Leaving the class turns the calculator back on", C.allowed() === true);
+
+    // calculator math
+    const cases = [["2+3*4", 14], ["(2+3)*4", 20], ["-2^2", -4], ["(-2)^2", 4], ["2^3^2", 512], ["2π", 2 * Math.PI], ["3(4)", 12], ["2√9", 6], ["√(16)+1", 5], ["5²", 25], ["1/3+1/6", 0.5], ["10−3−2", 5], ["2^-1", 0.5], ["ans+1", 11], ["12 ÷ 4 × 3", 9]];
+    cases.forEach(([e, v]) => { let got; try { got = C.evaluate(e, 10); } catch (x) { got = x.message; } check("Calculator: " + e + " = " + v, Math.abs(got - v) < 1e-9, got); });
+    ["1/0", "√(-4)", "(2+3", "2+", "abc"].forEach(e => { let msg = null; try { C.evaluate(e); } catch (x) { msg = x.message; } check("Calculator explains an error for " + e, !!msg, msg); });
+    check("Calculator shows fractions", C.format(1 / 3).includes("1/3") && C.format(-0.75).includes("−3/4"), C.format(1 / 3));
+  } catch (e) { check("Tests ran without errors", false, e.message); }
+  finally {
+    Object.keys(localStorage).filter(k => /^(a1g-|balance-)/.test(k)).forEach(k => localStorage.removeItem(k));
+    Object.entries(saved).forEach(([k, v]) => localStorage.setItem(k, v));
+  }
+  document.getElementById("summary").innerHTML = fails ? "<span class='fail'>" + fails + " of " + n + " checks failed</span>" : "<span class='pass'>All " + n + " checks passed</span>";
+  document.title = (fails ? "FAIL" : "PASS") + " · Class tests";
+})();
+</script>
+</body>
+</html>
