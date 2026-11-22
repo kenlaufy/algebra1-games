@@ -31,7 +31,7 @@
       steps: [["in", "Differences: −5, []", [-4.5]], ["ch", "So y is…", KIND(1)], ["in", "Next value: []", [36.45]]], answer: "Exponential ×0.9", check: "40.5 × 0.9 = 36.45 ✓", tip: "Last one: decide carefully." },
   ];
   Timeline.stepGame({
-    slug: "f-le-a-1-a", title: "Guess the Next Number", subtitle: "Linear functions grow by equal differences; exponential functions by equal factors",
+    slug: "f-le-a-1-a", title: "Guess the Next Number", firstMove: "Subtract neighbouring values to find the differences, then decide what kind of growth it is.", subtitle: "Linear functions grow by equal differences; exponential functions by equal factors",
     stages: { 1: "Stage 1 · Differences or ratios?", 2: "Stage 2 · Prove it", 3: "Stage 3 · Look-alikes" }, levels: LEVELS,
     help: { intro: "Over equal steps in x, a <b>linear</b> function always adds the same amount and an <b>exponential</b> function always multiplies by the same factor.",
       steps: ["Compute differences (subtract neighbours) or ratios (divide neighbours).", "Decide: linear, exponential, or neither.", "Bet on the next value.", "Fewer wrong answers means more stars."], note: "Decimals are fine." },

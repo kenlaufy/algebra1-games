@@ -6,7 +6,7 @@
     { stage: 1, type: "mul", A: [1, 1], B: [1, 4], tip: "x times x makes a big square tile: x²." },
     { stage: 1, type: "mul", A: [1, 5], B: [1, 2], tip: "The two x tiles in the middle are like terms." },
     { stage: 1, type: "mul", A: [2, 1], B: [1, 3], tip: "Now a 2x side. 2x times x is 2x²." },
-    { stage: 2, type: "mul", A: [1, -2], B: [1, 5], tip: "Red means negative. A negative times a positive is negative." },
+    { stage: 2, type: "mul", A: [1, -2], B: [1, 5], tip: "A minus sign marks a negative tile. A negative times a positive is negative." },
     { stage: 2, type: "mul", A: [1, -3], B: [1, -4], tip: "What's a negative times a negative?" },
     { stage: 2, type: "add", A: [2, 3, -1], B: [1, -5, 4], tip: "Adding polynomials: combine the x² tiles, the x tiles, and the ones." },
     { stage: 2, type: "sub", A: [4, -1, 6], B: [1, 3, -2], tip: "Subtracting a polynomial means subtracting every term. First flip every sign in the second one." },
@@ -27,7 +27,7 @@
     const row = api.h("div", { class: "coef-row" });
     const inputs = [];
     for (let p = deg; p >= 0; p--) {
-      const f = api.h("input", { type: "text", inputmode: "numeric", "aria-label": p === 0 ? "constant term" : "coefficient of x" + (p > 1 ? " to the " + p : "") });
+      const f = api.h("input", { type: "text", "aria-label": p === 0 ? "constant term" : "coefficient of x" + (p > 1 ? " to the " + p : "") });
       inputs.push(f);
       row.appendChild(f);
       row.appendChild(api.h("span", { html: p === 0 ? "" : (p === 1 ? "<i>x</i>" : "<i>x</i>" + Alg.sup(p)) + " + " }));
@@ -38,6 +38,7 @@
   GameShell.register({
     slug: "a-apr-a-1-a",
     title: "Tile Multiplication",
+    firstMove: "Build the product one tile at a time. Enter each row term times its column term, then choose Check tiles.",
     subtitle: "Add, subtract and multiply polynomials with algebra tiles",
     stages: { 1: "Stage 1 · Tile rectangles", 2: "Stage 2 · Negatives, adding and subtracting", 3: "Stage 3 · Bigger products" },
     levels: LEVELS,
@@ -91,13 +92,14 @@
         const btn = api.button("Check tiles", checkCells, "primary");
         api.controls.append(api.h("span", { class: "preview" }, "Fill every cell, then check."), btn);
         api.autoplay = () => { cells.forEach((c) => (c.inp.value = tstr(c.want).replace(/²/, "^2").replace(/³/, "^3"))); btn.click(); return phaseAuto(); };
-        cells[0].inp.focus();
+
       }
       function checkCells() {
         let firstBad = null;
         cells.forEach((c) => {
           const t = Alg.parseTerm(c.inp.value);
           const ok = t && Alg.close(t.coef, c.want.coef) && t.pow === c.want.pow;
+          c.inp.setAttribute("aria-invalid", String(!ok));
           c.td.classList.toggle("bad", !ok);
           if (!ok && !firstBad) firstBad = c;
         });
@@ -172,11 +174,12 @@
         }, "primary");
         api.controls.append(api.h("div", { style: { width: "100%" } }, api.h("div", { class: "preview" }, lv.type === "mul" ? "Combine like terms:" : "Add the like terms:"), row), btn);
         api.autoplay = () => { res.forEach((v, k) => (inputs[k].value = v)); btn.click(); return {}; };
-        inputs[0].focus();
+
       }
       function phaseAuto() { return api.autoplay(); }
     },
     guide: {
+      evidence: "Point to the two tiles that contribute to the middle term. The student adds their coefficients and explains why the square tile belongs in a different column.",
       summary: "A 12-level game for adding, subtracting and multiplying polynomials with an area model. Each cell becomes an algebra tile when it's right, and every answer is checked at x = 10 to compare polynomials with whole numbers.",
       also: "<span class='code'>AI.A-APR.A.1.b</span> combining like terms and the distributive property.",
       practices: "MP7 Look for and make use of structure · MP8 Look for and express regularity in repeated reasoning",

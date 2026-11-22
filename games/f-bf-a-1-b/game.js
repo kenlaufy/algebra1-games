@@ -28,7 +28,7 @@
       answer: "T(t) = 22 + 68(0.8)ᵗ", check: "22 + 54.4 = 76.4 ✓", tip: "Last one: build the model yourself." },
   ];
   Timeline.stepGame({
-    slug: "f-bf-a-1-b", title: "Shop Simulator", subtitle: "Combine standard functions with arithmetic operations",
+    slug: "f-bf-a-1-b", title: "Shop Simulator", firstMove: "Combine the two functions term by term, then evaluate or find the best value.", subtitle: "Combine standard functions with arithmetic operations",
     stages: { 1: "Stage 1 · Add, subtract, multiply, divide", 2: "Stage 2 · Combined models", 3: "Stage 3 · Build your own" }, levels: LEVELS,
     help: { intro: "Real models are often built from simpler functions: profit = revenue − cost, revenue = price × demand, temperature = room + difference.",
       steps: ["Identify the pieces and how they combine.", "Write or choose the combined function.", "Evaluate it or find its best value.", "Fewer wrong answers means more stars."], note: "Decimals are fine." },

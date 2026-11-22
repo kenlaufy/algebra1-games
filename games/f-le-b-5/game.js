@@ -20,7 +20,7 @@
     { stage: 3, ctx: "Temperature: T = −2h + 70 °F, h hours after sunset.", steps: [["ch", "What does −2 mean?", [["It cools 2 °F every hour", ""], ["It's 2 °F at sunset", "At sunset it's 70 °F."], ["It warms 2 °F per hour", "The negative means falling."]]], ["in", "4 hours after sunset: [] °F", [62]]], answer: "70 °F at sunset, cooling 2 °F/hour", check: "70 − 8 = 62 ✓", tip: "Last one: a negative rate." },
   ];
   Timeline.stepGame({
-    slug: "f-le-b-5", title: "Parameter Dials", subtitle: "Interpret the parameters of linear and exponential functions in context",
+    slug: "f-le-b-5", title: "Parameter Dials", firstMove: "Say what each number in the model means, then predict what changing it would do.", subtitle: "Interpret the parameters of linear and exponential functions in context",
     stages: { 1: "Stage 1 · Linear dials", 2: "Stage 2 · Exponential dials", 3: "Stage 3 · Compare and build" }, levels: LEVELS,
     help: { intro: "In f(x) = mx + k and f(x) = a · bˣ, each number is a <b>dial</b> with a meaning: a rate, a starting value, a growth factor.",
       steps: ["Say what each parameter means in the situation.", "Predict what turning a dial does, then see the graph change.", "Build models from descriptions.", "Fewer wrong answers means more stars."], note: "Predict before the graph appears." },

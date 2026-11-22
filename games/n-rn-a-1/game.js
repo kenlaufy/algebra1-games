@@ -44,7 +44,7 @@
       answer: "(1/2)^(1/2) ≈ 0.71 per hour", check: "0.71 × 0.71 ≈ 0.5 ✓", tip: "Last one: decay works the same way." },
   ];
   Timeline.stepGame({
-    slug: "n-rn-a-1", title: "The Half-Hour Puzzle", subtitle: "Explain what rational exponents mean",
+    slug: "n-rn-a-1", title: "The Half-Hour Puzzle", firstMove: "Find how many cells there are after 1, 2 and 3 hours. Fill the boxes, then press Check.", subtitle: "Explain what rational exponents mean",
     stages: { 1: "Stage 1 · Half an hour", 2: "Stage 2 · Any fraction of the time", 3: "Stage 3 · Use it" }, levels: LEVELS,
     help: { intro: "If cells double every hour, what happens every <b>half</b> hour? The answer explains what exponents like 1/2 mean.",
       steps: ["Read the situation and the table or graph.", "Use the exponent rules: (aᵐ)(aⁿ) = aᵐ⁺ⁿ and (aᵐ)ⁿ = aᵐⁿ.", "Fill in the boxes or choose an answer. Decimals to 2 places are fine.", "Fewer wrong answers means more stars."],

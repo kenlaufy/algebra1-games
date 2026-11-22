@@ -35,6 +35,7 @@
   GameShell.register({
     slug: "f-if-c-7-b",
     title: "Track Builder",
+    firstMove: "Find the flag at the corner of the V. Enter its x-coordinate for h and its y-coordinate for k to build the track.",
     subtitle: "Graph absolute value, step and piecewise-defined functions",
     stages: { 1: "Stage 1 · V-shaped tracks", 2: "Stage 2 · Step functions", 3: "Stage 3 · Piecewise tracks" },
     levels: LEVELS,
@@ -46,7 +47,7 @@
         "Stage 3: decide which piece an input uses, then evaluate or build the piece.",
         "Fewer wrong answers means more stars.",
       ],
-      note: "A function has exactly one output for each input, so steps need one open end.",
+      note: "A function has exactly one output for each input, so check which piece includes a shared endpoint.",
     },
     load(lv, api) {
       const r = lv.r || [-6, 6, -4, 7, 1, 1];
@@ -103,6 +104,7 @@
       summary: "A 12-level game for absolute value, step and piecewise functions. Students build absolute-value tracks through flags, read step functions in pricing contexts with careful attention to open and closed endpoints, and evaluate and build piecewise functions.",
       also: "<span class='code'>AI.F-BF.B.3</span> transformations of |x|.",
       practices: "MP6 Attend to precision · MP7 Look for and make use of structure",
+      evidence: "Ask which rule applies at a shared endpoint. Have the student use the open and closed dots to explain why the input has exactly one output.",
       goals: [
         "Graph y = a|x − h| + k and identify its vertex and slopes.",
         "Interpret and graph step functions, including open and closed endpoints.",

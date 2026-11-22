@@ -23,6 +23,7 @@
   GameShell.register({
     slug: "a-rei-d-10",
     title: "Star Map",
+    firstMove: "Pick an x, use the equation to find y, and tap that point. Light four different stars, then press Check stars.",
     subtitle: "The graph of an equation is the set of all its solutions",
     stages: { 1: "Stage 1 · Lines of stars", 2: "Stage 2 · Curves of stars", 3: "Stage 3 · On the graph or not?" },
     levels: LEVELS,
@@ -99,6 +100,7 @@
       summary: "A 12-level game about what a graph is. Students light up points that satisfy an equation, see the graph appear through them, and decide without a graph whether points are solutions.",
       also: "<span class='code'>AI.F-IF.A.1</span> the graph of f as the graph of y = f(x).",
       practices: "MP2 Reason abstractly and quantitatively · MP6 Attend to precision",
+      evidence: "Give the student a point close to the line. Ask them to substitute its coordinates and use the result to accept or reject it.",
       goals: [
         "Explain that the graph of an equation in two variables is the set of all its solutions.",
         "Find solutions by choosing x and computing y, for lines, parabolas, exponentials, a circle and an absolute value.",

@@ -30,24 +30,21 @@
       const prompt = h("div", { style: { fontSize: "19px", fontWeight: 700 } });
       if (st.type === "input") {
         // render prompt with inline inputs
-        const parts = String(st.prompt).split("[]");
+        prompt.innerHTML = st.prompt.replace(/\[\]/g, '<span data-answer-slot></span>');
+        const slots = [...prompt.querySelectorAll("[data-answer-slot]")];
         const fields = [];
-        parts.forEach((p, k) => {
-          prompt.appendChild(h("span", { html: p }));
-          if (k < parts.length - 1) {
-            const f = h("input", { type: "text", inputmode: "decimal", "aria-label": "Answer " + (k + 1), autocomplete: "off",
-              style: { width: (st.width || 74) + "px", margin: "0 4px", minHeight: "44px", fontFamily: "var(--body)", fontWeight: 800,
-                fontSize: "20px", padding: "4px 8px", border: "2px solid var(--line)", borderRadius: "10px", textAlign: "center" } });
-            f.addEventListener("keydown", (e) => { if (e.key === "Enter") check(); });
-            fields.push(f);
-            prompt.appendChild(f);
-          }
+        slots.forEach((slot, k) => {
+          const f = h("input", { type: "text", "aria-label": (st.fieldLabels && st.fieldLabels[k]) || "Answer " + (k + 1), autocomplete: "off",
+            style: { width: (st.width || 74) + "px", margin: "0 4px", minHeight: "44px", fontFamily: "var(--body)", fontWeight: 800,
+              fontSize: "20px", padding: "4px 8px", border: "2px solid var(--line)", borderRadius: "10px", textAlign: "center" } });
+          f.addEventListener("keydown", (e) => { if (e.key === "Enter") check(); });
+          fields.push(f);
+          slot.replaceWith(f);
         });
         const btn = api.button(st.button || "Check", check, "primary");
         box.append(prompt, h("div", null, btn));
         if (st.note) box.appendChild(h("div", { class: "preview", html: st.note }));
-        // Don't scroll the question out of view on load; after the first step, keep the cursor in the next box.
-        if (i > 0) setTimeout(() => fields[0] && fields[0].focus({ preventScroll: true }), 0);
+        if (i > 0 && !matchMedia("(pointer: coarse)").matches) fields[0]?.focus({ preventScroll: true });
 
         function check() {
           const vals = fields.map((f) => Alg.parseNum(f.value));
@@ -58,11 +55,18 @@
           if (res === true) advance(st.done || st.prompt.replace(/\[\]/g, () => fmtVal(vals.shift())));
           else { mistakes++; api.msg(res, "bad"); }
         }
-        st._auto = () => { fields.forEach((f, k) => (f.value = st.autoAnswers ? st.autoAnswers[k] : st.answers[k])); check(); };
+        st._auto = () => { fields.forEach((f, k) => (f.value = st.autoAnswers ? st.autoAnswers[k] : st.answers[k])); btn.click(); };
       } else if (st.type === "choice") {
         prompt.innerHTML = st.prompt;
         const grid = h("div", { class: "choices" });
-        st.options.forEach((op) => {
+        const options = st.options.slice();
+        if (!st.ordered) {
+          for (let end = options.length - 1; end > 0; end--) {
+            const pick = Math.floor(Math.random() * (end + 1));
+            [options[pick], options[end]] = [options[end], options[pick]];
+          }
+        }
+        options.forEach((op) => {
           const b = h("button", { class: "choice", html: op.label, on: { click: () => {
             if (b.disabled) return;
             if (op.ok) { b.classList.add("right"); advance(st.done || op.label); }
@@ -102,7 +106,8 @@
       if (doneHtml) work.push(doneHtml);
       done();
       if (st.onDone) st.onDone(i);
-      api.msg(st.praise || "Yes!", "good");
+      api.msg(st.praise || "Correct.", "good");
+      if (doneHtml && !st.praise) api.feedback.append(" ", h("span", { html: doneHtml }));
       i++;
       if (i < steps.length) show();
       else finish();

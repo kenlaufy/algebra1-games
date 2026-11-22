@@ -31,6 +31,7 @@
   GameShell.register({
     slug: "f-bf-b-3",
     title: "Shadow Match",
+    firstMove: "Find the lowest point on each parabola. Choose a transformation, enter how far to move the graph, then press Cast.",
     subtitle: "Transform graphs with f(x) + k, k·f(x), f(x + k) and f(kx)",
     stages: { 1: "Stage 1 · Up, down, stretch", 2: "Stage 2 · Sideways", 3: "Stage 3 · Flips and combos" },
     levels: LEVELS,
@@ -95,7 +96,7 @@
         const tgt = remaining.find((tm) => tm[0] === t1) || remaining[0];
         let hint = "That gives a different graph.";
         if (t1 === "shift" && tgt[0] === "shift" && k1 === -tgt[1]) hint = "Right idea, wrong direction: f(x + k) moves LEFT when k is positive.";
-        else if (t1 === tgt[0]) hint = "Right transformation. Adjust k.";
+        else if (t1 === tgt[0]) hint = "You chose the right transformation. Compare a point on your graph with the matching point on the shadow to adjust k.";
         else if (t1 === "add" && tgt[0] === "shift") hint = "Up and down won't do it: the shadow moved sideways.";
         else if (t1 === "shift" && tgt[0] === "add") hint = "Sideways won't do it: the shadow moved up or down.";
         api.msg(hint + " (Undone.)", "bad");
@@ -109,6 +110,7 @@
       summary: "A 12-level game for transformations of graphs. Students choose among f(x) + k, k·f(x), f(x + k) and f(kx) and a value of k to make a graph match a shadow, for x², |x| and 2ˣ, including reflections and two-step combinations.",
       also: "<span class='code'>AI.F-IF.C.7.b</span> absolute value graphs and <span class='code'>AI.F-IF.C.7.e</span> exponential graphs.",
       practices: "MP7 Look for and make use of structure · MP5 Use appropriate tools strategically",
+      evidence: "Give a point on the original graph. Ask where it lands after a change inside the parentheses and how that differs from adding the same number outside.",
       goals: [
         "Identify the effect on a graph of f(x) + k, k·f(x), f(x + k) and f(kx), for positive and negative k.",
         "Find k given a graph and its transformed image.",

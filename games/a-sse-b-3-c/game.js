@@ -40,7 +40,7 @@
       answer: "1.12^t ≈ 1.0287^(4t)", check: "1.0287⁴ ≈ 1.12 ✓", tip: "Last one: choose the most useful form." },
   ];
   Timeline.stepGame({
-    slug: "a-sse-b-3-c", title: "Rate Showdown", subtitle: "Use the properties of exponents to transform exponential expressions",
+    slug: "a-sse-b-3-c", title: "Rate Showdown", firstMove: "Rewrite each growth so it shows the rate per year. Fill the box with the new base, then compare.", subtitle: "Use the properties of exponents to transform exponential expressions",
     stages: { 1: "Stage 1 · Yearly, monthly, doubling", 2: "Stage 2 · Rewrite the expression", 3: "Stage 3 · Compare and decide" }, levels: LEVELS,
     help: { intro: "The same growth can be written many ways. Rewrite the exponent to reveal the rate you care about.",
       steps: ["Use (aᵐ)ⁿ = aᵐⁿ and aᵐ · aⁿ = aᵐ⁺ⁿ.", "Use a calculator for powers and roots; round as asked.", "Compare rates per year (or per month) to decide.", "Fewer wrong answers means more stars."],

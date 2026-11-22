@@ -32,7 +32,7 @@
       answer: "Sequences are functions on the integers", check: "Domain ⊆ integers ✓", tip: "Last one: what makes a sequence a function?" },
   ];
   Timeline.stepGame({
-    slug: "f-if-a-3", title: "Turn by Turn", subtitle: "Sequences are functions on the integers, sometimes defined recursively",
+    slug: "f-if-a-3", title: "Turn by Turn", firstMove: "Find the next terms by following the rule one turn at a time.", subtitle: "Sequences are functions on the integers, sometimes defined recursively",
     stages: { 1: "Stage 1 · Sequences as functions", 2: "Stage 2 · Recursive rules", 3: "Stage 3 · Longer runs" }, levels: LEVELS,
     help: { intro: "A sequence is a function whose inputs are turn numbers: f(1) is the first term, f(2) the second, and so on.",
       steps: ["Read the rule: explicit (f(n) = …) or recursive (built from earlier terms).", "Fill in the missing terms or answer the question.", "The hidden table values appear when you finish.", "Fewer wrong answers means more stars."],

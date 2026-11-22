@@ -62,6 +62,8 @@
     const g = Alg.gcd(n, d);
     return { n: n / g, d: d / g };
   };
+  // Numerator and denominator may include trusted game-authored math markup.
+  Alg.fractionHTML = (top, bottom) => '<span class="frac"><span>' + top + "</span><span>" + bottom + "</span></span>";
   Alg.fmtFrac = (f) => (f.d === 1 ? Alg.num(f.n) : (f.n < 0 ? MINUS : "") + Math.abs(f.n) + "/" + f.d);
   Alg.fracEq = (a, b) => a.n * b.d === b.n * a.d;
 

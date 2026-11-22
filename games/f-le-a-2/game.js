@@ -24,7 +24,7 @@
     { stage: 3, ctx: "An exponential through (2, 18) and (4, 162).", steps: [["in", "b² = 162 ÷ 18 = 9, so b = []", [3]], ["in", "a = 18 ÷ 3² = [], so y = [] · 3ˣ", [2, 2]]], answer: "y = 2 · 3ˣ", check: "2 · 81 = 162 ✓", tip: "Last one: no y-intercept given." },
   ];
   Timeline.stepGame({
-    slug: "f-le-a-2", title: "Two-Point Rebuild", subtitle: "Construct linear and exponential functions from points, tables, graphs and descriptions",
+    slug: "f-le-a-2", title: "Two-Point Rebuild", firstMove: "Use the two clues to find the slope or the ratio, then fill in the function.", subtitle: "Construct linear and exponential functions from points, tables, graphs and descriptions",
     stages: { 1: "Stage 1 · From two points", 2: "Stage 2 · From words, tables, sequences", 3: "Stage 3 · Which kind?" }, levels: LEVELS,
     help: { intro: "Two clues are enough to rebuild a line or an exponential, if you know which kind it is.",
       steps: ["Linear: slope = change in y ÷ change in x, then find the intercept.", "Exponential: the ratio of y-values over the gap gives b; then find a.", "Fill in the function and check it with the clues.", "Fewer wrong answers means more stars."], note: "Decimals and fractions are fine." },

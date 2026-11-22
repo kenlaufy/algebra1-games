@@ -48,7 +48,7 @@
   .checks li::before { content: "✓"; position: absolute; left: 0; top: -1px; width: 22px; height: 22px; border-radius: 6px;
                        background: var(--go); color: #fff; display: grid; place-items: center; font-size: 14px; font-weight: 800; }
 
-  .ggrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+  .ggrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); gap: 14px; }
   .gcard { background: var(--card); border: 3px solid var(--ink); border-radius: 16px; box-shadow: 0 5px 0 var(--ink);
            padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 6px; text-decoration: none; color: var(--ink); }
   .gcard:hover { transform: translateY(-2px); box-shadow: 0 7px 0 var(--ink); }
@@ -63,7 +63,7 @@
   .roadmap summary::after { content: "+"; font-size: 24px; line-height: 1; }
   .roadmap details[open] summary::after { content: "−"; }
   .roadmap summary small { color: var(--muted); font-family: var(--body); font-weight: 700; font-size: 15px; margin-left: auto; padding-right: 8px; align-self: center; }
-  .roadmap ul { list-style: none; margin: 0; padding: 0 16px 14px; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; }
+  .roadmap ul { list-style: none; margin: 0; padding: 0 16px 14px; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 10px; }
   .roadmap li { border-top: 1px solid var(--line); padding-top: 10px; }
   .roadmap li b { font-family: var(--head); font-weight: 600; font-size: 17px; display: block; margin: 4px 0 2px; }
   .roadmap li span.d { font-size: 15px; }
@@ -78,6 +78,26 @@
     .hero h1 { font-size: 36px; }
     .hero p { font-size: 18px; }
   }
+
+  .hero { padding-top: 36px; padding-bottom: 28px; }
+  .game-browser { scroll-margin-top: 24px; }
+  .game-filters { display: flex; align-items: end; gap: 14px; flex-wrap: wrap; padding: 20px; background: var(--card); border: 2px solid var(--line); border-radius: 16px; }
+  .game-filters > div:first-child { flex: 2 1 280px; }
+  .game-filters > div { flex: 1 1 220px; min-width: 0; }
+  .game-filters label { display: block; font-weight: 800; margin-bottom: 6px; }
+  .game-filters input, .game-filters select { width: 100%; min-height: 48px; font: inherit; color: var(--ink); background: #fff; border: 2px solid var(--muted); border-radius: 10px; padding: 10px 12px; }
+  .game-filters button { min-height: 48px; }
+  .game-count { color: var(--muted); font-size: 16px; font-weight: 700; margin: 16px 0; }
+  .gcard { padding: 20px; border-width: 2px; box-shadow: 0 4px 0 var(--line); gap: 10px; }
+  .gcard:hover { transform: none; box-shadow: 0 4px 0 var(--ink); }
+  .gcard h3 { font: 600 25px/1.15 var(--head); margin: 0; }
+  .gcard h3 a { text-decoration-thickness: 1px; text-underline-offset: 4px; }
+  .gcard p { margin: 0; font-size: 17px; }
+  .card-topic { font-size: 14px; font-weight: 800; color: var(--muted); }
+  .card-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin-top: 6px; }
+  .card-actions .btn { min-height: 44px; }
+  .guide-link { display: inline-flex; align-items: center; min-height: 44px; font-size: 15px; font-weight: 800; }
+  @media (max-width: 480px) { .hero { padding-top: 24px; } .game-filters { padding: 14px; } }
 </style>
 </head>
 <body>
@@ -95,7 +115,7 @@
   <section class="hero">
     <div>
       <h1>Algebra you can play.</h1>
-      <p>Short browser games where the math <em>is</em> the gameplay. Students don't answer quiz questions to unlock fun; they reason with algebra to win.</p>
+      <p>Balance a scale, build a rectangle, or predict where a graph meets the axis. Each game explores a Massachusetts Algebra I standard.</p>
       <ul class="facts">
         <li>Massachusetts Algebra I</li>
         <li>No logins</li>
@@ -103,8 +123,8 @@
         <li>Chromebooks, iPads, laptops</li>
       </ul>
       <div class="cta">
-        <a class="btn primary big" href="games/a-rei-b-3/">Play Balance Workshop</a>
-        <a class="btn big" href="teachers/">Teacher guide</a>
+        <a class="btn primary big" href="#playnow">Find a game</a>
+        <a class="btn big" href="teachers/">For teachers</a>
       </div>
     </div>
 
@@ -156,13 +176,29 @@
     </a>
   </section>
 
+  <section class="band game-browser" aria-labelledby="playnow">
+    <h2 id="playnow">Find your next game</h2>
+    <p class="sub" id="playSub"></p>
+    <div class="game-filters" role="search" aria-label="Find a game">
+      <div><label for="gameSearch">Search games</label>
+        <input id="gameSearch" type="search" placeholder="Try equations, graphs, or a standard…" autocomplete="off" aria-controls="playGrid"></div>
+      <div><label for="gameTopic">Topic</label>
+        <select id="gameTopic" aria-controls="playGrid"><option value="">All topics</option></select></div>
+      <button class="btn" id="clearFilters" type="button">Clear filters</button>
+    </div>
+    <p class="game-count" id="gameCount" role="status" aria-live="polite" aria-atomic="true"></p>
+    <div class="ggrid" id="playGrid"></div>
+    <div id="emptyGames" class="tile" hidden><h3>No matching games</h3><p>Try a shorter search or choose All topics.</p></div>
+    <noscript><p>Enable JavaScript to browse the full collection. You can <a href="games/a-rei-b-3/">play Balance Workshop</a> or <a href="teachers/">browse teacher guides</a>.</p></noscript>
+  </section>
+
   <section class="band" aria-labelledby="how">
     <h2 id="how">How the games teach</h2>
-    <p class="sub">Every game follows the same three design rules.</p>
+    <p class="sub">Use the picture, make a move, and explain what changed.</p>
     <div class="three">
-      <div class="tile"><span class="num">1</span><h3>The math is the move</h3><p>You can't win by guessing. On the scale, the only way to get x alone is to do the same thing to both sides.</p></div>
-      <div class="tile"><span class="num">2</span><h3>Concrete to abstract</h3><p>Levels start with pictures, add algebra tiles and live equations, and finish with symbols only.</p></div>
-      <div class="tile"><span class="num">3</span><h3>Translate it back</h3><p>After every win, the game writes the student's moves as algebra and checks the answer by substitution.</p></div>
+      <div class="tile"><span class="num">1</span><h3>The math is the move</h3><p>Your choices change the model. In Balance Workshop, use the same operation on both sides to keep the equation balanced.</p></div>
+      <div class="tile"><span class="num">2</span><h3>Concrete to abstract</h3><p>Start with visible models, then connect what you see to equations, functions, and symbols.</p></div>
+      <div class="tile"><span class="num">3</span><h3>Translate it back</h3><p>Review the worked steps and answer checks after a win. Use them to explain why your method worked.</p></div>
     </div>
   </section>
 
@@ -185,11 +221,7 @@
     </div>
   </section>
 
-  <section class="band" aria-labelledby="playnow">
-    <h2 id="playnow">Play now</h2>
-    <p class="sub" id="playSub"></p>
-    <div class="ggrid" id="playGrid"></div>
-  </section>
+
 
   <section class="band roadmap" aria-labelledby="road">
     <h2 id="road">All standards</h2>
@@ -208,9 +240,35 @@
 const all = A1G_CATALOG.domains.flatMap(d => d.games);
 const ready = all.filter(g => g.ready);
 const standards = new Set(all.map(g => g.code)).size;
-document.getElementById("playSub").textContent = ready.length + (ready.length === 1 ? " game" : " games") + " ready to play, each with 12 levels and a teacher guide.";
-document.getElementById("playGrid").innerHTML = ready.map(g =>
-  '<a class="gcard" href="games/' + g.slug + '/"><span class="code">' + g.code + '</span><b>' + g.name + '</b><span class="d">' + g.desc + '</span><span class="play-pill small">Play</span></a>').join("");
+document.getElementById("playSub").textContent = ready.length + " games · 12 levels each · Free to play";
+const search = document.getElementById("gameSearch");
+const topic = document.getElementById("gameTopic");
+const grid = document.getElementById("playGrid");
+const playableDomains = A1G_CATALOG.domains.filter(d => d.games.some(g => g.ready));
+playableDomains.forEach(d => topic.add(new Option(d.name, d.name)));
+const normalize = text => text.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+function renderGames() {
+  const words = normalize(search.value).split(/\s+/).filter(Boolean);
+  const games = playableDomains.flatMap(d => d.games.filter(g => {
+    const text = normalize([g.name, g.desc, g.code, g.std, d.name].join(" "));
+    return g.ready && (!topic.value || topic.value === d.name) && words.every(word => text.includes(word));
+  }).map(g => ({ ...g, topic: d.name })));
+  grid.innerHTML = games.map(g =>
+    '<article class="gcard"><div class="card-topic">' + g.topic + '</div><h3><a href="games/' + g.slug + '/">' + g.name + '</a></h3><p class="d">' + g.desc +
+    '</p><span class="code">' + g.code + '</span><div class="card-actions"><a class="btn primary" href="games/' + g.slug + '/" aria-label="Play ' + g.name +
+    '">Play game</a><a class="guide-link" href="' + (g.guide || 'teachers/guide.html?g=' + g.slug) + '" aria-label="Teacher guide for ' + g.name + '">Teacher guide</a></div></article>').join("");
+  document.getElementById("gameCount").textContent = games.length + " of " + ready.length + " games";
+  document.getElementById("emptyGames").hidden = games.length > 0;
+}
+search.addEventListener("input", renderGames);
+topic.addEventListener("change", renderGames);
+document.getElementById("clearFilters").addEventListener("click", () => {
+  search.value = "";
+  topic.value = "";
+  renderGames();
+  search.focus();
+});
+renderGames();
 document.getElementById("roadSub").textContent =
   "One game for every Model Algebra I standard: " + all.length + " games across " + standards +
   " standards. " + ready.length + " playable now, " + (all.length - ready.length) + " in development.";

@@ -22,7 +22,7 @@
       answer: "y = 3x + 1", check: "6 per 2 units, every time ✓", tip: "Last one: compare rates per unit." },
   ];
   Timeline.stepGame({
-    slug: "f-le-a-1-b", title: "Model It: Adding", subtitle: "Recognize situations with a constant rate of change",
+    slug: "f-le-a-1-b", title: "Model It: Adding", firstMove: "Decide whether the same amount is added each unit. Then build the model.", subtitle: "Recognize situations with a constant rate of change",
     stages: { 1: "Stage 1 · Sort the situations", 2: "Stage 2 · Tables and models", 3: "Stage 3 · Uneven steps and meanings" }, levels: LEVELS,
     help: { intro: "Some quantities change by the <b>same amount</b> every unit: that's a constant rate, and it gives a linear model.",
       steps: ["Ask: is the same amount added or removed each unit?", "For tables, divide each change by the size of its gap.", "Build the model y = mx + b and use it.", "Fewer wrong answers means more stars."], note: "Percent changes are NOT constant rates." },

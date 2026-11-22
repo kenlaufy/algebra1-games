@@ -24,6 +24,7 @@
   GameShell.register({
     slug: "a-rei-c-7",
     title: "Laser Intercept",
+    firstMove: "Tap every place the straight laser meets the curved path, then press Fire. Look on both sides of the curve.",
     subtitle: "Solve a linear–quadratic system with graphs and algebra",
     stages: { 1: "Stage 1 · Read the hits", 2: "Stage 2 · Solve with algebra", 3: "Stage 3 · Aim, and circles" },
     levels: LEVELS,
@@ -119,6 +120,7 @@
       summary: "A 12-level game for systems with one linear and one quadratic equation. Students read crossings from graphs, solve by setting expressions equal, use the discriminant to predict two, one or zero intersections, aim a line, and solve line–circle systems including the standard's own example.",
       also: "<span class='code'>AI.A-REI.B.4.b</span> solving quadratic equations.",
       practices: "MP5 Use appropriate tools strategically · MP7 Look for and make use of structure",
+      evidence: "Ask how many hits a line can make on a parabola. Have the student sketch a crossing, a touch, and a miss and connect each to the number of solutions.",
       goals: [
         "Solve a system of a linear and a quadratic equation graphically and algebraically.",
         "Predict the number of intersections from the discriminant.",

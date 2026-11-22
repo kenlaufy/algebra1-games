@@ -38,6 +38,7 @@
   GameShell.register({
     slug: "a-apr-a-1-b",
     title: "Build the Rectangle",
+    firstMove: "Build a rectangle with exactly the tiles shown. Enter the two side lengths and choose Build.",
     subtitle: "Factor and expand polynomials; combine like terms",
     stages: { 1: "Stage 1 · Rectangles from tiles", 2: "Stage 2 · Negatives and common factors", 3: "Stage 3 · Expand, then factor harder ones" },
     levels: LEVELS,
@@ -68,7 +69,7 @@
 
       const row = api.h("div", { class: "coef-row", style: { margin: 0 } });
       const f = [];
-      const mk = (label) => { const i = api.h("input", { type: "text", inputmode: "numeric", "aria-label": label }); f.push(i); return i; };
+      const mk = (label) => { const i = api.h("input", { type: "text", "aria-label": label }); f.push(i); return i; };
       row.append("(", mk("first side, x coefficient"), api.h("span", { html: "<i>x</i> + " }), mk("first side, number"), ")(",
         mk("second side, x coefficient"), api.h("span", { html: "<i>x</i> + " }), mk("second side, number"), ")");
       const btn = api.button("Build", build, "primary");
@@ -115,6 +116,7 @@
       api.autoplay = () => { lv.ans.forEach((n, k) => (f[k].value = n)); build(); return {}; };
     },
     guide: {
+      evidence: "Ask a student to predict the two cross-products before choosing Build. Their sum should explain the middle coefficient.",
       summary: "A 12-level game for factoring and expanding. Students factor a pile of algebra tiles by naming the side lengths of a rectangle; the game builds their rectangle and compares it tile by tile. Two levels expand expressions with the distributive property.",
       also: "<span class='code'>AI.A-SSE.B.3.a</span> factoring a quadratic (the zeros come next, in Zero Link).",
       practices: "MP7 Look for and make use of structure · MP1 Make sense of problems and persevere",

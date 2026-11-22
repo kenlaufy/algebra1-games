@@ -20,7 +20,7 @@
       answer: "A geometric, B arithmetic", check: "18 × 3 = 54; 10 + 4 = 14 ✓", tip: "Last one: same start, different engines." },
   ];
   Timeline.stepGame({
-    slug: "f-bf-a-2", title: "Twin Engines", subtitle: "Write arithmetic and geometric sequences recursively and explicitly",
+    slug: "f-bf-a-2", title: "Twin Engines", firstMove: "Find the first term and the common difference, then build both rules.", subtitle: "Write arithmetic and geometric sequences recursively and explicitly",
     stages: { 1: "Stage 1 · Build both engines", 2: "Stage 2 · Translate", 3: "Stage 3 · Model with sequences" }, levels: LEVELS,
     help: { intro: "Every arithmetic or geometric sequence can be built by two engines: <b>recursive</b> (from the previous term) and <b>explicit</b> (straight from n). They must agree.",
       steps: ["Arithmetic: add the same difference d. a(n) = a(1) + d(n − 1).", "Geometric: multiply by the same ratio r. a(n) = a(1) · rⁿ⁻¹.", "Fill in both engines, then check a term.", "Fewer wrong answers means more stars."], note: "Decreasing sequences have a negative difference or a ratio between 0 and 1." },

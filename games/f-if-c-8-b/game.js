@@ -25,7 +25,7 @@
       answer: "B ≈ 6.09% per year", check: "1.0609 > 1.06 ✓", tip: "Last one: compare per year." },
   ];
   Timeline.stepGame({
-    slug: "f-if-c-8-b", title: "Read the Rate", subtitle: "Interpret exponential expressions: growth, decay, appreciation and depreciation",
+    slug: "f-if-c-8-b", title: "Read the Rate", firstMove: "Compare the base with 1 to decide growth or decay, then read the percent rate.", subtitle: "Interpret exponential expressions: growth, decay, appreciation and depreciation",
     stages: { 1: "Stage 1 · Base vs. 1", 2: "Stage 2 · Exponents that count months and decades", 3: "Stage 3 · Doubling, half-life, tricky bases" }, levels: LEVELS,
     help: { intro: "In y = a · bᵗ, the base b tells the story: b > 1 grows by (b − 1), b < 1 decays by (1 − b).",
       steps: ["Is the base above or below 1?", "Turn the base into a percent: 1.04 → 4% growth, 0.88 → 12% decay.", "If the exponent is 12t or t/10, think about what one period is.", "Fewer wrong answers means more stars."],

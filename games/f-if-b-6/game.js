@@ -29,7 +29,7 @@
       answer: "4 to 5 (rate 16)", check: "32 − 16 = 16 ✓", tip: "Last one: exponential rates keep growing." },
   ];
   Timeline.stepGame({
-    slug: "f-if-b-6", title: "Speed Trap", subtitle: "Calculate and interpret average rate of change",
+    slug: "f-if-b-6", title: "Speed Trap", firstMove: "Find the output at each end of the interval, then divide the change in output by the change in input.", subtitle: "Calculate and interpret average rate of change",
     stages: { 1: "Stage 1 · Formula, table, graph", 2: "Stage 2 · Changing rates", 3: "Stage 3 · Catch and compare" }, levels: LEVELS,
     help: { intro: "Average rate of change = <b>(change in output) ÷ (change in input)</b>. On a graph, it's the slope between two points.",
       steps: ["Find the outputs at the two inputs.", "Subtract, then divide by the change in input.", "Think about units and sign: m/s, °C per hour, positive or negative.", "Fewer wrong answers means more stars."],

@@ -32,7 +32,7 @@
       steps: [["in", "16000 · (0.5)<sup>t/2</sup> = []", [1000]], ["in", "(0.5)<sup>t/2</sup> = 1/16 = (0.5)⁴, so t/2 = 4 and t = []", [8]]], answer: "t = 8 years", check: "16000 → 8000 → 4000 → 2000 → 1000 every 2 years ✓", tip: "Last one: halving." },
   ];
   Timeline.stepGame({
-    slug: "a-ced-a-1", title: "Countdown to Target", subtitle: "Create equations and inequalities in one variable and solve them",
+    slug: "a-ced-a-1", title: "Countdown to Target", firstMove: "Turn the story into an equation. Fill in the numbers, then solve it.", subtitle: "Create equations and inequalities in one variable and solve them",
     stages: { 1: "Stage 1 · Linear", 2: "Stage 2 · Quadratic", 3: "Stage 3 · Exponential" }, levels: LEVELS,
     help: { intro: "Every story has a target. Write an equation or inequality that says \"we've reached it\", then solve it.",
       steps: ["Read the story: what's the starting amount, the change, and the target?", "Fill in the equation or inequality.", "Solve it. The graph then shows where the target is reached.", "Fewer wrong answers means more stars."],

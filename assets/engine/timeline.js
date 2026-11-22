@@ -39,7 +39,7 @@
 
   TL.stepGame = function (cfg) {
     GameShell.register({
-      slug: cfg.slug, title: cfg.title, subtitle: cfg.subtitle, stages: cfg.stages, levels: cfg.levels, help: cfg.help, guide: cfg.guide,
+      slug: cfg.slug, title: cfg.title, subtitle: cfg.subtitle, stages: cfg.stages, levels: cfg.levels, help: cfg.help, guide: cfg.guide, firstMove: cfg.firstMove,
       load(lv, api) {
         const h = api.h;
         if (lv.ctx) api.stage.appendChild(h("div", { class: "stage-text", style: { fontSize: "21px", lineHeight: 1.4 }, html: lv.ctx }));

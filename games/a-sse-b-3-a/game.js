@@ -3,7 +3,7 @@
   const A = window.Cartoon, Alg = window.Alg, M = Alg.MINUS;
   // P: coefficients [a, b, c]; fac: factor template + answers; zeros; v: variable letter
   const LEVELS = [
-    { stage: 1, P: [1, -5, 6], fac: ["(x + [])(x + [])", [-2, -3], true], zeros: [2, 3], tip: "Factor, then predict where the graph crosses the x-axis." },
+    { stage: 1, P: [1, -5, 6], fac: ["(x + [])(x + [])", [-2, -3], true], zeros: [2, 3], tip: "Factor, then predict where the graph meets the x-axis." },
     { stage: 1, P: [1, 1, -12], fac: ["(x + [])(x + [])", [4, -3], true], zeros: [3, -4], tip: "Each factor equals zero at one x-value." },
     { stage: 1, P: [1, 0, -9], fac: ["(x + [])(x + [])", [3, -3], true], zeros: [3, -3], tip: "No x term. What kind of expression is this?" },
     { stage: 1, P: [1, 6, 8], fac: ["(x + [])(x + [])", [2, 4], true], zeros: [-2, -4], tip: "Both numbers positive. Where are the zeros?" },
@@ -54,6 +54,7 @@
     marks.forEach((m) => {
       const ok = reveal && lv.zeros.some((z) => Alg.close(z, m));
       s += '<circle cx="' + (X0 + m * sx) + '" cy="' + ax + '" r="11" fill="' + (reveal ? (ok ? "#3f7d4c" : "#c8553d") : "#e7b84a") + '" stroke="#23262d" stroke-width="3" pointer-events="none"/>';
+      if (reveal) s += A.text(X0 + m * sx, ax + 6, ok ? "✓" : "×", { size: 18, fill: "#fff", var: false });
     });
     for (let x = -8; x <= 8.0001; x += 0.5) s += '<rect class="hit" data-x="' + x + '" x="' + (X0 + x * sx - 12) + '" y="' + (ax - 40) + '" width="24" height="80" fill="transparent"/>';
     return s;
@@ -62,15 +63,16 @@
   GameShell.register({
     slug: "a-sse-b-3-a",
     title: "Zero Link",
-    subtitle: "Factor a quadratic to reveal where its graph crosses zero",
+    firstMove: "Find where the graph meets the axis. Factor if needed, mark each predicted zero, then check the graph.",
+    subtitle: "Factor a quadratic to reveal where its graph meets the axis",
     stages: { 1: "Stage 1 · Factor and predict", 2: "Stage 2 · Signs, common factors, opening down", 3: "Stage 3 · Contexts, doubles and fractions" },
     levels: LEVELS,
     help: {
-      intro: "The factored form of a quadratic tells you its <b>zeros</b>: the x-values where the graph crosses the x-axis.",
+      intro: "The factored form of a quadratic tells you its <b>zeros</b>: the x-values where the graph meets the x-axis.",
       steps: [
         "Factor the expression by filling in the blanks.",
         "Click the x-axis where you think the zeros are (click again to remove a mark).",
-        "Press <b>Check</b>. The real graph draws itself: green marks are right, red marks are off.",
+        "Press <b>Check</b>. The real graph draws itself: each mark gets a check or a cross.",
         "Fewer wrong answers means more stars.",
       ],
       note: "If (x − 3) is a factor, the zero is at x = 3, not −3.",
@@ -84,12 +86,15 @@
       const draw = () => { svg.innerHTML = graph(lv, marks, reveal, t); };
       svg.addEventListener("click", (e) => {
         const hit = e.target.closest("[data-x]");
-        if (!hit || !armed) return;
-        const x = Number(hit.getAttribute("data-x"));
+        if (hit && armed) toggleMark(Number(hit.getAttribute("data-x")));
+      });
+      const marked = api.h("span", { class: "preview", role: "status" });
+      function toggleMark(x) {
         const k = marks.findIndex((m) => Alg.close(m, x));
         if (k >= 0) marks.splice(k, 1); else marks.push(x);
         reveal = false; draw();
-      });
+        marked.textContent = marks.length ? "Marked: " + marks.slice().sort((a, b) => a - b).map(Alg.num).join(", ") : "No points marked.";
+      }
       draw();
       const steps = [];
       if (lv.fac) {
@@ -102,23 +107,30 @@
             return ok ? true : "Multiply your factors back out: does " + filled.replace(/\+ -/g, "− ") + " give " + pstr(lv) + "? Check the numbers' product and sum.";
           }, done: "Factored: " + pstr(lv) + " = " + facText(lv) });
       }
-      steps.push({ type: "click", prompt: "Click the x-axis at each zero, then press Check.", button: "Check",
+      steps.push({ type: "click", prompt: "Mark each zero on the axis or choose a value below. Mark it again to remove it.", button: "Check",
+        controls: () => {
+          const select = api.h("select", { "aria-label": "Axis value" });
+          for (let x = -8; x <= 8; x += 0.5) select.appendChild(api.h("option", { value: x }, Alg.num(x)));
+          select.value = "0";
+          return api.h("div", { class: "plot-controls" }, select, api.button("Mark / unmark", () => toggleMark(Number(select.value))), marked);
+        },
         onEnter: () => { armed = true; },
         check: () => {
-          if (!marks.length) return "Click the x-axis to mark at least one zero.";
+          if (!marks.length) return "Mark a value that makes one factor equal zero, then check.";
           reveal = true;
           api.tween(0, 1, 700, (v) => { t = v; draw(); });
           const right = sameSet(marks, lv.zeros);
           if (right) { armed = false; return true; }
           const extra = marks.filter((m) => !lv.zeros.some((z) => Alg.close(z, m)));
-          if (extra.length) return "The graph doesn't cross at " + vOf(lv) + " = " + extra.map(Alg.num).join(", ") + ". Set each factor equal to 0: if a factor is (" + vOf(lv) + " − 3), then " + vOf(lv) + " = 3.";
-          return lv.zeros.length > marks.length ? "You're missing a zero. Each factor gives one." : "Check your marks against the graph.";
+          if (extra.length) return "The graph is off the axis at " + vOf(lv) + " = " + extra.map(Alg.num).join(", ") + ". Set each factor equal to 0: if a factor is (" + vOf(lv) + " − 3), then " + vOf(lv) + " = 3.";
+          return lv.zeros.length > marks.length ? "One more input makes a factor zero. Check each factor separately." : "Check your marks against the graph.";
         },
-        autoplay: () => { marks = lv.zeros.slice(); }, done: "Zeros at " + zeroText(lv) });
+        autoplay: () => { [...marks].forEach(toggleMark); lv.zeros.forEach(toggleMark); }, done: "Zeros at " + zeroText(lv) });
       if (lv.final) steps.push({ type: "input", prompt: lv.final[0], answers: lv.final[1], hint: "The ball is on the ground when the height is 0." });
       Steps.run(api, { steps, logTitle: "Your work", result: () => ({ answer: "Zeros: " + zeroText(lv), check: "Check: f(" + Alg.num(lv.zeros[0]) + ") = " + Alg.num(fx(lv, lv.zeros[0])) + " ✓" }) });
     },
     guide: {
+      evidence: "Ask which factor becomes zero at each mark. For a repeated factor, the student should predict one point of contact and explain why.",
       summary: "A 12-level game linking factored form to zeros. Students factor a quadratic, predict its zeros by marking the x-axis, and then watch the real graph draw through (or miss) their marks.",
       also: "<span class='code'>AI.F-IF.C.8.a</span> using factoring to show the zeros of a quadratic function.",
       practices: "MP7 Look for and make use of structure · MP2 Reason abstractly and quantitatively",

@@ -39,7 +39,7 @@
     const [x, y] = lv.v;
     if (lv.form === "lin") return y + " = " + Alg.fmtTerms([{ coef: v[0], body: x }, { coef: v[1], body: "" }]);
     if (lv.form === "std") return Alg.fmtTerms([{ coef: v[0], body: x }, { coef: v[1], body: y }]) + " = " + Alg.num(v[2]);
-    if (lv.form === "exp") return y + " = " + Alg.num(v[0]) + " · " + Alg.num(v[1]) + "^" + x;
+    if (lv.form === "exp") return y + " = " + Alg.num(v[0]) + " · " + Alg.num(v[1]) + "<sup>" + x + "</sup>";
     return y + " = " + Alg.fmtTerms([{ coef: 1, body: x + "²" }, { coef: v[0], body: x }]);
   }
   const best = (opts, max) => opts.find((o) => o * 10 >= max - 1e-9);
@@ -54,6 +54,7 @@
   GameShell.register({
     slug: "a-ced-a-2",
     title: "Drone Route",
+    firstMove: "Find the checkpoint where x = 0. Use its height and the rise per step to fill in the equation, then press Fly!",
     subtitle: "Create equations in two variables and graph them with labels and scales",
     stages: { 1: "Stage 1 · Lines through checkpoints", 2: "Stage 2 · Real situations, real scales", 3: "Stage 3 · Other kinds of equations" },
     levels: LEVELS,
@@ -62,7 +63,7 @@
       steps: [
         "In stage 2, first choose axis scales so every checkpoint fits on the screen without being squished.",
         "Fill in the equation. Use decimals or fractions if you need them.",
-        "Press <b>Fly!</b> Checkpoints turn green when the drone hits them.",
+        "Press <b>Fly!</b> A check mark shows a hit. A cross shows a miss.",
         "Fewer missed flights and wrong scales means more stars.",
       ],
       note: "Equations can be lines, but also ax + by = c, exponentials y = a · bˣ, and quadratics.",
@@ -98,7 +99,7 @@
         lv.pts.forEach((pt) => {
           const ok = flown && t >= 1 && hits(lv, flown, pt);
           const off = pt[0] > P.xmax || pt[1] > P.ymax;
-          if (!off) s += P.point(pt[0], pt[1], { fill: flown && t >= 1 ? (ok ? "#3f7d4c" : "#c8553d") : "#e7b84a", r: 11, label: "(" + Alg.num(pt[0]) + ", " + Alg.num(pt[1]) + ")" });
+          if (!off) s += P.point(pt[0], pt[1], { fill: flown && t >= 1 ? (ok ? "#3f7d4c" : "#c8553d") : "#e7b84a", r: 11, label: (flown && t >= 1 ? (ok ? "✓ " : "× ") : "") + "(" + Alg.num(pt[0]) + ", " + Alg.num(pt[1]) + ")" });
         });
         svg.innerHTML = s;
       }
@@ -170,6 +171,7 @@
       summary: "A 12-level game for creating equations in two variables. Students write the equation of a drone's route through checkpoints, choose axis scales and labels for real situations, and work with standard-form, exponential and quadratic equations.",
       also: "<span class='code'>AI.N-Q.A.1</span> choosing and interpreting the scale in graphs.",
       practices: "MP4 Model with mathematics · MP6 Attend to precision",
+      evidence: "Cover one checkpoint. Ask the student to predict its height from the equation, then uncover it and compare.",
       goals: [
         "Create an equation in two variables from points or from a verbal description.",
         "Choose axis scales that fit the data and label axes with quantities and units.",

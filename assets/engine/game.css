@@ -67,12 +67,13 @@
 .log .move { color: var(--muted); font-weight: 600; }
 
 /* Option cards (multiple choice, cards to pick) */
-.choices { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; width: 100%; }
+.choices { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); gap: 10px; width: 100%; }
 .choice {
   font-family: var(--body); font-weight: 700; font-size: 18px; text-align: left; color: var(--ink);
   background: #fff; border: 2px solid var(--line); border-radius: 14px; padding: 12px 14px; cursor: pointer;
   box-shadow: 0 3px 0 var(--line); min-height: 52px;
 }
+.choice svg { display: block; max-width: 100%; height: auto; margin: 0 auto 6px; }
 .choice:hover { border-color: var(--ink); }
 .choice.sel { border-color: var(--ink); background: #fbe7a8; box-shadow: 0 3px 0 var(--ink); }
 .choice.right { border-color: var(--go); background: #dcebd9; }
@@ -81,15 +82,15 @@
 
 /* Worked-solution lines (Find the Bug and similar) */
 .steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
-.steps li button {
+.steps .worked-line {
   width: 100%; text-align: left; font-family: var(--body); font-weight: 800; font-size: 22px; color: var(--ink);
   background: #fff; border: 2px solid var(--line); border-radius: 12px; padding: 10px 14px; cursor: pointer;
   font-variant-numeric: tabular-nums;
 }
-.steps li button .why { display: block; font-size: 15px; font-weight: 600; color: var(--muted); }
-.steps li button.sel { border-color: var(--ink); background: #fbe7a8; }
-.steps li button.right { border-color: var(--go); background: #dcebd9; }
-.steps li button.wrong { border-color: var(--neg); background: #f7dcd4; }
+.steps .worked-line .why { display: block; font-size: 15px; font-weight: 600; color: var(--muted); }
+.steps .worked-line.sel { border-color: var(--ink); background: #fbe7a8; }
+.steps .worked-line.right { border-color: var(--go); background: #dcebd9; }
+.steps .worked-line.wrong { border-color: var(--neg); background: #f7dcd4; }
 
 /* Overlays */
 .overlay {
@@ -126,18 +127,13 @@
   .game-head h1 { font-size: 26px; }
   .stage-text { font-size: 26px; }
   .controls { gap: 10px; padding: 12px; }
-  .preview { width: 100%; order: 10; }
+  .preview { width: 100%; }
   .controls .spacer { display: none; }
   .levels-grid { grid-template-columns: repeat(3, 1fr); }
   .panel { padding: 18px; }
   .answer { font-size: 32px; }
-  .steps li button { font-size: 19px; }
+  .steps .worked-line { font-size: 19px; }
 }
-
-/* Stacked fractions in equations */
-.frac { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; font-size: 0.78em; line-height: 1.15; margin: 0 4px; }
-.frac > span:first-child { border-bottom: 3px solid currentColor; padding: 0 6px 2px; }
-.frac > span:last-child { padding: 2px 6px 0; }
 
 /* Area model grid (polynomial games) */
 .area { border-collapse: separate; border-spacing: 6px; margin: 10px auto; }
@@ -162,3 +158,36 @@
 .pack { display: inline-block; background: #c9965c; border: 3px solid var(--ink); border-radius: 7px; padding: 0 10px; margin: 0 3px;
   background-image: linear-gradient(90deg, transparent 42%, rgba(233, 211, 166, 0.9) 42%, rgba(233, 211, 166, 0.9) 58%, transparent 58%); }
 .chunk { background: #fbe7a8; border-radius: 6px; padding: 0 4px; box-shadow: 0 0 0 2px #e7c674; }
+
+.stagecard, .controls, .log, .panel, .tip { overflow-wrap: break-word; }
+.stage-text, .answer { line-height: 1.35; }
+.stagecard { box-shadow: 0 3px 0 var(--line); }
+.stagecard svg { background: var(--card); }
+.domain-note { text-align: center; font-size: 1rem; margin: .4rem 0 0; color: var(--muted); }
+.plot-controls { display: flex; flex-wrap: wrap; align-items: center; gap: .65rem; }
+.choice.wrong::after { content: " ×"; font-weight: 900; }
+.steps .wrong .why::before { content: "Bug · "; }
+.steps .right .why::before { content: "✓ "; }
+.area td.bad { outline-style: dashed; }
+.area td.t-x2 { background: #4b7042; }
+.area td.t-x { background: #42629e; }
+.area td.t-neg { background: #a2412e; }
+.coef-row input[type=text] { width: 4rem; }
+.controls input, .controls select, .controls > div { max-width: 100%; }
+.controls sup { vertical-align: super; }
+.controls sup input { max-width: 3.15rem; }
+@media (max-width: 640px) {
+  .stage-text, .answer { font-size: clamp(1.35rem, 6vw, 2rem); }
+  .area { width: 100%; table-layout: fixed; border-spacing: 3px; }
+  .area th, .area td { min-width: 0; padding: 2px; font-size: 1rem; }
+  .area td input { width: 100%; min-width: 0; padding: 2px; }
+  .area th:first-child { width: 14%; }
+  .coef-row input[type=text] { width: 3rem; }
+}
+
+.diagram-zoom { display: none; }
+@media (max-width: 640px) {
+  .diagram-zoom:not([hidden]) { display: inline-flex; margin-block-start: .5rem; }
+  .stagecard.enlarged { overflow-x: auto; }
+  .stagecard.enlarged svg { width: 840px; max-width: none; }
+}

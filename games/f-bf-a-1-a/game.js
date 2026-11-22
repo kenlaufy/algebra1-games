@@ -29,7 +29,7 @@
       answer: "D(n + 1) = 1.06D(n) − 20", check: "530 − 20 = 510 ✓", tip: "Last one: grow, then remove." },
   ];
   Timeline.stepGame({
-    slug: "f-bf-a-1-a", title: "Ecosystem", subtitle: "Write explicit rules, recursive rules and steps for calculation from a context",
+    slug: "f-bf-a-1-a", title: "Ecosystem", firstMove: "Find the starting value and what happens each year, then fill in the rule.", subtitle: "Write explicit rules, recursive rules and steps for calculation from a context",
     stages: { 1: "Stage 1 · Adding and multiplying", 2: "Stage 2 · Two-step and other patterns", 3: "Stage 3 · Both forms from a story" }, levels: LEVELS,
     help: { intro: "Watch a population, then write the rule behind it: <b>explicit</b> (any year directly) or <b>recursive</b> (next year from this year).",
       steps: ["Look for a pattern: same amount added, same factor multiplied, or something else.", "Fill in the rule. The hidden values appear when you finish.", "Some stories have two steps each year: do them in order.", "Fewer wrong answers means more stars."],

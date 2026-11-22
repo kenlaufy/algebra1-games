@@ -22,7 +22,7 @@
     { stage: 3, ctx: "Which table changes by a constant percent per unit?", steps: [["ch", "Choose:", [["x: 0, 1, 2 → y: 50, 60, 72", ""], ["x: 0, 1, 2 → y: 50, 60, 70", "That adds 10: linear."], ["x: 0, 1, 2 → y: 50, 55, 65", "The factors are 1.1 and about 1.18."]]]], answer: "×1.2 each step", check: "60 ÷ 50 = 72 ÷ 60 = 1.2 ✓", tip: "Last one: compare factors." },
   ];
   Timeline.stepGame({
-    slug: "f-le-a-1-c", title: "Model It: Multiplying", subtitle: "Recognize situations with a constant percent rate of change",
+    slug: "f-le-a-1-c", title: "Model It: Multiplying", firstMove: "Decide whether the same factor multiplies each unit. Then turn the percent into a factor.", subtitle: "Recognize situations with a constant percent rate of change",
     stages: { 1: "Stage 1 · Sort and model", 2: "Stage 2 · Factors from tables and words", 3: "Stage 3 · Percent vs. amount" }, levels: LEVELS,
     help: { intro: "Some quantities change by the <b>same percent</b> every unit: multiply by the same factor. That gives an exponential model.",
       steps: ["Growing p% means multiplying by 1 + p/100. Shrinking p% means multiplying by 1 − p/100.", "In tables, divide neighbours to find the factor.", "Build the model a · bᵗ and use it.", "Fewer wrong answers means more stars."], note: "Adding the same amount is NOT a constant percent rate." },

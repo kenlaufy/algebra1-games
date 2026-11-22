@@ -27,7 +27,7 @@
     { stage: 3, ctx: "Is this true: 1.001ˣ > 1000x for some x?", steps: [["ch", "", [["Yes: any exponential with b > 1 eventually passes any line", ""], ["No: 1.001 is too close to 1", "It grows by 0.1% per step, and that still compounds forever."]]]], answer: "Yes, eventually", check: "Exponential growth beats polynomial growth ✓", tip: "Last one: trust the pattern." },
   ];
   Timeline.stepGame({
-    slug: "f-le-a-3", title: "Contract Auction", subtitle: "Exponential growth eventually beats linear, quadratic and polynomial growth",
+    slug: "f-le-a-3", title: "Contract Auction", firstMove: "Compare the two contracts in the table and find when the exponential one pulls ahead.", subtitle: "Exponential growth eventually beats linear, quadratic and polynomial growth",
     stages: { 1: "Stage 1 · Who wins?", 2: "Stage 2 · When and why", 3: "Stage 3 · Choose wisely" }, levels: LEVELS,
     help: { intro: "A linear contract adds the same amount each day. An exponential one multiplies. Who wins, and when?",
       steps: ["Compare the values in the table or on the graph.", "Find the first input where the exponential pulls ahead.", "Think about the length of the contract.", "Fewer wrong answers means more stars."], note: "\"Eventually\" can take a long time." },
