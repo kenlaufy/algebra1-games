@@ -142,10 +142,10 @@
 
 <main id="main">
   <div class="levelbar">
-    <h2 id="levelTitle"></h2>
+    <h2 id="levelTitle" tabindex="-1"></h2>
     <div class="meta" id="levelMeta"></div>
   </div>
-  <p class="first-move" id="firstMove"><strong>Start here</strong>Get the mystery box alone. Choose a move, tap one pan, then balance the other pan.</p>
+  <p class="first-move" id="firstMove"><strong>Start here</strong>Get the mystery box alone. Below the scale, choose <b>−</b> (subtract), enter <b>2</b>, and keep <b>1</b> selected for single blocks. Press <b>Left pan</b>, then <b>Right pan</b> to balance the scale again.</p>
   <div class="tip" id="tip"></div>
 
   <div class="stagecard">
@@ -215,7 +215,13 @@
     <h3 style="margin:16px 0 4px; font-size:18px;">What you did, written in math</h3>
     <ol id="winLog"></ol>
     <div class="check" id="winCheck"></div>
-    <p><strong>Explain:</strong> Why does doing the same move to both sides keep the solution the same?</p>
+    <p id="winExplain"><strong>Explain:</strong> Why does doing the same move to both sides keep the solution the same?</p>
+    <section id="lessonExit" aria-labelledby="lessonExitTitle" hidden>
+      <h3 id="lessonExitTitle" tabindex="-1">Lesson complete · Exit question</h3>
+      <p>In <strong>x + 4 = 9</strong>, a classmate subtracts 4 from the left side only and writes <strong>x = 9</strong>. What should they write instead? Why must they subtract 4 from both sides?</p>
+      <p>Write your answer on paper or where your teacher asks you to turn it in.</p>
+      <a href="./">Open all 12 levels</a>
+    </section>
     <div class="row">
       <button class="btn" id="replayBtn">Try for fewer moves</button>
       <button class="btn primary" id="nextBtn">Next level</button>
@@ -247,7 +253,7 @@ const STAGES = {
 };
 const LEVELS = [
   { stage: 1, L: { x: 1, c: 2 },  R: { x: 0, c: 5 },  sol: 3,  par: 1,
-    tip: "Try taking away the two loose blocks. What happens if you change just one pan?" },
+    tip: "Before you start, predict what will happen when you change just one pan." },
   { stage: 1, L: { x: 2, c: 0 },  R: { x: 0, c: 8 },  sol: 4,  par: 1,
     tip: "Two identical boxes weigh as much as 8 blocks. Try splitting both pans into equal groups with ÷." },
   { stage: 1, L: { x: 2, c: 1 },  R: { x: 0, c: 7 },  sol: 3,  par: 2,
@@ -315,6 +321,9 @@ const STORE_KEY = "balance-workshop-stars";
 let stars = {};
 try { stars = JSON.parse(localStorage.getItem(STORE_KEY) || "{}"); } catch (e) { stars = {}; }
 
+const query = new URLSearchParams(location.search);
+const lessonMode = query.get("lesson") === "1-4";
+const levelCount = lessonMode ? 4 : LEVELS.length;
 let S = null;          // current game state
 let builder = { op: "-", unit: "c" };
 let phi = 0, targetPhi = 0, animating = false;
@@ -482,10 +491,14 @@ function showWin() {
   const lhs = fmtSub(lv.L, value), rhs = fmtSub(lv.R, value);
   const lval = lv.L.x * value + lv.L.c;
   $("winCheck").textContent = "Check: " + lhs + " = " + num(lval) + " and " + rhs + " = " + num(lval) + " ✓";
-  const last = S.i === LEVELS.length - 1;
+  const last = S.i === levelCount - 1;
+  const showExit = lessonMode && last;
   $("winTitle").textContent = last ? "Final level solved!" : "Solved!";
+  $("winExplain").hidden = showExit;
+  $("lessonExit").hidden = !showExit;
+  $("nextBtn").hidden = showExit;
   $("nextBtn").textContent = last ? "Back to level 1" : "Next level";
-  openOverlay("winOverlay", "nextBtn");
+  openOverlay("winOverlay", showExit ? "lessonExitTitle" : "nextBtn");
 }
 
 // ---------- Rendering ----------
@@ -522,7 +535,7 @@ function closeOverlay(id) {
 
 function render() {
   const lv = S.lv;
-  $("levelTitle").textContent = "Level " + (S.i + 1) + " of " + LEVELS.length;
+  $("levelTitle").textContent = "Level " + (S.i + 1) + " of " + levelCount;
   $("levelMeta").textContent = STAGES[lv.stage] + " · Par: " + lv.par + (lv.par === 1 ? " move" : " moves") +
     " · Moves so far: " + S.steps;
   $("tip").textContent = lv.tip;
@@ -759,10 +772,10 @@ function drawScale() {
 // ---------- Levels list ----------
 function showLevels() {
   let html = "";
-  [1, 2, 3].forEach(st => {
+  (lessonMode ? [1] : [1, 2, 3]).forEach(st => {
     html += '<div class="stage-label">' + STAGES[st] + '</div><div class="levels-grid">';
     LEVELS.forEach((lv, i) => {
-      if (lv.stage !== st) return;
+      if (lv.stage !== st || i >= levelCount) return;
       const n = stars[i] || 0;
       html += '<button data-level="' + i + '" class="' + (i === S.i ? "current" : "") + '">Level ' + (i + 1) +
         "<small>" + "★".repeat(n) + "</small></button>";
@@ -798,8 +811,8 @@ $("rightPanBtn").addEventListener("click", () => clickPan("R"));
 $("replayBtn").addEventListener("click", () => { closeOverlay("winOverlay"); loadLevel(S.i); });
 $("nextBtn").addEventListener("click", () => {
   closeOverlay("winOverlay");
-  loadLevel(S.i < LEVELS.length - 1 ? S.i + 1 : 0);
-  $("leftPanBtn").focus();
+  loadLevel(S.i < levelCount - 1 ? S.i + 1 : 0);
+  $(lessonMode ? "levelTitle" : "leftPanBtn").focus();
 });
 $("levelsBtn").addEventListener("click", showLevels);
 $("closeLevels").addEventListener("click", () => closeOverlay("levelsOverlay"));
@@ -822,7 +835,7 @@ document.addEventListener("keydown", e => {
 });
 
 const startMatch = /[?&]level=(\d+)/.exec(location.search);
-loadLevel(startMatch ? Math.max(0, Math.min(LEVELS.length - 1, Number(startMatch[1]) - 1)) : 0);
+loadLevel(startMatch ? Math.max(0, Math.min(levelCount - 1, Number(startMatch[1]) - 1)) : 0);
 try { localStorage.setItem("a1g-last", "a-rei-b-3"); } catch (e) {}
 
 </script>

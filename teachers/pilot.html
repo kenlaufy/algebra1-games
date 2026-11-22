@@ -13,7 +13,11 @@
   .pilot-plan li, .pilot-review dd { margin-bottom: .6rem; }
   .pilot-review dt { font-weight: 800; }
   .pilot-review dd { margin-inline-start: 0; }
-  @media print { .pilot-nav, .pilot-actions { display: none; } }
+  .pilot-share { margin: 1rem 0; }
+  .pilot-share label { display: block; font-weight: 800; }
+  .pilot-share input { flex: 1 1 15rem; min-width: 0; padding: .5rem; min-height: 44px; font: inherit; }
+  .pilot-share [role="status"]:empty { display: none; }
+  @media print { .pilot-nav, .pilot-actions, .pilot-share button { display: none; } }
 </style>
 </head>
 <body>
@@ -25,8 +29,8 @@
   </nav>
 </header>
 <main class="page" id="main">
-  <h1>Classroom pilot and district review</h1>
-  <p class="lead">Try a short Algebra I lesson on the devices your students use. School teams can review the classroom workflow, device requirements, and data handling before a wider rollout.</p>
+  <h1>Try a 20-minute Algebra I lesson</h1>
+  <p class="lead">Use Balance Workshop to teach students why they must do the same thing to both sides of an equation. Students can open the lesson link and play without signing in.</p>
   <nav class="pilot-nav" aria-label="On this page">
     <a href="#lesson">Sample lesson</a><a href="#setup">Classroom setup</a><a href="#technology">Technology review</a><a href="#accessibility">Accessibility</a>
   </nav>
@@ -36,24 +40,41 @@
     <div class="panel-box">
       <p><strong>Grade 9 Algebra I · 20 minutes · MA AI.A-REI.B.3</strong></p>
       <p>Students solve a linear equation by applying the same operation to both sides, then explain why each move preserves the solution.</p>
+      <div class="pilot-actions">
+        <a class="btn primary" id="studentLesson" href="../games/a-rei-b-3/?lesson=1-4">Open student lesson</a>
+        <a class="btn" href="a-rei-b-3/">Full teacher guide</a>
+      </div>
+      <div id="shareLesson" class="pilot-share" hidden>
+        <label for="studentLink">Link to share with students</label>
+        <div class="pilot-actions">
+          <input id="studentLink" type="url" readonly>
+          <button class="btn" id="copyLesson" type="button">Copy student link</button>
+        </div>
+        <p id="copyStatus" role="status"></p>
+      </div>
       <ol class="pilot-plan">
         <li><strong>3 min.</strong> Display level 1. Ask students what would happen if they removed weight from only one side.</li>
         <li><strong>9 min.</strong> Have students play levels 1–4. Ask partners to name the operation and predict the next equation before applying it.</li>
         <li><strong>4 min.</strong> Discuss how a move on the scale shows up in the written equation. Ask a student to verify a solution by substitution.</li>
-        <li><strong>4 min.</strong> Give the guide’s exit ticket. Look for a correct solution, the same operation on both sides, and an explanation of why the new equation has the same solution.</li>
+        <li><strong>4 min.</strong> Have students answer the question below on paper or in your usual classroom tool. It also appears after level 4.</li>
       </ol>
-      <div class="pilot-actions">
-        <a class="btn primary" href="../games/a-rei-b-3/">Open Balance Workshop</a>
-        <a class="btn" href="a-rei-b-3/">Open guide and exit ticket</a>
-      </div>
     </div>
+  </section>
+
+  <section aria-labelledby="exit">
+    <h2 id="exit">Exit question</h2>
+    <p>In <strong>x + 4 = 9</strong>, a classmate subtracts 4 from the left side only and writes <strong>x = 9</strong>. What should they write instead? Why must they subtract 4 from both sides?</p>
+    <details>
+      <summary>What to look for in student answers</summary>
+      <p>Subtract 4 from both sides to get <strong>x = 5</strong>. The two sides were equal, so taking away the same amount keeps them equal. Accept a correct explanation using the scale or substitution. For example, 5 + 4 = 9, while 9 + 4 ≠ 9.</p>
+    </details>
   </section>
 
   <section aria-labelledby="setup">
     <h2 id="setup">Choose how students will turn in work</h2>
     <dl class="pilot-review">
       <dt>Start with one lesson</dt>
-      <dd>Post the student game link in your usual classroom tool and collect the exit ticket privately. This workflow needs no class code or classroom alias on the site.</dd>
+      <dd>Copy the student link above into your usual classroom tool and collect the exit ticket privately. This workflow needs no class code or classroom alias on the site.</dd>
       <dt>Use the class dashboard</dt>
       <dd><a href="../classes/">Create a class</a>, choose games, and post the join link so the assignment and calculator setting are included. Give each student a unique classroom alias. Students send their progress code through a private assignment. Paste those codes into the dashboard and download a backup when you need one.</dd>
       <dt>Check understanding</dt>
@@ -84,5 +105,21 @@
   <div>Algebra 1 Games</div>
   <nav aria-label="Footer"><a href="./">Teacher guides</a><a href="../privacy/">Privacy</a></nav>
 </footer>
+<script>
+  const studentLink = document.getElementById("studentLink");
+  const copyStatus = document.getElementById("copyStatus");
+  studentLink.value = document.getElementById("studentLesson").href;
+  document.getElementById("shareLesson").hidden = false;
+  document.getElementById("copyLesson").addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(studentLink.value);
+      copyStatus.textContent = "Student link copied.";
+    } catch (error) {
+      studentLink.focus();
+      studentLink.select();
+      copyStatus.textContent = "Copy the selected link and paste it into your assignment.";
+    }
+  });
+</script>
 </body>
 </html>

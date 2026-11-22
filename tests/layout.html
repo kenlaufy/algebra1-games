@@ -25,7 +25,7 @@
   const only = q("g");
   const widths = (q("w") || "320,375,768,1280").split(",").map(Number);
   const games = A1G_CATALOG.domains.flatMap((d) => d.games).filter((g) => g.ready && (!only || only.split(",").includes(g.slug)));
-  const pages = only ? [] : ["../", "../teachers/", "../teachers/guide.html?g=f-if-a-2", "../teachers/guide.html?g=s-id-b-6-b", "../teachers/a-rei-b-3/", "../privacy/", "../class/", "../classes/"].concat(/github\.io$/.test(location.hostname) ? ["../404.html"] : []);
+  const pages = only ? [] : ["../", "../teachers/", "../teachers/pilot.html", "../games/a-rei-b-3/?lesson=1-4", "../teachers/guide.html?g=f-if-a-2", "../teachers/guide.html?g=s-id-b-6-b", "../teachers/a-rei-b-3/", "../privacy/", "../class/", "../classes/"].concat(/github\.io$/.test(location.hostname) ? ["../404.html"] : []);
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   let problems = 0, checks = 0;
   const report = (label, issues) => {
