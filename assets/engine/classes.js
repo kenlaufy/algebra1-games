@@ -7,7 +7,7 @@
    codes into the class dashboard. Nothing is sent anywhere by this site.
 
    Progress code format (version 1), all URL-safe:
-     A1G1~<class code>~<nickname, URI-encoded>~<minutes since 2026-01-01, base 36>~<slug>.<stars>~...~<check>
+     A1G1~<class code>~<nickname, URI-encoded>~<base-36 minutes since 2026-01-01, optionally followed by . and base-36 milliseconds within the minute>~<slug>.<stars>~...~<check>
    <stars> is 4 characters: 12 levels × 2 bits (0–3 stars), in base64url. <check> is a short checksum that
    catches typos and cut-off pastes (it is not a security feature). */
 (function () {
@@ -42,14 +42,14 @@
   CL.join = function (info) {
     const c = { code: CL.prettyCode(info.code), nick: CL.cleanNick(info.nick), name: String(info.name || "").slice(0, 60), games: (info.games || []).filter((s) => games().some((g) => g.slug === s)), joined: Date.now() };
     if (info.calc === false) c.calc = false;
-    write("a1g-class", c);
-    return c;
+    return write("a1g-class", c) ? c : null;
   };
   CL.leave = () => { try { localStorage.removeItem("a1g-class"); } catch (e) {} };
   CL.starsFor = (slug) => (window.A1G_LOOK ? A1G_LOOK.stars(slug) : {});
   CL.progressCode = function () {
     const me = CL.mine(); if (!me) return null;
-    const t = Math.max(0, Math.round((Date.now() - EPOCH) / 60000)).toString(36);
+    const elapsed = Math.max(0, Date.now() - EPOCH);
+    const t = Math.floor(elapsed / 60000).toString(36) + "." + (elapsed % 60000).toString(36);
     const parts = ["A1G1", CL.normCode(me.code), encodeURIComponent(me.nick).replace(/~/g, "%7E"), t];
     games().forEach((g) => { const s = CL.starsFor(g.slug); const arr = Array.from({ length: 12 }, (_, i) => +s[i] || 0); if (arr.some(Boolean)) parts.push(g.slug + "." + packStars(arr)); });
     const body = parts.join("~");
@@ -63,7 +63,11 @@
     const chk = p.pop(), body = p.join("~");
     if (check(body) !== chk) return { error: "Damaged or incomplete code (check it was copied in full)" };
     let nick; try { nick = CL.cleanNick(decodeURIComponent(p[2])); } catch (e) { return { error: "Damaged code" }; }
-    const out = { classCode: CL.prettyCode(p[1]), nick, time: EPOCH + parseInt(p[3], 36) * 60000, stars: {} };
+    const stamp = /^([0-9a-z]+)(?:\.([0-9a-z]+))?$/.exec(p[3]);
+    const offset = stamp && stamp[2] ? parseInt(stamp[2], 36) : 0;
+    const time = stamp ? EPOCH + parseInt(stamp[1], 36) * 60000 + offset : NaN;
+    if (!Number.isSafeInteger(time) || time > 8640000000000000 || offset >= 60000) return { error: "Damaged timestamp" };
+    const out = { classCode: CL.prettyCode(p[1]), nick, time, stars: {} };
     for (const e of p.slice(4)) {
       const m = /^([a-z0-9-]+)\.([A-Za-z0-9_-]{4})$/.exec(e); if (!m) return { error: "Damaged code" };
       const s = unpackStars(m[2]); if (s) out.stars[m[1]] = s;
@@ -98,28 +102,42 @@
       if (p.error) { res.bad++; return; }
       const c = all[p.classCode];
       if (!c || (onlyClass && p.classCode !== CL.prettyCode(onlyClass))) { res.otherClass.push(p.classCode); return; }
-      const key = p.nick.toLowerCase(), old = c.students[key];
+      const key = p.nick.toLowerCase(), old = Object.hasOwn(c.students, key) ? c.students[key] : null;
       if (old && old.time >= p.time) { res.same++; return; }
-      c.students[key] = { nick: p.nick, time: p.time, stars: p.stars };
+      Object.defineProperty(c.students, key, { value: { nick: p.nick, time: p.time, stars: p.stars }, enumerable: true, writable: true, configurable: true });
       old ? res.updated++ : res.added++;
       res.names.push(p.nick);
     });
-    CL.saveAll(all);
+    if ((res.added || res.updated) && !CL.saveAll(all)) {
+      return { ...res, added: 0, updated: 0, names: [], storageError: true };
+    }
     return res;
   };
   CL.summary = function (stars) { const s = stars || []; let total = 0, solved = 0; for (let i = 0; i < 12; i++) { total += +s[i] || 0; if (s[i]) solved++; } return { stars: total, solved }; };
   CL.backup = () => JSON.stringify({ app: "algebra1-games", kind: "classes", version: 1, saved: new Date().toISOString(), classes: CL.all() }, null, 1);
   CL.restore = function (json) {
     const data = JSON.parse(json);
-    if (!data || data.kind !== "classes" || typeof data.classes !== "object") throw new Error("This isn't an Algebra 1 Games class file.");
+    const isRecord = v => v !== null && typeof v === "object" && !Array.isArray(v);
+    if (!data || data.app !== "algebra1-games" || data.kind !== "classes" || data.version !== 1 || !isRecord(data.classes)) {
+      throw new Error("Choose a version 1 class backup downloaded from Algebra 1 Games.");
+    }
+    const classes = Object.values(data.classes);
+    const validStudent = s => isRecord(s) && typeof s.nick === "string" && Number.isFinite(s.time) &&
+      isRecord(s.stars) && Object.values(s.stars).every(stars => Array.isArray(stars) && stars.length === 12 &&
+        stars.every(n => Number.isInteger(n) && n >= 0 && n <= 3));
+    if (!classes.every(c => isRecord(c) && CL.validCode(c.code) && c.code === CL.prettyCode(c.code) &&
+        typeof c.name === "string" && Array.isArray(c.games) && c.games.every(slug => typeof slug === "string") &&
+        isRecord(c.students) && Object.values(c.students).every(validStudent))) {
+      throw new Error("The backup contains an incomplete class or student record. No classes were changed.");
+    }
     const all = CL.all(); let n = 0;
-    Object.values(data.classes).forEach((c) => {
-      if (!c || !CL.validCode(c.code)) return;
+    classes.forEach((c) => {
       const mine = all[c.code];
       if (!mine) { all[c.code] = c; n++; return; }
-      Object.entries(c.students || {}).forEach(([k, s]) => { if (!mine.students[k] || mine.students[k].time < s.time) mine.students[k] = s; });
+      Object.entries(c.students || {}).forEach(([k, s]) => { if (!Object.hasOwn(mine.students, k) || mine.students[k].time < s.time) Object.defineProperty(mine.students, k, { value: s, enumerable: true, writable: true, configurable: true }); });
       n++;
     });
-    CL.saveAll(all); return n;
+    if (!CL.saveAll(all)) throw new Error("This browser could not save the backup. Keep the backup file and check browser storage.");
+    return n;
   };
 })();

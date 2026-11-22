@@ -62,11 +62,16 @@
 <script>
 (function () {
   const CL = A1G_CLASS, L = A1G_LOOK, view = document.getElementById("view");
-  const esc = t => String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
+  const esc = t => String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
   const allGames = A1G_CATALOG.domains.flatMap(d => d.games.map(g => ({ ...g, domain: d.name }))).filter(g => g.ready);
   const q = new URLSearchParams(location.search);
+  const linkSettings = () => ({ code: q.get("join"), name: q.get("name") || "", games: (q.get("games") || "").split(",").filter(Boolean), calc: q.get("calc") !== "0" });
+  function clearJoinLink() {
+    q.delete("join");
+    history.replaceState(null, "", location.pathname);
+  }
 
-  function joinForm(prefill) {
+  function joinForm(prefill, switching = false) {
     const p = prefill || {};
     view.innerHTML =
       "<p class='lead'>Join your teacher's class to see your assigned games and hand in your progress. No account needed.</p>" +
@@ -74,7 +79,7 @@
       (p.name ? "<h2>Join " + esc(p.name) + "</h2>" : "<h2>Join a class</h2>") +
       "<div class='field'><label for='code'>Class code</label><input id='code' autocomplete='off' autocapitalize='characters' spellcheck='false' placeholder='ABC-123' maxlength='8' value='" + esc(p.code ? CL.prettyCode(p.code) : "") + "'><small>Your teacher will show you a 6-character code.</small></div>" +
       "<div class='field'><label for='nick'>Your nickname or class number</label><input id='nick' autocomplete='off' maxlength='24' placeholder='e.g. 14 or Blue Fox'><small>Use what your teacher asked for. Please don't type your full name.</small></div>" +
-      "<p class='err' id='err' role='alert'></p><button class='btn primary big' type='submit'>Join class</button></form>";
+      "<p class='err' id='err' role='alert'></p><button class='btn primary big' type='submit'>Join class</button>" + (switching ? " <a class='btn' href='./'>Cancel</a>" : "") + "</form>";
     const form = document.getElementById("joinForm");
     (p.code ? form.nick : form.code).focus();
     form.code.addEventListener("input", () => { const c = CL.normCode(form.code.value); form.code.value = c.length > 3 ? c.slice(0, 3) + "-" + c.slice(3, 6) : c; });
@@ -84,9 +89,13 @@
       if (!CL.validCode(form.code.value)) { err.textContent = "That class code doesn't look right. It has 6 letters and numbers, like K7M-Q4P."; form.code.focus(); return; }
       if (!CL.cleanNick(form.nick.value)) { err.textContent = "Type the nickname or number your teacher asked for."; form.nick.focus(); return; }
       const samePrefill = p.code && CL.normCode(p.code) === CL.normCode(form.code.value);
-      CL.join({ code: form.code.value, nick: form.nick.value, name: samePrefill ? p.name : "", games: samePrefill ? p.games : [], calc: samePrefill ? p.calc : true });
+      const joined = CL.join({ code: form.code.value, nick: form.nick.value, name: samePrefill ? p.name : "", games: samePrefill ? p.games : [], calc: samePrefill ? p.calc : true });
+      if (!joined) {
+        err.textContent = "This browser could not save your class. Check whether site storage is allowed and try again.";
+        return;
+      }
       A1G_NAV.setRole("student");
-      history.replaceState(null, "", location.pathname);
+      clearJoinLink();
       show(true);
     });
   }
@@ -103,10 +112,16 @@
     let me = CL.mine();
     // the teacher posted a new join link for this same class: pick up the new name, games and calculator setting
     if (me && q.get("join") && CL.normCode(q.get("join")) === CL.normCode(me.code)) {
-      me = CL.join({ code: me.code, nick: me.nick, name: q.get("name") || me.name, games: (q.get("games") || "").split(",").filter(Boolean), calc: q.get("calc") !== "0" });
-      history.replaceState(null, "", location.pathname);
+      const updated = CL.join({ ...linkSettings(), nick: me.nick });
+      if (updated) {
+        me = updated;
+        clearJoinLink();
+      } else {
+        view.innerHTML = "<p role='alert'>This browser could not save the updated class settings. <a href='./'>Open your saved class</a> or check your browser storage and reopen the link.</p>";
+        return;
+      }
     }
-    if (!me) return joinForm(q.get("join") ? { code: q.get("join"), name: q.get("name") || "", games: (q.get("games") || "").split(",").filter(Boolean), calc: q.get("calc") !== "0" } : null);
+    if (!me) return joinForm(q.has("join") ? linkSettings() : null);
     const assigned = allGames.filter(g => (me.games || []).includes(g.slug));
     const played = allGames.filter(g => !assigned.includes(g) && L.progress(g.slug).solved);
     view.innerHTML =
@@ -175,7 +190,7 @@
   if (me && q.get("join") && CL.normCode(q.get("join")) !== CL.normCode(me.code)) {
     view.innerHTML = "<div class='card'><h2>Switch classes?</h2><p>This device is in <b>" + esc(me.name || me.code) + "</b>. The link you opened is for <b>" + esc(q.get("name") || CL.prettyCode(q.get("join"))) + "</b>.</p>" +
       "<div class='row'><button class='btn primary' id='sw'>Join the new class</button><a class='btn' href='./'>Stay in " + esc(me.name || "my class") + "</a></div></div>";
-    document.getElementById("sw").addEventListener("click", () => { CL.leave(); show(); });
+    document.getElementById("sw").addEventListener("click", () => joinForm(linkSettings(), true));
   } else show();
 })();
 </script>
