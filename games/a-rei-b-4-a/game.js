@@ -2,7 +2,7 @@
 (function () {
   const A = window.Cartoon, M = "−";
   const SQ = "√";
-  const fr = (a, b) => '<span class="frac"><span>' + a + "</span><span>" + b + "</span></span>";
+  const fr = Alg.fractionHTML;
   // step: [prompt, answers, unordered?, showAfter] for inputs, or { c: prompt, o: [[label, why]...], show } for choices
   const LEVELS = [
     { stage: 1, eq: "x² + 6x + 5 = 0", steps: [["Move the constant: x² + 6x = []", [-5], 0, "x² + 6x = −5"],
@@ -41,13 +41,13 @@
       answer: "(x + b/2)² = b²/4 − c", check: "Same steps as level 1, with b = 6 and c = 5: (x + 3)² = 9 − 5 = 4 ✓", tip: "The same moves as level 1, with letters. This is how the master key is forged." },
     { stage: 3, eq: "ax² + bx + c = 0", steps: [
       { c: "First make the x² coefficient 1:", o: [["x² + " + fr("b", "a") + "x + " + fr("c", "a") + " = 0", ""], ["x² + bx + c = a", "Divide every term by a; don't move a."], ["x² + " + fr("b", "a") + "x + c = 0", "Every term gets divided by a, including c."]], show: "x² + (b/a)x + c/a = 0" },
-      { c: "Move the constant and add the corner (b/2a)² to both sides:", o: [["x² + " + fr("b", "a") + "x + " + fr("b²", "4a²") + " = " + fr("b²", "4a²") + " " + M + " " + fr("c", "a"), ""], ["x² + " + fr("b", "a") + "x + " + fr("b²", "4a") + " = " + fr("b²", "4a") + " " + M + " " + fr("c", "a"), "(b/2a)² = b²/4a²: square the a too."], ["x² + " + fr("b", "a") + "x = " + M + fr("c", "a") + " + " + fr("b", "2a"), "The corner is the square of half the x coefficient."]], show: "x² + (b/a)x + b²/4a² = b²/4a² − c/a" },
-      { c: "Write the left side as a square and combine the right side over 4a²:", o: [["(x + " + fr("b", "2a") + ")² = " + fr("b² " + M + " 4ac", "4a²"), ""], ["(x + " + fr("b", "a") + ")² = " + fr("b² " + M + " 4ac", "4a²"), "Half of b/a is b/2a."], ["(x + " + fr("b", "2a") + ")² = " + fr("b² " + M + " c", "4a²"), "c/a = 4ac/4a², so the numerator is b² − 4ac."]], show: "(x + b/2a)² = (b² − 4ac)/4a²" }],
-      answer: "(x + b/2a)² = (b² − 4ac)/4a²", check: "This is the form (x − p)² = q with p = −b/2a and q = (b² − 4ac)/4a² ✓", tip: "Now for any a, b and c." },
-    { stage: 3, eq: "(x + b/2a)² = (b² − 4ac)/4a²", steps: [
-      { c: "Take the square root of both sides:", o: [["x + " + fr("b", "2a") + " = ±" + fr(SQ + "(b² " + M + " 4ac)", "2a"), ""], ["x + " + fr("b", "2a") + " = " + fr(SQ + "(b² " + M + " 4ac)", "2a"), "Don't forget the ± : both roots square to the same number."], ["x + " + fr("b", "2a") + " = ±" + fr("b " + M + " 2" + SQ + "(ac)", "2a"), "The square root of a difference isn't the difference of square roots."]], show: "x + b/2a = ±√(b² − 4ac)/2a" },
-      { c: "Subtract b/2a from both sides:", o: [["x = " + fr(M + "b ± " + SQ + "(b² " + M + " 4ac)", "2a"), ""], ["x = " + fr("b ± " + SQ + "(b² " + M + " 4ac)", "2a"), "Subtracting b/2a makes it −b."], ["x = " + M + "b ± " + fr(SQ + "(b² " + M + " 4ac)", "2a"), "Both pieces are over 2a."]], show: "x = (−b ± √(b² − 4ac)) / 2a" }],
-      answer: "x = (−b ± √(b² − 4ac)) / 2a", check: "You built the quadratic formula: the master key ✓", tip: "Two more moves to forge the key." },
+      { c: "Move the constant and add the corner (b/(2a))² to both sides:", o: [["x² + " + fr("b", "a") + "x + " + fr("b²", "4a²") + " = " + fr("b²", "4a²") + " " + M + " " + fr("c", "a"), ""], ["x² + " + fr("b", "a") + "x + " + fr("b²", "4a") + " = " + fr("b²", "4a") + " " + M + " " + fr("c", "a"), "(b/(2a))² = b²/(4a²): square the a too."], ["x² + " + fr("b", "a") + "x = " + M + fr("c", "a") + " + " + fr("b", "2a"), "The corner is the square of half the x coefficient."]], show: "x² + (b/a)x + b²/(4a²) = b²/(4a²) − c/a" },
+      { c: "Write the left side as a square and combine the right side over 4a²:", o: [["(x + " + fr("b", "2a") + ")² = " + fr("b² " + M + " 4ac", "4a²"), ""], ["(x + " + fr("b", "a") + ")² = " + fr("b² " + M + " 4ac", "4a²"), "Half of b/a is b/(2a)."], ["(x + " + fr("b", "2a") + ")² = " + fr("b² " + M + " c", "4a²"), "c/a = 4ac/(4a²), so the numerator is b² − 4ac."]], show: "(x + b/(2a))² = (b² − 4ac)/(4a²)" }],
+      answer: "(x + b/(2a))² = (b² − 4ac)/(4a²)", check: "This is the form (x − p)² = q with p = −b/(2a) and q = (b² − 4ac)/(4a²) ✓", tip: "For a quadratic, a ≠ 0. Divide every term by a." },
+    { stage: 3, eq: "(x + b/(2a))² = (b² − 4ac)/(4a²)", steps: [
+      { c: "Take the square root of both sides:", o: [["x + " + fr("b", "2a") + " = ±" + fr(SQ + "(b² " + M + " 4ac)", "2a"), ""], ["x + " + fr("b", "2a") + " = " + fr(SQ + "(b² " + M + " 4ac)", "2a"), "Don't forget the ± : both roots square to the same number."], ["x + " + fr("b", "2a") + " = ±" + fr("b " + M + " 2" + SQ + "(ac)", "2a"), "The square root of a difference isn't the difference of square roots."]], show: "x + b/(2a) = ±√(b² − 4ac)/(2a)" },
+      { c: "Subtract b/(2a) from both sides:", o: [["x = " + fr(M + "b ± " + SQ + "(b² " + M + " 4ac)", "2a"), ""], ["x = " + fr("b ± " + SQ + "(b² " + M + " 4ac)", "2a"), "Subtracting b/(2a) makes it −b."], ["x = " + M + "b ± " + fr(SQ + "(b² " + M + " 4ac)", "2a"), "Both pieces are over 2a."]], show: "x = (−b ± √(b² − 4ac)) / (2a)" }],
+      answer: "x = (−b ± √(b² − 4ac)) / (2a)", check: "You built the quadratic formula: the master key ✓", tip: "Two more moves to forge the key." },
     { stage: 3, eq: "2x² + 3x − 2 = 0", steps: [["Use the master key with a = 2, b = 3, c = −2. First: b² − 4ac = []", [25], 0, "b² − 4ac = 9 + 16 = 25"],
       ["x = (−3 ± √25) / (2 × 2) = (−3 ± []) / []", [5, 4], 0, "x = (−3 ± 5)/4"], ["x = [] or []", [0.5, -2], 1, "x = 1/2 or x = −2"]],
       answer: "x = 1/2 or x = −2", check: "2(1/2)² + 3(1/2) − 2 = 0.5 + 1.5 − 2 = 0 ✓", tip: "Last one: test the key you just built." },
@@ -56,6 +56,7 @@
   GameShell.register({
     slug: "a-rei-b-4-a",
     title: "Master Key",
+    firstMove: "Forge the quadratic formula. Fill in the missing number or choose the next equation to complete the square.",
     subtitle: "Complete the square, then derive the quadratic formula",
     stages: { 1: "Stage 1 · (x − p)² = q with numbers", 2: "Stage 2 · Harder numbers", 3: "Stage 3 · Forge the master key" },
     levels: LEVELS,
@@ -87,13 +88,18 @@
         svg.innerHTML = s;
       };
       draw(false);
-      const steps = lv.steps.map((st) => Array.isArray(st)
-        ? { type: "input", prompt: st[0], answers: st[1], unordered: !!st[2], done: st[3], hint: "Do the same thing to both sides, and remember a square root has two signs.",
+      const steps = lv.steps.map((st, index) => Array.isArray(st)
+        ? { type: "input", prompt: st[0], answers: st[1], unordered: !!st[2], done: st[3], hint: st[2] ? "Use each sign of the square root, then isolate x in both equations." :
+              /corner/.test(st[0]) ? "Take half the coefficient of x and square the whole result." :
+              /Move the constant/.test(st[0]) ? "Undo the constant term by adding its opposite to both sides." :
+              index === 0 && lv.stage === 3 ? "In b² − 4ac, multiply a by the signed value of c before subtracting." :
+              "Use the equation shown above. Check that both sides still have the same value.",
             onDone: () => { shown = st[3]; draw(false); } }
         : { type: "choice", prompt: st.c, options: st.o.map((o, k) => ({ label: o[0], ok: k === 0, why: o[1] })), done: st.show, onDone: () => { shown = st.show; draw(false); } });
       Steps.run(api, { steps, logTitle: "Your work", result: () => { draw(true); return { answer: lv.answer, check: lv.check }; } });
     },
     guide: {
+      evidence: "Pause before the missing corner appears. Ask how its size follows from the middle coefficient and why both sides need the same addition.",
       summary: "A 12-level game for completing the square on equations. Students transform equations into (x − p)² = q with numbers, handle non-perfect squares and no real solutions, then repeat the same moves with letters to derive the quadratic formula.",
       also: "<span class='code'>AI.A-SSE.B.3.b</span> completing the square in expressions.",
       practices: "MP8 Look for and express regularity in repeated reasoning · MP3 Construct viable arguments",
@@ -106,7 +112,7 @@
       stageNotes: {
         1: { sees: "Monic equations with perfect-square q.", builds: "The completing-the-square routine." },
         2: { sees: "Irrational roots, a leading coefficient of 2, decimals, and q < 0.", builds: "Flexibility; recognizing no real solutions." },
-        3: { sees: "Letters b, c, then a.", builds: "The derivation of x = (−b ± √(b² − 4ac)) / 2a." },
+        3: { sees: "Letters b, c, then a.", builds: "The derivation of x = (−b ± √(b² − 4ac)) / (2a)." },
       },
       discussion: [
         "Why must the corner be added to both sides?",
@@ -116,7 +122,7 @@
       misconceptions: [
         ["Adding the corner to one side only", "Inputs model adding it to both sides; the equation display updates."],
         ["Forgetting ± when taking square roots", "Two-answer steps require both roots; level 11's distractor omits ±."],
-        ["(b/2a)² = b²/4a", "Level 10's distractor is explained."],
+        ["(b/(2a))² = b²/(4a)", "Level 10's distractor is explained."],
         ["√(b² − 4ac) = b − 2√(ac)", "Level 11's distractor is explained."],
       ],
       exitTicket: {

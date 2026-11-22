@@ -66,7 +66,7 @@
     const title = cfg.title || info.name;
     const root = "../../";
     const STORE = "a1g-stars-" + cfg.slug;
-    const SEEN = "a1g-help-" + cfg.slug;
+
     let stars = {};
     try { stars = JSON.parse(localStorage.getItem(STORE) || "{}"); } catch (e) { stars = {}; }
 
@@ -93,8 +93,10 @@
         els.levelsBtn = h("button", { class: "btn" }, "Levels"))));
     body.appendChild(h("main", { id: "main", class: "game-main" },
       h("div", { class: "levelbar" }, els.levelTitle = h("h2"), els.levelMeta = h("div", { class: "meta" })),
+      els.firstMove = h("p", { class: "first-move" }, h("strong", null, "Start here"), cfg.firstMove),
       els.tip = h("div", { class: "tip" }),
-      els.stage = h("div", { class: "stagecard" }),
+      els.stage = h("div", { class: "stagecard", id: "diagram" }),
+      els.zoom = h("button", { class: "btn diagram-zoom", "aria-controls": "diagram", "aria-pressed": "false" }, "Enlarge diagram"),
       h("div", { class: "controls", role: "group", "aria-label": "Controls" },
         els.controls = h("div", { style: { display: "contents" } }),
         h("div", { class: "spacer" }),
@@ -151,9 +153,10 @@
 
     // ---------- state + api ----------
     const levels = cfg.levels;
-    let index = 0, solved = false;
+    let index = 0, solved = false, winTimer;
     const api = {
       h, MINUS, num: GS.num, paren: GS.paren, reduceMotion,
+      get feedback() { return els.msg; },
       get stage() { return els.stage; },
       get controls() { return els.controls; },
       get index() { return index; },
@@ -229,6 +232,9 @@
     function load(i) {
       index = i; solved = false;
       const lv = levels[i];
+      clearTimeout(winTimer);
+      els.winOverlay.classList.remove("show");
+      els.firstMove.hidden = i !== 0 || !cfg.firstMove;
       els.stage.innerHTML = "";
       els.controls.innerHTML = "";
       els.levelTitle.textContent = "Level " + (i + 1) + " of " + levels.length;
@@ -238,7 +244,16 @@
       api.autoplay = null;
       api.meta(lv.par ? "Par: " + lv.par + (lv.par === 1 ? " move" : " moves") : "");
       cfg.load(lv, api, i);
+      els.zoom.hidden = !els.stage.querySelector("svg");
+      setZoom(false);
     }
+
+    function setZoom(enlarged) {
+      els.stage.classList.toggle("enlarged", enlarged);
+      els.zoom.setAttribute("aria-pressed", String(enlarged));
+      els.zoom.textContent = enlarged ? "Fit diagram" : "Enlarge diagram";
+    }
+    els.zoom.addEventListener("click", () => setZoom(!els.stage.classList.contains("enlarged")));
 
     function starCount(r) {
       if (r.stars) return r.stars;
@@ -256,9 +271,9 @@
         stars[index] = n;
         try { localStorage.setItem(STORE, JSON.stringify(stars)); } catch (e) {}
       }
-      setTimeout(() => {
+      winTimer = setTimeout(() => {
         const last = index === levels.length - 1;
-        els.winTitle.textContent = last ? "You finished all " + levels.length + " levels!" : (r.title || "Solved!");
+        els.winTitle.textContent = last ? "Final level solved!" : (r.title || "Solved!");
         els.winAnswer.innerHTML = r.answer || "";
         els.winAnswer.classList.toggle("hidden", !r.answer);
         els.winStars.innerHTML = "★".repeat(n) + '<span class="off">' + "★".repeat(3 - n) + "</span>";
@@ -317,8 +332,6 @@
     const m = /[?&]level=(\d+)/.exec(location.search);
     if (m) startAt = Math.max(0, Math.min(levels.length - 1, Number(m[1]) - 1));
     load(startAt);
-    let seen = false;
-    try { seen = localStorage.getItem(SEEN) === "1"; localStorage.setItem(SEEN, "1"); } catch (e) {}
-    if (!seen && !window.A1G_TEST && !/[?&]test=1/.test(location.search)) openOverlay(els.helpOverlay, els.closeHelp);
+
   }
 })();

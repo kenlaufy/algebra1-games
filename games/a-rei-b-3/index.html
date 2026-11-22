@@ -136,6 +136,7 @@
     <h2 id="levelTitle"></h2>
     <div class="meta" id="levelMeta"></div>
   </div>
+  <p class="first-move" id="firstMove"><strong>Start here</strong>Get the mystery box alone. Choose a move, tap one pan, then balance the other pan.</p>
   <div class="tip" id="tip"></div>
 
   <div class="stagecard">
@@ -233,7 +234,7 @@ const STAGES = {
 };
 const LEVELS = [
   { stage: 1, L: { x: 1, c: 2 },  R: { x: 0, c: 5 },  sol: 3,  par: 1,
-    tip: "Get the mystery box alone on one pan. Pick a move, then click a pan. Whatever you do to one pan, do to the other." },
+    tip: "Try taking away the two loose blocks. What happens if you change just one pan?" },
   { stage: 1, L: { x: 2, c: 0 },  R: { x: 0, c: 8 },  sol: 4,  par: 1,
     tip: "Two identical boxes weigh as much as 8 blocks. Try splitting both pans into equal groups with ÷." },
   { stage: 1, L: { x: 2, c: 1 },  R: { x: 0, c: 7 },  sol: 3,  par: 2,
@@ -308,7 +309,11 @@ let zeroPairNote = false;
 
 function copy(s) { return { x: s.x, c: s.c }; }
 
+let winTimer;
 function loadLevel(i) {
+  clearTimeout(winTimer);
+  $("winOverlay").classList.remove("show");
+  $("firstMove").hidden = i !== 0;
   const lv = LEVELS[i];
   S = {
     i, lv,
@@ -327,7 +332,8 @@ function loadLevel(i) {
 // ---------- Moves ----------
 function readMove() {
   const n = Number($("amount").value);
-  if (!Number.isInteger(n) || n === 0) return { err: "Enter a whole number that isn't 0." };
+  if (n === 0 && builder.op === "/") return { err: "You cannot divide by zero. Choose a nonzero divisor." };
+  if (!Number.isInteger(n) || n === 0) return { err: "Choose a nonzero whole number so the move changes the scale." };
   if (builder.op === "/") {
     if (n === 1) return { err: "Dividing by 1 doesn't change anything. Try another number." };
     return { op: "/", n, unit: null };
@@ -414,7 +420,7 @@ function finishStep(m, snap) {
     S.solved = true;
     render();
     setMsg("Balanced, and the box is alone!", "good");
-    setTimeout(showWin, 750);
+    winTimer = setTimeout(showWin, 750);
     return;
   }
   const negAlone = (S.L.x === -1 && S.L.c === 0 && S.R.x === 0) || (S.R.x === -1 && S.R.c === 0 && S.L.x === 0);
@@ -464,7 +470,7 @@ function showWin() {
   const lval = lv.L.x * value + lv.L.c;
   $("winCheck").textContent = "Check: " + lhs + " = " + num(lval) + " and " + rhs + " = " + num(lval) + " ✓";
   const last = S.i === LEVELS.length - 1;
-  $("winTitle").textContent = last ? "You finished all " + LEVELS.length + " levels!" : "Solved!";
+  $("winTitle").textContent = last ? "Final level solved!" : "Solved!";
   $("nextBtn").textContent = last ? "Back to level 1" : "Next level";
   openOverlay("winOverlay", "nextBtn");
 }
@@ -521,10 +527,12 @@ function render() {
 
   const locked = !!S.pending || S.solved;
   document.querySelectorAll("#opSeg button").forEach(b => {
+    b.setAttribute("aria-pressed", String(b.dataset.op === builder.op));
     b.classList.toggle("on", b.dataset.op === builder.op);
     b.disabled = locked;
   });
   document.querySelectorAll("#unitSeg button").forEach(b => {
+    b.setAttribute("aria-pressed", String(b.dataset.unit === builder.unit));
     b.classList.toggle("on", b.dataset.unit === builder.unit);
     b.disabled = locked || builder.op === "/";
   });
@@ -801,10 +809,7 @@ document.addEventListener("keydown", e => {
 });
 
 loadLevel(0);
-const SEEN_KEY = "balance-workshop-seen-help";
-let seen = false;
-try { seen = localStorage.getItem(SEEN_KEY) === "1"; localStorage.setItem(SEEN_KEY, "1"); } catch (e) {}
-if (!seen) openOverlay("helpOverlay", "closeHelp");
+
 </script>
 </body>
 </html>

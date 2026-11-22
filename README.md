@@ -14,6 +14,7 @@ Browser games for the Massachusetts Algebra I standards, where the math *is* the
 | Games, one folder per standard (12 levels each) | `games/<standard-code>/` |
 | Teacher guides: index, generated guides, Balance Workshop's custom guide | [`teachers/`](teachers/index.html) |
 | Privacy statement | [`privacy/`](privacy/index.html) |
+| Layout and retry checks: three viewport widths, all 14 playable games | [`tests/playthrough.html`](tests/playthrough.html) |
 | Automated checks: plays every level of every ready game | [`tests/run.html`](tests/run.html) |
 
 ## How a game is built
@@ -74,3 +75,5 @@ Then open http://localhost:8000. To run the checks, open http://localhost:8000/t
 ## Deployment
 
 The site is published with GitHub Pages from the `main` branch root. `404.html` assumes the site lives at `/algebra1-games/`.
+
+For incorrect-answer recovery and layout checks at 320, 390, and 1100 px, open [the playthrough suite](tests/playthrough.html) on the same server. It includes Balance Workshop.

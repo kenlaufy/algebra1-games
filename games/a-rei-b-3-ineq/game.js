@@ -56,6 +56,7 @@
   GameShell.register({
     slug: "a-rei-b-3-ineq",
     title: "Seesaw",
+    firstMove: "Get the box alone, then graph its solutions. Choose a move and apply it to both sides of the seesaw.",
     subtitle: "Solve linear inequalities and graph the answer",
     stages: { 1: "Stage 1 · Seesaw basics", 2: "Stage 2 · Flip or keep?", 3: "Stage 3 · Symbols only" },
     levels: LEVELS,
@@ -96,10 +97,15 @@
       const dirSeg = api.seg([{ value: -1, label: "← left", aria: "Shade left" }, { value: 1, label: "right →", aria: "Shade right" }], null,
         (v) => { s.graph.dir = v; draw(); }, "Direction");
       const checkBtn = api.button("Check graph", checkGraph, "primary");
-      const graphAsk = api.h("span", { class: "preview" }, "Click the endpoint on the number line.");
+      const endpoint = api.h("select", { "aria-label": "Endpoint", on: { change: () => {
+        s.graph.at = endpoint.value === "" ? null : Number(endpoint.value);
+        draw();
+      } } }, api.h("option", { value: "" }, "Choose endpoint"));
+      for (let v = -10; v <= 10; v++) endpoint.appendChild(api.h("option", { value: v }, Alg.num(v)));
+      const graphAsk = api.h("span", { class: "preview" }, "Set the endpoint, circle and direction.");
       const solveRow = [opSeg.el, amount, unitSeg.el, preview, applyBtn, undoBtn];
       const signRow = [signAsk, keepBtn, flipBtn];
-      const graphRow = [graphAsk, circleSeg.el, dirSeg.el, checkBtn];
+      const graphRow = [graphAsk, endpoint, circleSeg.el, dirSeg.el, checkBtn];
       api.controls.append(...solveRow, ...signRow, ...graphRow);
       amount.addEventListener("input", refresh);
       svg.addEventListener("click", () => {});
@@ -112,19 +118,22 @@
 
       function readMove() {
         const n = Number(amount.value);
-        if (!Number.isInteger(n) || n === 0) return { err: "Enter a whole number that isn't 0." };
+        if (n === 0 && op === "*") return { err: "Multiplying both sides by zero would erase their order. Choose a nonzero multiplier." };
+        if (n === 0 && op === "/") return { err: "You cannot divide by zero. Choose a nonzero divisor." };
+        if (!Number.isInteger(n) || n === 0) return { err: "Choose a nonzero whole number so your move changes the seesaw." };
         if ((op === "/" || op === "*") && n === 1) return { err: (op === "/" ? "Dividing" : "Multiplying") + " by 1 doesn't change anything." };
         if ((op === "+" || op === "-") && n < 0) return { err: "Use a positive amount. The + and − buttons choose the direction." };
         return { m: [op, n, unit] };
       }
       function refresh() {
-        unitSeg.el.classList.toggle("hidden", op === "*" || op === "/");
+
         const r = readMove();
         preview.innerHTML = r.err ? "" : "Move: <b>" + moveText(r.m) + "</b> on both sides";
         const show = (els, on) => els.forEach((e) => e.classList.toggle("hidden", !on));
         show(solveRow, s.phase === "solve" && !s.pending);
         show(signRow, s.phase === "solve" && !!s.pending);
         show(graphRow, s.phase === "graph");
+        unitSeg.el.classList.toggle("hidden", s.phase !== "solve" || !!s.pending || op === "*" || op === "/");
         if (s.pending) {
           keepBtn.textContent = "Keep " + s.rel;
           flipBtn.textContent = "Flip to " + FLIP[s.rel];
@@ -246,6 +255,7 @@
         // number line
         line.classList.toggle("hidden", s.phase === "solve");
         if (s.phase !== "solve") {
+          endpoint.value = s.graph.at === null ? "" : String(s.graph.at);
           const X = (v) => 60 + (v + 10) * 39;
           let nl = '<rect width="900" height="120" fill="#fffdf7"/>';
           nl += '<line x1="30" y1="60" x2="870" y2="60" stroke="' + A.INK + '" stroke-width="3"/>';
@@ -279,7 +289,8 @@
           applyBtn.click();
           if (s.pending) (m[1] < 0 ? flipBtn : keepBtn).click();
         });
-        s.graph.at = lv.ans[1];
+        endpoint.value = String(lv.ans[1]);
+        endpoint.dispatchEvent(new Event("change"));
         circleSeg.buttons.find((b) => b._v === (lv.ans[0] === "≤" || lv.ans[0] === "≥")).click();
         dirSeg.buttons.find((b) => b._v === (lv.ans[0] === ">" || lv.ans[0] === "≥" ? 1 : -1)).click();
         checkBtn.click();
@@ -288,6 +299,7 @@
     },
 
     guide: {
+      evidence: "Ask the student to test a number inside the shaded ray and one outside it in the original inequality. Their checks should justify the direction and endpoint.",
       summary: "A 12-level game for solving linear inequalities. Students isolate x on a seesaw, decide whether the sign stays or flips after every × or ÷, and graph the solution on a number line.",
       scope: "This game covers linear inequalities; equations are covered by Balance Workshop.",
       also: "<span class='code'>AI.A-REI.A.1</span> justifying each step, through the sign check and test values.",

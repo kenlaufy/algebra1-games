@@ -31,12 +31,12 @@
   --chip: #ebe3d0;
   --chip-edge: #cfc3a8;
   --line: #d8cdb4;
-  --muted: #5c6a82;
+  --muted: #48566b;
   --x: #5a78b8;
   --unit: #e7b84a;
   --neg: #c8553d;
   --box: #c9965c;
-  --go: #3f7d4c;
+  --go: #346d42;
   --go-dark: #2a5534;
   --wood: #a47b52;
   --sand: #dccca6;
@@ -136,4 +136,24 @@ a { color: var(--ink); }
   .page { max-width: none; padding: 0; }
   .panel-box, .page table { border-color: #999; }
   a { text-decoration: none; }
+}
+
+.first-move { background: #e8eff5; border-inline-start: 4px solid #365879; border-radius: 5px 12px 12px 5px;
+  padding: 10px 14px; margin: 10px 0; max-width: 75ch; }
+.first-move strong { margin-inline-end: .6em; }
+.msg:empty { display: none; }
+.msg.bad::before { content: "Try again · "; font-weight: 800; }
+.msg.warn::before { content: "Hint · "; font-weight: 800; }
+.seg button.on { outline: 2px solid currentColor; outline-offset: -5px; }
+/* Stacked fractions in equations */
+.frac { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; font-size: 0.78em; line-height: 1.15; margin: 0 4px; }
+.frac > span:first-child { border-bottom: 3px solid currentColor; padding: 0 6px 2px; }
+.frac > span:last-child { padding: 2px 6px 0; }
+
+
+.frac { font-size: .92em; flex-shrink: 0; }
+.frac > span:first-child { border-width: 2px; }
+@media (max-width: 640px) {
+  .site-header, .game-head, main.game-main, .page { padding-inline: 12px; }
+  .page .math { white-space: normal; }
 }

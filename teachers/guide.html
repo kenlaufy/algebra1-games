@@ -80,6 +80,7 @@
 
     html += "<h2 id='goals'>Learning goals</h2><p>By the end of the activity, students can:</p><ul>" + (g.goals || []).map((x) => "<li>" + x + "</li>").join("") + "</ul>";
 
+    if (g.evidence) html += "<h3>What to listen for</h3><p class='quote'>" + esc(g.evidence) + "</p>";
     html += "<h2 id='stages'>How the game works</h2><p>" + (g.howItWorks || "") + "</p>";
     html += "<table><thead><tr><th>Stage</th><th>Levels</th><th>What students see</th><th>What it builds</th></tr></thead><tbody>";
     stageIds.forEach((st) => {

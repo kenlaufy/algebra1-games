@@ -58,6 +58,7 @@
   GameShell.register({
     slug: "a-rei-b-4-b",
     title: "Energy Strategy",
+    firstMove: "Solve the quadratic with as little energy as you can. Choose a method, then enter the roots.",
     subtitle: "Choose the best method to solve each quadratic equation",
     stages: { 1: "Stage 1 · Special shapes", 2: "Stage 2 · Factor or not?", 3: "Stage 3 · Complex solutions" },
     levels: LEVELS,
@@ -82,7 +83,7 @@
         label: METHODS[k].name + " · " + cost(lv, k) + " energy", ok: !!lv.work[k],
         why: WHY[k] || "That method can't be used here.", key: k }));
       const steps = [
-        { type: "choice", prompt: "Which method?", options: methodOpts,
+        { type: "choice", prompt: "Which method fits this equation and costs the least?", ordered: true, options: methodOpts,
           onDone: () => {
             // which one did they pick? the one marked right
             const picked = [...api.controls.querySelectorAll(".choice.right")].pop();
@@ -92,12 +93,12 @@
             workLine.innerHTML = METHODS[chosen].name + ": " + lv.work[chosen];
           }, done: "" },
         { type: "input", prompt: lv.ans[0], answers: lv.ans[1], unordered: !!lv.ans[2],
-          hint: lv.ans[0] === CPX ? "Write the answer as a ± bi: the real part, then the number in front of i." : "Finish solving with the work shown. Fractions like 1/2 are fine.",
+          hint: lv.ans[0] === CPX ? "Use the real part in the first box and the positive coefficient of i in the second." :
+            lv.ans[0] === QF ? "Use −b, the discriminant b² − 4ac, and the denominator 2a, in that order." :
+            lv.ans[0] === RAD ? "Take both signs of the square root, then isolate x. Keep the radicand inside the root." :
+            "Test each proposed root in the original equation. Both sides must have the same value for each root.",
           done: lv.answer },
       ];
-      // make the autoplay pick the cheapest valid method
-      methodOpts.forEach((o) => { if (o.ok && o.key !== cheapest(lv)) o.ok = "alt"; });
-      steps[0].options = methodOpts.map((o) => ({ label: o.label, ok: !!o.ok, why: o.why, _cheap: o.key === cheapest(lv) }));
       const run = Steps.run(api, { steps, logTitle: "Your work", result: () => {
         const best = chosen === cheapest(lv);
         const stars = Math.max(1, 3 - (best ? 0 : 1) - Math.min(2, run.mistakes));
@@ -109,11 +110,12 @@
       const auto = api.autoplay;
       api.autoplay = () => {
         const b = [...api.controls.querySelectorAll(".choice")].find((x) => x.innerHTML === METHODS[cheapest(lv)].name + " · " + cost(lv, cheapest(lv)) + " energy");
-        b.click();
+        if (b) b.click();
         return auto();
       };
     },
     guide: {
+      evidence: "Ask which feature of the equation made the chosen method economical. Have the student use that feature to justify a choice on a fresh equation.",
       summary: "A 12-level game about choosing a method for quadratic equations. Each method costs energy; students pick the cheapest one that fits the equation's form, then solve, including complex solutions written as a ± bi.",
       also: "<span class='code'>AI.A-REI.B.4.a</span> completing the square and the quadratic formula.",
       practices: "MP5 Use appropriate tools strategically · MP7 Look for and make use of structure",

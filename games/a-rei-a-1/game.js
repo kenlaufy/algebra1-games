@@ -44,10 +44,13 @@
 
   function render(api, lv, hi, marks) {
     const list = api.h("ol", { class: "steps", "aria-label": "Worked solution" });
-    list.appendChild(api.h("li", null, api.h("button", { disabled: true, style: { cursor: "default" } }, lv.start, api.h("span", { class: "why" }, "Start"))));
+    list.appendChild(api.h("li", null, api.h("div", { class: "worked-line" }, lv.start, api.h("span", { class: "why" }, "Start"))));
     lv.lines.forEach((ln, k) => {
+      const fixed = lv.bug >= 0 && marks["c" + lv.bug] === "right";
+      if (fixed && k > lv.bug) return;
+      const line = fixed && k === lv.bug ? lv.fix[0] : ln[0];
       const reason = lv.stage === 2 ? (marks[k] || "Reason: ?") : ln[1];
-      const b = api.h("button", { disabled: true, class: (k === hi ? "sel " : "") + (marks["c" + k] || ""), style: { cursor: "default" } }, ln[0], api.h("span", { class: "why" }, reason));
+      const b = api.h("div", { class: "worked-line " + (k === hi ? "sel " : "") + (marks["c" + k] || "") }, line, api.h("span", { class: "why" }, reason));
       list.appendChild(api.h("li", null, b));
     });
     api.stage.innerHTML = "";
@@ -57,6 +60,7 @@
   GameShell.register({
     slug: "a-rei-a-1",
     title: "Find the Bug",
+    firstMove: "Find the first line that breaks the equation. Read two neighboring lines, then choose the line to fix.",
     subtitle: "Explain each step of a solution, and catch the step that breaks the rules",
     stages: { 1: "Stage 1 · Spot the bug", 2: "Stage 2 · Explain every step", 3: "Stage 3 · Bug or no bug?" },
     levels: LEVELS,
@@ -84,7 +88,7 @@
             done: (k ? lv.lines[k - 1][0] : lv.start) + " → " + ln[0] + ": " + reasonText(ln[1]) };
         });
       } else {
-        const which = { type: "choice", prompt: "Which line has the bug?",
+        const which = { type: "choice", ordered: true, prompt: "Which line has the bug?",
           options: lv.lines.map((ln, k) => ({ label: "Line " + (k + 1) + ": " + ln[0], ok: k === lv.bug,
             why: lv.bug === -1 ? "Look again: \"" + ln[0] + "\" follows from the line before with the reason \"" + ln[1] + "\"." : "Line " + (k + 1) + " is fine: \"" + ln[1] + "\" really does give \"" + ln[0] + "\"." })),
           onDone: () => { if (lv.bug >= 0) { marks["c" + lv.bug] = "wrong"; render(api, lv, lv.bug, marks); } } };
@@ -104,6 +108,7 @@
       Steps.run(api, { steps, logTitle: "Your reasoning", result: () => ({ answer: lv.bug === -1 || lv.stage === 2 ? "No bug · " + lv.answer : lv.answer }) });
     },
     guide: {
+      evidence: "Ask why the first incorrect line changes the solution. Look for a corrected line and the operation that justifies it.",
       summary: "A 12-level game about the logic of solving equations. Students find the line in a worked solution that breaks the rules, fix it, justify each line of correct solutions, and decide whether a solution method is valid.",
       practices: "MP3 Construct viable arguments and critique the reasoning of others · MP6 Attend to precision",
       goals: [
