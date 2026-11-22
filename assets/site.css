@@ -1,0 +1,139 @@
+/* Shared styles for every page of Algebra 1 Games.
+   Fonts are self-hosted (SIL Open Font License, see assets/fonts/OFL-*.txt),
+   so pages make no third-party requests. */
+
+@font-face {
+  font-family: "Fredoka";
+  src: url("fonts/fredoka.woff2") format("woff2");
+  font-weight: 300 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Nunito";
+  src: url("fonts/nunito.woff2") format("woff2");
+  font-weight: 200 1000;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Nunito";
+  src: url("fonts/nunito-italic.woff2") format("woff2");
+  font-weight: 200 1000;
+  font-style: italic;
+  font-display: swap;
+}
+
+:root {
+  --paper: #f6f2e7;
+  --card: #fffdf7;
+  --ink: #23262d;
+  --chip: #ebe3d0;
+  --chip-edge: #cfc3a8;
+  --line: #d8cdb4;
+  --muted: #5c6a82;
+  --x: #5a78b8;
+  --unit: #e7b84a;
+  --neg: #c8553d;
+  --box: #c9965c;
+  --go: #3f7d4c;
+  --go-dark: #2a5534;
+  --wood: #a47b52;
+  --sand: #dccca6;
+  --focus: #1c6dd0;
+  --head: "Fredoka", "Nunito", ui-rounded, system-ui, sans-serif;
+  --body: "Nunito", ui-rounded, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; font-family: var(--body); color: var(--ink); background: var(--paper);
+  font-size: 17px; line-height: 1.5;
+}
+img, svg { max-width: 100%; }
+a { color: var(--ink); }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; border-radius: 6px; }
+
+.skip-link {
+  position: absolute; left: 12px; top: -60px; z-index: 50;
+  background: var(--ink); color: var(--paper); padding: 8px 14px; border-radius: 10px;
+  font-family: var(--head); font-weight: 600; text-decoration: none;
+}
+.skip-link:focus { top: 12px; }
+
+/* ---------- Site header and footer ---------- */
+.site-header {
+  max-width: 1080px; margin: 0 auto; padding: 16px 20px 6px;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+}
+.brand {
+  display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink);
+  font-family: var(--head); font-weight: 700; font-size: 22px;
+}
+.brand img { width: 38px; height: 38px; }
+.site-nav { display: flex; gap: 6px; flex-wrap: wrap; }
+.site-nav a {
+  font-family: var(--head); font-weight: 600; font-size: 17px; text-decoration: none; color: var(--ink);
+  padding: 6px 12px; border-radius: 10px;
+}
+.site-nav a:hover { background: var(--chip); }
+.site-nav a[aria-current="page"] { background: var(--ink); color: var(--paper); }
+
+.site-footer {
+  max-width: 1080px; margin: 40px auto 0; padding: 22px 20px 36px; border-top: 2px solid var(--line);
+  color: var(--muted); font-size: 15px; display: flex; gap: 10px 24px; flex-wrap: wrap; justify-content: space-between;
+}
+.site-footer a { color: var(--ink); font-weight: 700; }
+.site-footer nav { display: flex; gap: 18px; flex-wrap: wrap; }
+
+/* ---------- Buttons and chips ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  font-family: var(--head); font-weight: 600; font-size: 18px; color: var(--ink); text-decoration: none;
+  background: var(--chip); border: 0; border-radius: 10px; padding: 8px 16px; min-height: 44px; cursor: pointer;
+  box-shadow: 0 3px 0 var(--chip-edge); transition: transform 0.05s;
+}
+.btn:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--chip-edge); }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+.btn.primary { background: var(--go); color: #fff; box-shadow: 0 5px 0 var(--go-dark); }
+.btn.primary:active { box-shadow: 0 2px 0 var(--go-dark); transform: translateY(3px); }
+.btn.big { font-size: 22px; padding: 12px 26px; border-radius: 14px; }
+
+.code {
+  display: inline-block; font-family: var(--head); font-weight: 600; font-size: 14px; letter-spacing: 0.2px;
+  background: var(--ink); color: var(--paper); border-radius: 8px; padding: 2px 9px;
+}
+
+/* ---------- Content pages ---------- */
+.page { max-width: 820px; margin: 0 auto; padding: 8px 20px 20px; }
+.page h1 { font-family: var(--head); font-weight: 700; font-size: 40px; line-height: 1.15; margin: 18px 0 8px; }
+.page h2 { font-family: var(--head); font-weight: 600; font-size: 26px; margin: 34px 0 10px; }
+.page h3 { font-family: var(--head); font-weight: 600; font-size: 20px; margin: 22px 0 6px; }
+.page .lead { font-size: 19px; color: var(--muted); font-weight: 600; margin: 0 0 10px; }
+.page table { width: 100%; border-collapse: collapse; background: var(--card); border: 2px solid var(--line); border-radius: 12px; overflow: hidden; font-size: 16px; }
+.page th, .page td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.page th { font-family: var(--head); font-weight: 600; background: var(--chip); }
+.page tr:last-child td { border-bottom: 0; }
+.panel-box { background: var(--card); border: 2px solid var(--line); border-radius: 16px; padding: 16px 20px; margin: 14px 0; }
+.math { font-weight: 800; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+@media (max-width: 560px) {
+  body { font-size: 16px; }
+  .page h1 { font-size: 32px; }
+  .brand { font-size: 20px; }
+  .page table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .page th, .page td { padding: 8px 9px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+}
+
+@media print {
+  .site-header, .site-footer, .no-print { display: none !important; }
+  body { background: #fff; font-size: 12pt; }
+  .page { max-width: none; padding: 0; }
+  .panel-box, .page table { border-color: #999; }
+  a { text-decoration: none; }
+}

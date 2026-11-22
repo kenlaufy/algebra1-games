@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<title>Tests · Balance Workshop</title>
+<style>
+  body { font-family: system-ui, sans-serif; margin: 24px; }
+  .pass { color: #2a7a3b; } .fail { color: #b42318; font-weight: 700; }
+  iframe { width: 900px; height: 500px; border: 1px solid #ccc; margin-top: 16px; }
+</style>
+</head>
+<body>
+<h1>Balance Workshop tests</h1>
+<p>Open this page from a local web server. It loads the game in a frame and plays every level.</p>
+<p id="summary">Running…</p>
+<ul id="results"></ul>
+<iframe id="game" src="../games/a-rei-b-3/index.html" title="Game under test"></iframe>
+<script>
+const SOLUTIONS = [
+  [["-",2,"c"]], [["/",2]], [["-",1,"c"],["/",2]], [["-",1,"x"],["-",2,"c"],["/",2]],
+  [["+",3,"c"]], [["-",1,"x"],["+",1,"c"]], [["-",2,"x"],["-",3,"c"],["/",2]], [["-",5,"c"],["/",-1]],
+  [["-",2,"x"],["+",4,"c"],["/",3]], [["-",3,"x"],["+",9,"c"],["/",4]], [["+",2,"x"],["+",6,"c"],["/",3]], [["-",2,"x"],["+",8,"c"],["/",4]],
+];
+const results = [];
+function check(name, ok, detail) { results.push({ name, ok, detail }); }
+
+document.getElementById("game").addEventListener("load", () => {
+  const w = document.getElementById("game").contentWindow;
+  const g = w.eval("({ LEVELS, loadLevel, clickPan, applyBoth, undo, fmtSide, fmtEq, get S() { return S; }, get builder() { return builder; } })");
+  const msg = () => w.document.getElementById("msg").textContent;
+  const set = (op, n, unit) => { g.builder.op = op; if (unit) g.builder.unit = unit; w.document.getElementById("amount").value = n; };
+  const play = (op, n, unit) => { set(op, n, unit); if (g.S.lv.stage === 3) g.applyBoth(); else { g.clickPan("L"); g.clickPan("R"); } };
+
+  check("12 levels defined", g.LEVELS.length === 12, g.LEVELS.length + " levels");
+  g.LEVELS.forEach((lv, i) => {
+    const lw = lv.L.x * lv.sol + lv.L.c, rw = lv.R.x * lv.sol + lv.R.c;
+    check("Level " + (i + 1) + " solution satisfies its equation", lw === rw, lw + " vs " + rw);
+    g.loadLevel(i);
+    SOLUTIONS[i].forEach(m => play(...m));
+    const s = g.S, val = s.L.x === 1 ? s.R.c : s.L.c;
+    check("Level " + (i + 1) + " solves at par", s.solved && val === lv.sol && s.steps === lv.par,
+      "solved=" + s.solved + " x=" + val + " steps=" + s.steps + "/" + lv.par);
+  });
+
+  g.loadLevel(2); set("/", 2); g.clickPan("L");
+  check("Uneven division is refused", /can't split/.test(msg()) && !g.S.pending, msg());
+  set("-", 1, "c"); g.clickPan("L"); g.clickPan("L");
+  check("Same pan twice is refused", /already did/.test(msg()), msg());
+  g.undo();
+  check("Undo restores a half-finished move", g.fmtEq(g.S.L, g.S.R) === "2x + 1 = 7" && !g.S.pending, g.fmtEq(g.S.L, g.S.R));
+  set("+", -2, "c"); g.clickPan("L");
+  check("Negative amount is refused", /positive amount/.test(msg()), msg());
+  g.loadLevel(7); play("-", 5, "c");
+  check("Hint when -x is alone", /flip its sign/.test(msg()), msg());
+  g.loadLevel(5); play("+", 1, "c");
+  check("Zero-pair note appears", /zero pairs/.test(msg()), msg());
+
+  const failed = results.filter(r => !r.ok).length;
+  document.getElementById("summary").innerHTML = failed
+    ? '<span class="fail">' + failed + " of " + results.length + " checks failed</span>"
+    : '<span class="pass">All ' + results.length + " checks passed</span>";
+  document.getElementById("results").innerHTML = results.map(r =>
+    '<li class="' + (r.ok ? "pass" : "fail") + '">' + (r.ok ? "✓ " : "✗ ") + r.name + " <small>(" + r.detail + ")</small></li>").join("");
+  document.title = (failed ? "FAIL" : "PASS") + " · Balance Workshop tests";
+});
+</script>
+</body>
+</html>
