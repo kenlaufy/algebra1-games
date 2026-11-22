@@ -105,9 +105,9 @@
           accept: (v) => { const k = v[0] / A2; return k !== 0 && Alg.close(v[1], 2 * m * lv.laser[1] * k) && Alg.close(v[2], (lv.laser[1] * lv.laser[1] - lv.circle) * k) ? true : "Expand the square carefully, then collect the x² terms."; } });
         if (lv.approx) {
           steps.push({ type: "input", prompt: "x² = 0.3, so x ≈ [] or x ≈ [] (2 decimal places)", answers: [0.55, -0.55], unordered: true,
-            accept: (v) => (v.length === 2 && v.some((x) => Math.abs(x - 0.5477) < 0.01) && v.some((x) => Math.abs(x + 0.5477) < 0.01)) ? true : "√0.3 is about 0.548. Don't forget the negative root." });
-          steps.push({ type: "input", prompt: "y = −3x, so the hits are about (0.55, []) and (−0.55, [])", answers: [-1.64, 1.64],
-            accept: (v) => (Math.abs(v[0] + 1.643) < 0.02 && Math.abs(v[1] - 1.643) < 0.02) ? true : "Multiply each x by −3.", onDone: () => { showHits = true; draw(); } });
+            hint: "√0.3 is about 0.548. Round to two decimal places and include the negative root." });
+          steps.push({ type: "input", prompt: "Use x = ±√0.3 in y = −3x before rounding. The hits are about (0.55, []) and (−0.55, [])", answers: [-1.64, 1.64],
+            hint: "Multiply √0.3 and −√0.3 by −3, then round each result to two decimal places.", onDone: () => { showHits = true; draw(); } });
         } else {
           steps.push({ type: "input", prompt: "Solve for x: x = [] or x = []", answers: lv.hits.map((h) => h[0]), unordered: true, hint: "Divide by the common factor, then factor." });
           steps.push({ type: "input", prompt: "Find y on the laser: hits at (" + Alg.num(lv.hits[0][0]) + ", []) and (" + Alg.num(lv.hits[1][0]) + ", [])", answers: lv.hits.map((h) => h[1]), onDone: () => { showHits = true; draw(); } });
