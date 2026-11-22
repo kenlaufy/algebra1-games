@@ -1,18 +1,34 @@
 # Algebra 1 Games
 
-麻州 Algebra I 标准的数学游戏原型。数学本身就是玩法，而不是解锁游戏的门票。
+Game prototypes for the Massachusetts Algebra I standards. The design rule: the math *is* the gameplay, not a quiz you answer to unlock the fun part.
 
-## 引擎
+## Engines
 
-| 引擎 | 覆盖标准数 | 状态 |
+The 61 standards are grouped into six shared game engines, so one engine covers many standards.
+
+| Engine | Standards covered | Status |
 | --- | --- | --- |
-| 天平工坊 | 13 | 开发中 |
-| 坐标战场 | 15 | 计划中 |
-| 时间机器 | 15 | 计划中 |
-| 数据实验室 | 13 | 计划中 |
-| 函数机器 | 4 | 计划中 |
-| 卡牌对战 | 2 | 计划中 |
+| [Balance Workshop](games/balance/) | 13 | Prototype |
+| Coordinate Battlefield | 15 | Planned |
+| Time Machine | 15 | Planned |
+| Data Lab | 13 | Planned |
+| Function Machine | 4 | Planned |
+| Card Duel | 2 | Planned |
 
-## 运行
+## Design rules for every level
 
-每个游戏都是纯静态网页，直接用浏览器打开对应的 `index.html` 即可，不需要安装任何东西。
+1. **Predict, then verify.** Players commit to an answer before the game shows the result, so random trial and error doesn't pay off.
+2. **Fade from concrete to abstract.** The same engine starts with pictures, then blocks, then symbols only.
+3. **Feedback that targets misconceptions.** A common mistake gets a visible consequence, not just "wrong".
+4. **Two-player and level-creation modes.** Students challenge each other and build levels for classmates.
+5. **Themes for 13–15 year olds.** Strategy, competition and engineering, not little-kid stories.
+
+After each game, students "translate" what they did: game action → drawing → symbols. Without that step, kids can win the game and still fail the same problem on paper.
+
+## Running the games
+
+Each game is a single static web page. Open its `index.html` in a browser; nothing needs to be installed.
+
+## Standards source
+
+The standards list was compiled from a third-party listing and has not been checked line by line against the [official 2017 Massachusetts Curriculum Framework for Mathematics](https://www.doe.mass.edu/frameworks/math/2017-06.pdf). Verify against that document before relying on the standard codes.

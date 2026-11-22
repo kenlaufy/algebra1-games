@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Balance Workshop · Algebra 1 Games</title>
+<style>
+  :root {
+    --ink: #1f2430;
+    --muted: #6b7280;
+    --line: #d8dce3;
+    --bg: #f5f6f8;
+    --card: #ffffff;
+    --x: #3b5bdb;
+    --unit: #f2a516;
+    --neg: #e03131;
+    --ok: #2f9e44;
+    --accent: #1c7ed6;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    color: var(--ink); background: var(--bg);
+  }
+  header {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 14px 24px; background: var(--card); border-bottom: 1px solid var(--line);
+  }
+  header h1 { font-size: 18px; margin: 0; }
+  header .sub { color: var(--muted); font-size: 14px; }
+  main { max-width: 980px; margin: 0 auto; padding: 18px 20px 40px; }
+  .levelbar { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .levelbar h2 { margin: 0; font-size: 22px; }
+  .levelbar .meta { color: var(--muted); font-size: 14px; }
+  .tip { margin: 8px 0 12px; color: var(--muted); font-size: 15px; min-height: 22px; }
+  .stagecard { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 8px; }
+  svg { width: 100%; height: auto; display: block; user-select: none; }
+  .pan-hit { cursor: pointer; }
+  .pan-hit:hover + .tray, .pan-hit.armed + .tray { stroke: var(--accent); }
+  .equation {
+    text-align: center; font-size: 34px; font-weight: 600; letter-spacing: 0.5px;
+    padding: 14px 8px 6px; font-variant-numeric: tabular-nums;
+  }
+  .equation .rel { color: var(--muted); padding: 0 14px; }
+  .equation.unbalanced .rel { color: var(--neg); }
+  .controls {
+    display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+    margin-top: 14px; background: var(--card); border: 1px solid var(--line);
+    border-radius: 12px; padding: 12px 14px;
+  }
+  .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+  .seg button {
+    border: 0; background: #fff; padding: 8px 14px; font-size: 18px; cursor: pointer; color: var(--ink);
+  }
+  .seg button + button { border-left: 1px solid var(--line); }
+  .seg button.on { background: var(--ink); color: #fff; }
+  .seg button:disabled { opacity: 0.4; cursor: not-allowed; }
+  input[type=number] {
+    width: 70px; font-size: 18px; padding: 7px 8px; border: 1px solid var(--line); border-radius: 8px;
+  }
+  .preview { font-size: 16px; color: var(--muted); }
+  .preview b { color: var(--ink); }
+  .btn {
+    border: 1px solid var(--line); background: #fff; border-radius: 8px; padding: 8px 14px;
+    font-size: 15px; cursor: pointer; color: var(--ink);
+  }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+  .spacer { flex: 1; }
+  .msg {
+    margin-top: 12px; padding: 10px 14px; border-radius: 10px; font-size: 15px; min-height: 42px;
+    background: #eef2f7;
+  }
+  .msg.warn { background: #fff4e6; color: #a15c00; }
+  .msg.bad { background: #fff0f0; color: #b42318; }
+  .msg.good { background: #ebfbee; color: #22753a; }
+  .log { margin-top: 12px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 10px 16px; }
+  .log h3 { margin: 4px 0 6px; font-size: 14px; color: var(--muted); font-weight: 600; }
+  .log ol { margin: 0; padding-left: 22px; font-size: 16px; line-height: 1.7; font-variant-numeric: tabular-nums; }
+  .log .move { color: var(--muted); }
+  .overlay {
+    position: fixed; inset: 0; background: rgba(20, 24, 33, 0.45);
+    display: none; align-items: center; justify-content: center; padding: 20px;
+  }
+  .overlay.show { display: flex; }
+  .panel {
+    background: #fff; border-radius: 14px; padding: 22px 26px; max-width: 560px; width: 100%;
+    max-height: 90vh; overflow: auto;
+  }
+  .panel h2 { margin: 0 0 6px; }
+  .stars { font-size: 30px; letter-spacing: 4px; color: #f2a516; }
+  .stars .off { color: #d8dce3; }
+  .answer { font-size: 40px; font-weight: 700; margin: 6px 0; }
+  .panel ol { line-height: 1.7; font-size: 16px; padding-left: 22px; }
+  .check { color: var(--ok); font-weight: 600; }
+  .row { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; }
+  .levels-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 8px 0 16px; }
+  .levels-grid button {
+    border: 1px solid var(--line); background: #fff; border-radius: 10px; padding: 10px 4px;
+    cursor: pointer; font-size: 15px;
+  }
+  .levels-grid button.current { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent) inset; }
+  .levels-grid small { display: block; color: #f2a516; font-size: 12px; min-height: 14px; }
+  .stage-label { font-size: 14px; color: var(--muted); font-weight: 600; }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>Balance Workshop</h1>
+    <div class="sub">Solve equations by keeping the scale balanced</div>
+  </div>
+  <button class="btn" id="levelsBtn">All levels</button>
+</header>
+
+<main>
+  <div class="levelbar">
+    <h2 id="levelTitle"></h2>
+    <div class="meta" id="levelMeta"></div>
+  </div>
+  <div class="tip" id="tip"></div>
+
+  <div class="stagecard">
+    <svg id="scale" viewBox="0 0 900 430" aria-label="Balance scale"></svg>
+    <div class="equation" id="equation"></div>
+  </div>
+
+  <div class="controls">
+    <div class="seg" id="opSeg">
+      <button data-op="+">+</button>
+      <button data-op="-" class="on">−</button>
+      <button data-op="/">÷</button>
+    </div>
+    <input type="number" id="amount" value="1" step="1" aria-label="Amount">
+    <div class="seg" id="unitSeg">
+      <button data-unit="c" class="on">1</button>
+      <button data-unit="x">x</button>
+    </div>
+    <div class="preview" id="preview"></div>
+    <div class="spacer"></div>
+    <button class="btn primary hidden" id="applyBoth">Apply to both sides</button>
+    <button class="btn" id="undoBtn">Undo</button>
+    <button class="btn" id="resetBtn">Restart</button>
+  </div>
+
+  <div class="msg" id="msg"></div>
+
+  <div class="log" id="logBox">
+    <h3>Your moves, written in math</h3>
+    <ol id="log"></ol>
+  </div>
+</main>
+
+<div class="overlay" id="winOverlay">
+  <div class="panel">
+    <h2>Solved!</h2>
+    <div class="answer" id="winAnswer"></div>
+    <div class="stars" id="winStars"></div>
+    <div id="winSteps"></div>
+    <h3 style="margin:16px 0 4px; font-size:15px;">What you did, written in math</h3>
+    <ol id="winLog"></ol>
+    <div class="check" id="winCheck"></div>
+    <div class="row">
+      <button class="btn" id="replayBtn">Try for fewer moves</button>
+      <button class="btn primary" id="nextBtn">Next level</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="levelsOverlay">
+  <div class="panel">
+    <h2>Levels</h2>
+    <div id="levelsList"></div>
+    <div class="row"><button class="btn" id="closeLevels">Close</button></div>
+  </div>
+</div>
+
+<script>
+// ---------- Level data ----------
+// Each side of the equation is { x: coefficient, c: constant }.
+// stage 1: mystery boxes, equation hidden until solved, you click each pan yourself
+// stage 2: tiles + live equation, negative (red) tiles appear
+// stage 3: symbols only, every move applies to both sides automatically
+const STAGES = {
+  1: "Stage 1 · Mystery boxes",
+  2: "Stage 2 · Tiles and symbols",
+  3: "Stage 3 · Symbols only",
+};
+const LEVELS = [
+  { stage: 1, L: { x: 1, c: 2 },  R: { x: 0, c: 5 },  sol: 3,  par: 1,
+    tip: "Get the mystery box alone on one pan. Pick a move, then click a pan. Whatever you do to one pan, do to the other." },
+  { stage: 1, L: { x: 2, c: 0 },  R: { x: 0, c: 8 },  sol: 4,  par: 1,
+    tip: "Two identical boxes weigh as much as 8 blocks. Try splitting both pans into equal groups with ÷." },
+  { stage: 1, L: { x: 2, c: 1 },  R: { x: 0, c: 7 },  sol: 3,  par: 2,
+    tip: "Two moves this time. Which one should come first?" },
+  { stage: 1, L: { x: 3, c: 2 },  R: { x: 1, c: 8 },  sol: 3,  par: 3,
+    tip: "Boxes on both pans. You can take boxes away too: switch the unit to x." },
+  { stage: 2, L: { x: 1, c: -3 }, R: { x: 0, c: 2 },  sol: 5,  par: 1,
+    tip: "Red tiles are negative. A +1 and a −1 make a zero pair: they cancel out." },
+  { stage: 2, L: { x: 2, c: -1 }, R: { x: 1, c: 3 },  sol: 4,  par: 2,
+    tip: "Watch the equation under the scale change with every move." },
+  { stage: 2, L: { x: 4, c: 3 },  R: { x: 2, c: -5 }, sol: -4, par: 3,
+    tip: "The answer doesn't have to be positive." },
+  { stage: 2, L: { x: -1, c: 5 }, R: { x: 0, c: 2 },  sol: 3,  par: 2,
+    tip: "A negative box. One way out: divide both sides by a negative number." },
+  { stage: 3, L: { x: 5, c: -4 }, R: { x: 2, c: 11 }, sol: 5,  par: 3,
+    tip: "No more scale. Every move now applies to both sides automatically." },
+  { stage: 3, L: { x: 3, c: 7 },  R: { x: 7, c: -9 }, sol: 4,  par: 3,
+    tip: "The x can end up alone on the right side. That counts." },
+  { stage: 3, L: { x: -2, c: 9 }, R: { x: 1, c: -6 }, sol: 5,  par: 3,
+    tip: "Plan before you move: which x terms should go where?" },
+  { stage: 3, L: { x: 6, c: -8 }, R: { x: 2, c: 8 },  sol: 4,  par: 3,
+    tip: "Last one. Can you hit par?" },
+];
+
+// ---------- Formatting ----------
+const MINUS = "−";
+function num(n) { return n < 0 ? MINUS + Math.abs(n) : String(n); }
+function fmtSide(s) {
+  const parts = [];
+  if (s.x !== 0) {
+    const a = Math.abs(s.x);
+    parts.push((s.x < 0 ? MINUS : "") + (a === 1 ? "" : a) + "x");
+  }
+  if (s.c !== 0) {
+    if (parts.length) parts.push((s.c < 0 ? MINUS + " " : "+ ") + Math.abs(s.c));
+    else parts.push(num(s.c));
+  }
+  return parts.length ? parts.join(" ") : "0";
+}
+function fmtEq(L, R) { return fmtSide(L) + " = " + fmtSide(R); }
+function fmtMove(m) {
+  if (m.op === "/") return "÷ " + (m.n < 0 ? "(" + num(m.n) + ")" : m.n);
+  const sym = m.op === "+" ? "+" : MINUS;
+  const amt = m.unit === "x" ? (m.n === 1 ? "x" : m.n + "x") : String(m.n);
+  return sym + " " + amt;
+}
+function fmtSub(s, v) {
+  const val = v < 0 ? "(" + num(v) + ")" : String(v);
+  const parts = [];
+  if (s.x !== 0) {
+    if (s.x === 1) parts.push(val);
+    else if (s.x === -1) parts.push(MINUS + val);
+    else parts.push(num(s.x) + "(" + num(v) + ")");
+  }
+  if (s.c !== 0) {
+    if (parts.length) parts.push((s.c < 0 ? MINUS + " " : "+ ") + Math.abs(s.c));
+    else parts.push(num(s.c));
+  }
+  return parts.length ? parts.join(" ") : "0";
+}
+
+// ---------- State ----------
+const $ = (id) => document.getElementById(id);
+const STORE_KEY = "balance-workshop-stars";
+let stars = {};
+try { stars = JSON.parse(localStorage.getItem(STORE_KEY) || "{}"); } catch (e) { stars = {}; }
+
+let S = null;          // current game state
+let builder = { op: "-", unit: "c" };
+let phi = 0, targetPhi = 0, animating = false;
+
+function copy(s) { return { x: s.x, c: s.c }; }
+
+function loadLevel(i) {
+  const lv = LEVELS[i];
+  S = {
+    i, lv,
+    L: copy(lv.L), R: copy(lv.R),
+    steps: 0, pending: null, history: [],
+    log: [{ eq: fmtEq(lv.L, lv.R), move: null }],
+    solved: false,
+  };
+  builder = { op: "-", unit: "c" };
+  $("amount").value = 1;
+  setMsg(lv.stage === 3 ? "Build a move, then press Apply to both sides." : "Build a move below, then click a pan.");
+  phi = targetPhi = 0;
+  render();
+}
+
+// ---------- Moves ----------
+function readMove() {
+  const n = Number($("amount").value);
+  if (!Number.isInteger(n) || n === 0) return { err: "Enter a whole number that isn't 0." };
+  if (builder.op === "/") {
+    if (n === 1) return { err: "Dividing by 1 doesn't change anything. Try another number." };
+    return { op: "/", n, unit: null };
+  }
+  if (n < 0) return { err: "Use a positive amount. The + and − buttons choose the direction." };
+  return { op: builder.op, n, unit: builder.unit };
+}
+
+// Returns an error string, or null if the move was applied to side `s` (mutates s).
+function applyTo(s, m, sideName) {
+  if (m.op === "/") {
+    if (s.x % m.n !== 0 || s.c % m.n !== 0) {
+      return "You can't split " + fmtSide(s) + " into " + Math.abs(m.n) +
+        " equal groups on the " + sideName + " pan.";
+    }
+    s.x /= m.n; s.c /= m.n;
+    // avoid -0
+    s.x = s.x || 0; s.c = s.c || 0;
+    return null;
+  }
+  const delta = m.op === "+" ? m.n : -m.n;
+  const before = s[m.unit];
+  s[m.unit] += delta;
+  if (before !== 0 && Math.sign(before) !== Math.sign(delta)) {
+    zeroPairNote = true;
+  }
+  return null;
+}
+let zeroPairNote = false;
+
+function snapshot() { return { L: copy(S.L), R: copy(S.R) }; }
+function restore(snap) { S.L = copy(snap.L); S.R = copy(snap.R); }
+
+function clickPan(side) {
+  if (S.solved || S.lv.stage === 3) return;
+  const sideName = side === "L" ? "left" : "right";
+
+  if (!S.pending) {
+    zeroPairNote = false;
+    const m = readMove();
+    if (m.err) return setMsg(m.err, "bad");
+    const snap = snapshot();
+    const err = applyTo(S[side], m, sideName);
+    if (err) { restore(snap); return setMsg(err + " Pick a different move.", "bad"); }
+    S.pending = { move: m, done: side, snap };
+    setMsg("The scale tipped! The " + sideName + " pan changed but the other didn't. Do " +
+      fmtMove(m) + " to the " + (side === "L" ? "right" : "left") + " pan too.", "warn");
+    render();
+    return;
+  }
+
+  if (S.pending.done === side) {
+    return setMsg("You already did " + fmtMove(S.pending.move) + " on the " + sideName +
+      " pan. Now click the other pan.", "warn");
+  }
+
+  const before = copy(S[side]);
+  const err = applyTo(S[side], S.pending.move, sideName);
+  if (err) { S[side] = before; return setMsg(err + " Undo and try a different move.", "bad"); }
+  finishStep(S.pending.move, S.pending.snap);
+}
+
+function applyBoth() {
+  if (S.solved) return;
+  zeroPairNote = false;
+  const m = readMove();
+  if (m.err) return setMsg(m.err, "bad");
+  const snap = snapshot();
+  const e1 = applyTo(S.L, m, "left");
+  const e2 = e1 ? null : applyTo(S.R, m, "right");
+  if (e1 || e2) {
+    restore(snap);
+    const s = e1 ? snap.L : snap.R;
+    return setMsg("You can't divide " + fmtSide(s) + " evenly by " + num(m.n) + ". Try a different move.", "bad");
+  }
+  finishStep(m, snap);
+}
+
+function finishStep(m, snap) {
+  S.history.push(snap);
+  S.pending = null;
+  S.steps++;
+  S.log.push({ eq: fmtEq(S.L, S.R), move: fmtMove(m) + " on both sides" });
+
+  const isSolvedL = S.L.x === 1 && S.L.c === 0 && S.R.x === 0;
+  const isSolvedR = S.R.x === 1 && S.R.c === 0 && S.L.x === 0;
+  if (isSolvedL || isSolvedR) {
+    S.solved = true;
+    render();
+    setMsg("Balanced, and the box is alone!", "good");
+    setTimeout(showWin, 650);
+    return;
+  }
+  const negAlone = (S.L.x === -1 && S.L.c === 0 && S.R.x === 0) || (S.R.x === -1 && S.R.c === 0 && S.L.x === 0);
+  if (negAlone) setMsg("So close! You have " + MINUS + "x by itself, not x. What could flip its sign?", "warn");
+  else if (S.lv.stage === 3) setMsg("Move " + S.steps + " done." + (zeroPairNote ? " Opposite terms added up to 0." : ""), "");
+  else if (zeroPairNote) setMsg("Balanced again. Positive and negative tiles cancelled out in zero pairs.", "good");
+  else setMsg("Balanced again. Move " + S.steps + " done.", "");
+  render();
+}
+
+function undo() {
+  if (S.solved) return;
+  if (S.pending) {
+    restore(S.pending.snap);
+    S.pending = null;
+    setMsg("Undid the half-finished move.");
+  } else if (S.history.length) {
+    restore(S.history.pop());
+    S.steps--;
+    S.log.pop();
+    setMsg("Undid your last move.");
+  } else {
+    setMsg("Nothing to undo yet.");
+  }
+  render();
+}
+
+// ---------- Win ----------
+function starCount() {
+  if (S.steps <= S.lv.par) return 3;
+  if (S.steps <= S.lv.par + 2) return 2;
+  return 1;
+}
+function showWin() {
+  const n = starCount();
+  const prev = stars[S.i] || 0;
+  if (n > prev) { stars[S.i] = n; try { localStorage.setItem(STORE_KEY, JSON.stringify(stars)); } catch (e) {} }
+  const value = S.L.x === 1 ? S.R.c : S.L.c;
+  $("winAnswer").textContent = "x = " + num(value);
+  $("winStars").innerHTML = "★".repeat(n) + '<span class="off">' + "★".repeat(3 - n) + "</span>";
+  $("winSteps").textContent = "You used " + S.steps + (S.steps === 1 ? " move" : " moves") +
+    ". Par is " + S.lv.par + "." + (n < 3 ? " Can you do it in fewer?" : "");
+  $("winLog").innerHTML = S.log.map((r, k) =>
+    "<li>" + (k === 0 ? "Start: " : '<span class="move">' + r.move + ":</span> ") + r.eq + "</li>").join("");
+  const lv = S.lv;
+  const lhs = fmtSub(lv.L, value), rhs = fmtSub(lv.R, value);
+  const lval = lv.L.x * value + lv.L.c;
+  $("winCheck").textContent = "Check: " + lhs + " = " + num(lval) + " and " + rhs + " = " + num(lval) + " ✓";
+  $("nextBtn").textContent = S.i < LEVELS.length - 1 ? "Next level" : "Back to level 1";
+  $("winOverlay").classList.add("show");
+}
+
+// ---------- Rendering ----------
+function setMsg(text, kind) {
+  const el = $("msg");
+  el.textContent = text;
+  el.className = "msg" + (kind ? " " + kind : "");
+}
+
+function weight(s) { return s.x * S.lv.sol + s.c; }
+
+function render() {
+  const lv = S.lv;
+  $("levelTitle").textContent = "Level " + (S.i + 1) + " of " + LEVELS.length;
+  $("levelMeta").textContent = STAGES[lv.stage] + " · Par: " + lv.par + (lv.par === 1 ? " move" : " moves") +
+    " · Moves so far: " + S.steps;
+  $("tip").textContent = lv.tip;
+
+  // equation line
+  const eq = $("equation");
+  const diff = weight(S.L) - weight(S.R);
+  if (lv.stage === 1 && !S.solved) {
+    eq.classList.add("hidden");
+  } else {
+    eq.classList.remove("hidden");
+    const rel = diff === 0 ? "=" : "≠";
+    eq.innerHTML = "<span>" + fmtSide(S.L) + '</span><span class="rel">' + rel + "</span><span>" + fmtSide(S.R) + "</span>";
+    eq.classList.toggle("unbalanced", diff !== 0);
+  }
+
+  // controls
+  const locked = !!S.pending || S.solved;
+  document.querySelectorAll("#opSeg button").forEach(b => {
+    b.classList.toggle("on", b.dataset.op === builder.op);
+    b.disabled = locked;
+  });
+  document.querySelectorAll("#unitSeg button").forEach(b => {
+    b.classList.toggle("on", b.dataset.unit === builder.unit);
+    b.disabled = locked || builder.op === "/";
+  });
+  $("unitSeg").classList.toggle("hidden", builder.op === "/");
+  $("amount").disabled = locked;
+  $("amount").min = builder.op === "/" ? -9 : 1;
+  $("applyBoth").classList.toggle("hidden", lv.stage !== 3);
+  $("applyBoth").disabled = S.solved;
+  $("undoBtn").disabled = S.solved;
+  const m = S.pending ? S.pending.move : readMove();
+  $("preview").innerHTML = m.err ? "" :
+    (S.pending ? "Finish this move on the other pan: <b>" + fmtMove(m) + "</b>"
+               : (lv.stage === 3 ? "Move: <b>" + fmtMove(m) + "</b> on both sides"
+                                 : "Move: <b>" + fmtMove(m) + "</b>, then click a pan"));
+
+  // log (hidden in stage 1 until the win screen translates it)
+  $("logBox").classList.toggle("hidden", lv.stage === 1);
+  $("log").innerHTML = S.log.map((r, k) =>
+    "<li>" + (k === 0 ? "Start: " : '<span class="move">' + r.move + ":</span> ") + r.eq + "</li>").join("");
+
+  // scale
+  $("scale").classList.toggle("hidden", lv.stage === 3);
+  if (diff === 0) targetPhi = 0;
+  else targetPhi = Math.sign(diff) * Math.min(0.22, Math.max(0.09, Math.abs(diff) * 0.03));
+  startAnim();
+}
+
+function startAnim() {
+  if (animating) return;
+  animating = true;
+  const step = () => {
+    phi += (targetPhi - phi) * 0.14;
+    if (Math.abs(targetPhi - phi) < 0.0008) phi = targetPhi;
+    drawScale();
+    if (phi !== targetPhi) requestAnimationFrame(step);
+    else animating = false;
+  };
+  requestAnimationFrame(step);
+}
+
+// Build the tiles for one side of the scale.
+function tilesFor(s) {
+  const mystery = S.lv.stage === 1 && !S.solved;
+  const items = [];
+  const push = (count, kind) => {
+    const n = Math.abs(count);
+    const cap = kind === "x" || kind === "nx" ? 8 : 18;
+    if (n > cap) items.push({ kind, many: n });
+    else for (let k = 0; k < n; k++) items.push({ kind });
+  };
+  if (s.x > 0) push(s.x, "x"); else push(s.x, "nx");
+  if (s.c > 0) push(s.c, "u"); else push(s.c, "nu");
+  return items.map(it => {
+    const big = it.kind === "x" || it.kind === "nx";
+    return Object.assign(it, { w: big ? 40 : 24, h: big ? 40 : 24, mystery });
+  });
+}
+
+function layoutTiles(items, cx, trayY, maxW) {
+  // fill rows bottom-up; big tiles first, small tiles after
+  const placed = [];
+  let rowY = trayY, row = [], rowW = 0, rowH = 0;
+  const flush = () => {
+    let x = cx - (rowW - 6) / 2;
+    row.forEach(it => {
+      placed.push(Object.assign(it, { x, y: rowY - it.h }));
+      x += it.w + 6;
+    });
+    rowY -= rowH + 6;
+    row = []; rowW = 0; rowH = 0;
+  };
+  items.forEach(it => {
+    if (row.length && (rowW + it.w > maxW || row[0].h !== it.h)) flush();
+    row.push(it); rowW += it.w + 6; rowH = Math.max(rowH, it.h);
+  });
+  if (row.length) flush();
+  return placed;
+}
+
+function tileSVG(t) {
+  const label = (txt, size) =>
+    '<text x="' + (t.x + t.w / 2) + '" y="' + (t.y + t.h / 2 + size * 0.36) + '" text-anchor="middle" font-size="' +
+    size + '" font-weight="700" fill="#fff">' + txt + "</text>";
+  const many = t.many ? '<text x="' + (t.x + t.w + 4) + '" y="' + (t.y + t.h / 2 + 6) +
+    '" font-size="16" font-weight="700" fill="#1f2430">×' + t.many + "</text>" : "";
+  if (t.kind === "x") {
+    return '<rect x="' + t.x + '" y="' + t.y + '" width="40" height="40" rx="6" fill="var(--x)"/>' +
+      label(t.mystery ? "?" : "x", 20) + many;
+  }
+  if (t.kind === "nx") {
+    return '<rect x="' + t.x + '" y="' + t.y + '" width="40" height="40" rx="6" fill="var(--neg)"/>' +
+      label(t.mystery ? MINUS + "?" : MINUS + "x", 17) + many;
+  }
+  if (t.kind === "u") {
+    return '<rect x="' + t.x + '" y="' + t.y + '" width="24" height="24" rx="4" fill="var(--unit)"/>' + many;
+  }
+  return '<rect x="' + t.x + '" y="' + t.y + '" width="24" height="24" rx="4" fill="var(--neg)"/>' +
+    label(MINUS, 18) + many;
+}
+
+function drawScale() {
+  if (S.lv.stage === 3) return;
+  const cx = 450, cy = 70, arm = 300, rope = 190;
+  const lx = cx - arm * Math.cos(phi), ly = cy + arm * Math.sin(phi);
+  const rx = cx + arm * Math.cos(phi), ry = cy - arm * Math.sin(phi);
+  const armedSide = S.pending ? (S.pending.done === "L" ? "R" : "L") : null;
+
+  const pan = (px, py, side, s) => {
+    const trayY = py + rope;
+    const tiles = layoutTiles(tilesFor(s), px, trayY - 4, 230);
+    const top = py + 14;
+    const armed = armedSide === side ? " armed" : "";
+    return (
+      '<line x1="' + px + '" y1="' + py + '" x2="' + (px - 120) + '" y2="' + trayY + '" stroke="#9aa1ad" stroke-width="1.5"/>' +
+      '<line x1="' + px + '" y1="' + py + '" x2="' + (px + 120) + '" y2="' + trayY + '" stroke="#9aa1ad" stroke-width="1.5"/>' +
+      tiles.map(tileSVG).join("") +
+      '<rect class="pan-hit' + armed + '" data-side="' + side + '" x="' + (px - 135) + '" y="' + top +
+        '" width="270" height="' + (trayY - top + 22) + '" fill="transparent"/>' +
+      '<path class="tray" d="M ' + (px - 130) + " " + trayY + " L " + (px + 130) + " " + trayY + " L " + (px + 105) + " " +
+        (trayY + 14) + " L " + (px - 105) + " " + (trayY + 14) + ' Z" fill="#e9ecf1" stroke="' +
+        (armed ? "var(--accent)" : "#9aa1ad") + '" stroke-width="' + (armed ? 3 : 1.5) + '" pointer-events="none"/>' +
+      (armed ? '<text x="' + px + '" y="' + (trayY + 38) + '" text-anchor="middle" font-size="15" fill="var(--accent)" font-weight="600">click here</text>' : "")
+    );
+  };
+
+  $("scale").innerHTML =
+    '<polygon points="' + cx + "," + (cy + 6) + " " + (cx - 46) + ",420 " + (cx + 46) + ',420" fill="#c9ced8"/>' +
+    '<rect x="' + (cx - 120) + '" y="416" width="240" height="10" rx="4" fill="#b7bdc9"/>' +
+    '<line x1="' + lx + '" y1="' + ly + '" x2="' + rx + '" y2="' + ry + '" stroke="#5c6370" stroke-width="8" stroke-linecap="round"/>' +
+    '<circle cx="' + cx + '" cy="' + cy + '" r="9" fill="#5c6370"/>' +
+    pan(lx, ly, "L", S.L) + pan(rx, ry, "R", S.R);
+}
+
+// ---------- Levels list ----------
+function showLevels() {
+  let html = "";
+  [1, 2, 3].forEach(st => {
+    html += '<div class="stage-label">' + STAGES[st] + '</div><div class="levels-grid">';
+    LEVELS.forEach((lv, i) => {
+      if (lv.stage !== st) return;
+      const n = stars[i] || 0;
+      html += '<button data-level="' + i + '" class="' + (i === S.i ? "current" : "") + '">Level ' + (i + 1) +
+        "<small>" + "★".repeat(n) + "</small></button>";
+    });
+    html += "</div>";
+  });
+  $("levelsList").innerHTML = html;
+  $("levelsOverlay").classList.add("show");
+}
+
+// ---------- Wiring ----------
+$("scale").addEventListener("click", e => {
+  const hit = e.target.closest("[data-side]");
+  if (hit) clickPan(hit.dataset.side);
+});
+$("opSeg").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b || b.disabled) return;
+  builder.op = b.dataset.op;
+  if (builder.op !== "/" && Number($("amount").value) < 1) $("amount").value = 1;
+  if (builder.op === "/" && Number($("amount").value) === 1) $("amount").value = 2;
+  render();
+});
+$("unitSeg").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b || b.disabled) return;
+  builder.unit = b.dataset.unit; render();
+});
+$("amount").addEventListener("input", render);
+$("applyBoth").addEventListener("click", applyBoth);
+$("undoBtn").addEventListener("click", undo);
+$("resetBtn").addEventListener("click", () => loadLevel(S.i));
+$("replayBtn").addEventListener("click", () => { $("winOverlay").classList.remove("show"); loadLevel(S.i); });
+$("nextBtn").addEventListener("click", () => {
+  $("winOverlay").classList.remove("show");
+  loadLevel(S.i < LEVELS.length - 1 ? S.i + 1 : 0);
+});
+$("levelsBtn").addEventListener("click", showLevels);
+$("closeLevels").addEventListener("click", () => $("levelsOverlay").classList.remove("show"));
+$("levelsList").addEventListener("click", e => {
+  const b = e.target.closest("[data-level]"); if (!b) return;
+  $("levelsOverlay").classList.remove("show");
+  loadLevel(Number(b.dataset.level));
+});
+
+loadLevel(0);
+</script>
+</body>
+</html>
