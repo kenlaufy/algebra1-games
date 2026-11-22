@@ -33,7 +33,7 @@
   function picture(lv, filled) {
     const p = parts(lv);
     let s = A.backdrop(900, 320, { ground: 300, clouds: false, sun: false });
-    const S = 170, u = Math.min(28, 120 / Math.max(1, Math.abs(p.half)));
+    const S = 170, u = Math.min(28, 92 / Math.max(1, Math.abs(p.half)));
     const W = Math.abs(p.half) * u;
     const x0 = 120, y0 = 40;
     const strip = p.half < 0 ? "#c8553d" : "#5a78b8";
@@ -46,7 +46,7 @@
     if (!filled) s += A.text(x0 + S + W / 2, y0 + S + W / 2 + 7, "?", { size: 20, var: false });
     const label = (p.a === 1 ? "" : "inside " + n(p.a) + "( … ):  ") + Alg.fmtTerms([{ coef: 1, body: "x²" }, { coef: Alg.round(p.inner, 4), body: "x" }]);
     s += A.text(560, 90, label, { size: 24, var: false });
-    s += A.text(560, 130, filled ? "corner = " + n(p.half) + "² = " + n(p.corner) : "corner = ?", { size: 24, var: false });
+    s += A.text(560, 130, filled ? "corner = " + Alg.paren(p.half) + "² = " + n(p.corner) : "corner = ?", { size: 24, var: false });
     s += A.mascot(800, 296, filled ? "joy" : "think");
     return s;
   }
@@ -54,6 +54,7 @@
   GameShell.register({
     slug: "a-sse-b-3-b",
     title: "Complete the Square",
+    firstMove: "Find the highest or lowest value. Enter the strip width and missing corner, then read the vertex from the square.",
     subtitle: "Complete the square to reveal a maximum or minimum",
     stages: { 1: "Stage 1 · Find the missing corner", 2: "Stage 2 · Odd and negative terms", 3: "Stage 3 · Leading coefficients and maximums" },
     levels: LEVELS,
@@ -76,8 +77,8 @@
       const draw = () => { svg.innerHTML = picture(lv, filled); };
       draw();
       const steps = [];
-      if (p.a !== 1) steps.push({ type: "input", prompt: "Factor " + n(p.a) + " out of the x terms: " + pstr(lv) + " = " + n(p.a) + "(x² + []x) + " + n(p.c), answers: [p.inner],
-        hint: "Divide the x coefficient by " + n(p.a) + ".", done: pstr(lv) + " = " + n(p.a) + "(x² + " + n(p.inner) + "x) + " + n(p.c) });
+      if (p.a !== 1) steps.push({ type: "input", prompt: "Factor " + n(p.a) + " out of the x terms: " + pstr(lv) + " = " + n(p.a) + "(x² + []x)" + (p.c < 0 ? " − " : " + ") + Math.abs(p.c), answers: [p.inner],
+        hint: "Divide the x coefficient by " + n(p.a) + ".", done: pstr(lv) + " = " + n(p.a) + "(" + Alg.fmtPoly([1, p.inner, 0]) + ")" + (p.c < 0 ? " − " : " + ") + Math.abs(p.c) });
       steps.push({ type: "input", prompt: "Split the " + n(p.inner) + "x strip into two equal strips. Each strip is []x", answers: [p.half], hint: "Half of " + n(p.inner) + ".",
         done: "Two strips of " + n(p.half) + "x" });
       steps.push({ type: "input", prompt: "The missing corner is " + n(p.half) + " × " + n(p.half) + " = []", answers: [p.corner], hint: "Square the strip width: (" + n(p.half) + ")². A square is never negative.",
@@ -88,11 +89,12 @@
         done: "f(x) = " + vform(lv) });
       const word = p.a > 0 ? "smallest" : "largest";
       steps.push({ type: "input", prompt: "The " + word + " value of f is [], at x = []", answers: [p.k, p.h],
-        hint: "A square is never negative, so (x + " + n(p.half) + ")² is smallest (zero) when x = " + n(p.h) + ".", done: (p.a > 0 ? "Minimum " : "Maximum ") + n(p.k) + " at x = " + n(p.h) });
+        hint: "A square is never negative, so " + Alg.fmtBinom(1, p.half) + "² is smallest (zero) when x = " + n(p.h) + ".", done: (p.a > 0 ? "Minimum " : "Maximum ") + n(p.k) + " at x = " + n(p.h) });
       Steps.run(api, { steps, logTitle: "Your work", result: () => ({ answer: "f(x) = " + vform(lv) + "<br><small>" + (p.a > 0 ? "minimum " : "maximum ") + n(p.k) + " at x = " + n(p.h) + "</small>",
         check: "Check: f(" + n(p.h) + ") = " + n(Alg.polyEval(lv.P, p.h)) + " ✓" }) });
     },
     guide: {
+      evidence: "Ask what makes the squared part zero. The student should distinguish the input at the vertex from the maximum or minimum output.",
       summary: "A 12-level game for completing the square. The x² + bx tiles form a square with a missing corner; students split the strips, fill the corner, write vertex form, and read off the minimum or maximum.",
       also: "<span class='code'>AI.F-IF.C.8.a</span> using completing the square to show maximum and minimum values.",
       practices: "MP7 Look for and make use of structure · MP4 Model with mathematics",

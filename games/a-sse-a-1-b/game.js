@@ -62,7 +62,7 @@
 
   function stepsFor(lv, api, show) {
     const out = [{ type: "choice", prompt: "Which chunk should go in the box?", options: pack(lv.opts.map((o) => [I(o[0]), o[1]])),
-      done: "Packed " + lv.chunk.replace(/<[^>]+>/g, "") + " into a box", onDone: () => show(true) }];
+      done: "Packed " + lv.chunk + " into a box", onDone: () => show(true) }];
     lv.steps.forEach((st) => {
       if (Array.isArray(st)) out.push({ type: "input", prompt: I(st[0]).replace(/box/g, BOX), answers: st[1], unordered: !!st[2],
         hint: st[2] ? "There are two answers. Think positive and negative." : "Solve for the box first, then unpack it." });
@@ -74,6 +74,7 @@
   GameShell.register({
     slug: "a-sse-a-1-b",
     title: "Packing",
+    firstMove: "Choose the part of the expression to pack into one box. Use that box to answer the next question.",
     subtitle: "See a complicated expression as a few simple pieces",
     stages: { 1: "Stage 1 · Pack and solve", 2: "Stage 2 · Pack and interpret", 3: "Stage 3 · Bigger chunks" },
     levels: LEVELS,
@@ -90,11 +91,12 @@
     load(lv, api) {
       const view = api.h("div", { class: "stage-text", style: { lineHeight: "1.5" } });
       api.stage.appendChild(view);
-      const show = (packed) => { view.innerHTML = packed ? lv.packed.replace(/\bx\b/g, "<i>x</i>") : I(lv.expr).replace(I(lv.chunk), '<span class="chunk">$&</span>'); };
+      const show = (packed) => { view.innerHTML = packed ? lv.packed.replace(/\bx\b/g, "<i>x</i>") : I(lv.expr); };
       show(false);
       Steps.run(api, { steps: stepsFor(lv, api, show), logTitle: "Your work", result: () => ({ answer: lv.answer, check: lv.check }) });
     },
     guide: {
+      evidence: "Ask the student to point to everything the box replaces. Can they unpack it into the original expression without changing its value or exponent?",
       summary: "A 12-level game about structure. Students pack a repeated or complicated chunk of an expression into a box, reason about the box as a single quantity, and then unpack it to solve equations and interpret formulas like P(1 + r)ᵗ.",
       practices: "MP7 Look for and make use of structure · MP2 Reason abstractly and quantitatively",
       goals: [

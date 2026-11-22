@@ -23,7 +23,7 @@
     { stage: 2, expr: "x² " + M + " 9", fig: "dos", la: "x", lb: "3", a: 10, b: 4,
       steps: [{ choice: "9 is 3². Rewrite x² − 9:", opts: [opt("(x + 3)(x " + M + " 3)"), opt("(x " + M + " 3)²", "(x − 3)² = x² − 6x + 9. There's no x term in x² − 9."), opt("(x " + M + " 9)(x + 1)", "That multiplies to x² − 8x − 9.")] },
         { input: "Check with x = 10: 10² " + M + " 9 = 91, and 13 × 7 = []", ans: [91] }],
-      answer: "x² − 9 = (x + 3)(x − 3)", check: "At x = 10: 13 × 7 = 91 = 100 − 9 ✓", tip: "Now with a letter. The picture works for any x." },
+      answer: "x² − 9 = (x + 3)(x − 3)", check: "At x = 10: 13 × 7 = 91 = 100 − 9 ✓", tip: "Now with a letter. The picture uses x ≥ 3 for its lengths. Expand the factors to check the identity for any real x." },
     { stage: 2, expr: "4x² " + M + " 25", fig: "dos", la: "2x", lb: "5", a: 10, b: 4,
       steps: [{ input: "Spot the squares: 4x² = ([]x)² and 25 = []²", ans: [2, 5] },
         { choice: "So 4x² − 25 is:", opts: [opt("(2x + 5)(2x " + M + " 5)"), opt("(4x + 5)(x " + M + " 5)", "That multiplies to 4x² − 15x − 25."), opt("(2x " + M + " 5)²", "That has a middle term, −20x.")] }],
@@ -49,7 +49,7 @@
         { choice: "Keep going. Fully factored:", opts: [opt("(x² + y²)(x + y)(x " + M + " y)"), opt("(x + y)²(x " + M + " y)²", "(x + y)²(x − y)² = (x² − y²)², not x⁴ − y⁴."), opt("(x + y)(x " + M + " y)(x + y)(x " + M + " y)", "x² + y² can't be split into (x + y)(x − y).")] }],
       answer: "x⁴ − y⁴ = (x² + y²)(x + y)(x − y)", check: "At x = 2, y = 1: 16 − 1 = 15 = 5 × 3 × 1 ✓", tip: "Two letters, same structure." },
     { stage: 3, expr: "2x² " + M + " 18", fig: "dos", la: "x", lb: "3", a: 10, b: 4,
-      steps: [{ choice: "18 isn't a perfect square. What first?", opts: [opt("Take out the common factor: 2(x² " + M + " 9)"), opt("(2x + 9)(x " + M + " 2)", "That multiplies to 2x² + 5x − 18."), opt("(√2x + √18)(√2x " + M + " √18)", "That's true, but there's a neater way with whole numbers.")] },
+      steps: [{ choice: "18 isn't a perfect square. What first?", opts: [opt("Take out the common factor: 2(x² " + M + " 9)"), opt("(2x + 9)(x " + M + " 2)", "That multiplies to 2x² + 5x − 18."), opt("((√2)x + √18)((√2)x " + M + " √18)", "That's true, but there's a neater way with whole numbers.")] },
         { choice: "Now factor x² − 9:", opts: [opt("2(x + 3)(x " + M + " 3)"), opt("2(x " + M + " 3)²", "That has a middle term."), opt("(2x + 3)(x " + M + " 3)", "Keep the 2 outside.")] }],
       answer: "2x² − 18 = 2(x + 3)(x − 3)", check: "At x = 10: 200 − 18 = 182 = 2 × 13 × 7 ✓", tip: "Last one: look for a common factor first." },
   ];
@@ -57,14 +57,15 @@
   // ---------- picture ----------
   function figure(lv, state, t) {
     // state: "start" | "cut" (animated by t from 0 to 1)
+    const squared = side => /^[a-z]$|^\d+$/.test(side) ? side + "²" : "(" + side + ")²";
     const W = 900, H = 330;
     let s = A.backdrop(W, H, { ground: 300, clouds: false, sun: false });
-    const k = 220 / lv.a, S = lv.a * k, B = lv.b * k;
+    const k = lv.fig === "ps" ? 238 / (lv.a + lv.b) : 220 / lv.a, S = lv.a * k, B = lv.b * k;
     const x0 = 140, y0 = 50;
     const blue = "#5a78b8", light = "#8fa6d6";
     if (lv.fig === "ps") {
       const done = state === "cut";
-      const parts = [[x0, y0, S, S, "#6b8f5e", lv.la + "²"], [x0 + S, y0, B, S, blue, ""], [x0, y0 + S, S, B, blue, ""], [x0 + S, y0 + S, B, B, "#e7b84a", ""]];
+      const parts = [[x0, y0, S, S, "#6b8f5e", squared(lv.la)], [x0 + S, y0, B, S, blue, ""], [x0, y0 + S, S, B, blue, ""], [x0 + S, y0 + S, B, B, "#e7b84a", ""]];
       parts.forEach((p, i) => {
         s += '<rect x="' + p[0] + '" y="' + p[1] + '" width="' + p[2] + '" height="' + p[3] + '" fill="' + p[4] + '" ' + A.OUT + "/>";
         if (p[5]) s += A.text(p[0] + p[2] / 2, p[1] + p[3] / 2 + 8, p[5], { size: 24, fill: "#fff" });
@@ -81,14 +82,16 @@
     // hole outline (dashed) at bottom-right, fades as the piece moves
     s += '<rect x="' + (x0 + S - B) + '" y="' + (y0 + topH) + '" width="' + B + '" height="' + B + '" fill="none" stroke="#23262d" stroke-dasharray="7 6" stroke-width="2" opacity="' + (1 - t) + '"/>';
     // moving piece: from (x0, y0+topH, S−B, B) to (x0+S, y0, B, S−B)
-    const fx = x0 + (x0 + S - x0) * t, fy = y0 + topH + (y0 - (y0 + topH)) * t;
-    const fw = (S - B) + (B - (S - B)) * t, fh = B + ((S - B) - B) * t;
-    s += '<rect x="' + fx + '" y="' + fy + '" width="' + fw + '" height="' + fh + '" fill="' + light + '" ' + A.OUT + "/>";
+    // Rotate a rigid tile about its centre: its area stays constant during the slide.
+    const cx = x0 + topH / 2 + (S + B / 2 - topH / 2) * t;
+    const cy = y0 + topH + B / 2 - (topH + B) / 2 * t;
+    s += '<rect transform="translate(' + cx + ' ' + cy + ') rotate(' + (-90 * t) + ')" x="' + (-topH / 2) +
+      '" y="' + (-B / 2) + '" width="' + topH + '" height="' + B + '" fill="' + light + '" ' + A.OUT + '/>';
     s += A.text(x0 + S / 2, y0 - 12, lv.la, { size: 22 });
     if (t === 0) {
       s += A.text(x0 - 30, y0 + S / 2, lv.la, { size: 22 });
-      s += A.text(x0 + S - B / 2, y0 + topH + B / 2 + 8, lv.lb + "²", { size: 20 });
-      s += A.text(x0 + S + 120, y0 + S / 2, "area = " + lv.la + "² " + M + " " + lv.lb + "²", { size: 22, var: false, anchor: "start" });
+      s += A.text(x0 + S - B / 2, y0 + topH + B / 2 + 8, squared(lv.lb), { size: 20 });
+      s += A.text(x0 + S + 120, y0 + S / 2, "area = " + squared(lv.la) + " " + M + " " + squared(lv.lb), { size: 22, var: false, anchor: "start" });
     }
     if (t === 1) {
       s += '<path d="M ' + x0 + " " + (y0 + topH + 22) + " h " + (S + B) + '" stroke="#23262d" stroke-width="2" marker-end=""/>';
@@ -102,6 +105,7 @@
   GameShell.register({
     slug: "a-sse-a-2",
     title: "Cut and Rearrange",
+    firstMove: "Find a new shape with the same area. Choose a rewrite or fill the blanks, then compare it with the diagram.",
     subtitle: "Use the structure of an expression to rewrite it",
     stages: { 1: "Stage 1 · Number shortcuts", 2: "Stage 2 · Differences of squares", 3: "Stage 3 · Squares and more" },
     levels: LEVELS,
@@ -124,11 +128,12 @@
       const steps = lv.steps.map((st, k) => st.choice
         ? { type: "choice", prompt: st.choice, options: st.opts.map((o, j) => ({ label: o[0], ok: j === 0, why: o[1] })),
             done: st.choice + " " + st.opts[0][0], onDone: () => { if (k === 0) { state = "cut"; api.tween(0, 1, 900, (v) => { t = v; draw(); }); } } }
-        : { type: "input", prompt: st.input, answers: st.ans, unordered: !!st.unordered, hint: "Work it out step by step; the picture can help.",
+        : { type: "input", prompt: st.input, answers: st.ans, unordered: !!st.unordered, hint: st.unordered ? "Use one sum and one difference for the two sides." : st.input.includes("Spot the squares") ? "Find a number whose square gives the coefficient or constant shown." : "Multiply the two side lengths. Compare that area with the large square minus the hole.",
             onDone: () => { if (k === 0) { state = "cut"; api.tween(0, 1, 900, (v) => { t = v; draw(); }); } } });
       Steps.run(api, { steps, logTitle: "Your work", result: () => ({ answer: lv.answer, check: lv.check }) });
     },
     guide: {
+      evidence: "Ask a student to trace the two sides of the rearranged shape and explain why multiplying them recovers the original area.",
       summary: "A 12-level game about seeing structure. Students rewrite differences of squares, perfect squares and related forms, while a picture cuts a square with a hole and slides it into a rectangle.",
       also: "<span class='code'>AI.A-APR.A.1.b</span> factoring polynomial expressions.",
       practices: "MP7 Look for and make use of structure · MP8 Look for and express regularity in repeated reasoning",

@@ -96,7 +96,7 @@
   function sideHTML(side) {
     const top = numStr(side.terms).replace(/([A-Za-zπ])/g, "<i>$1</i>");
     if (isOne(side.den)) return top;
-    return '<span class="frac"><span>' + top + "</span><span>" + monoStr(side.den).replace(/([A-Za-zπ])/g, "<i>$1</i>") + "</span></span>";
+    return Alg.fractionHTML(top, monoStr(side.den).replace(/([A-Za-zπ])/g, "<i>$1</i>"));
   }
   const parseSide = (arr) => ({ terms: arr.map(parseMono), den: ONE });
   const hasVar = (side, T) => side.terms.some((t) => t.v.includes(T)) || side.den.v.includes(T);
@@ -141,6 +141,7 @@
   GameShell.register({
     slug: "a-ced-a-4",
     title: "Letter Balance",
+    firstMove: "Get the target letter alone. Pick an operation and a term, then apply the move to both sides.",
     subtitle: "Rearrange formulas to get any letter alone",
     stages: { 1: "Stage 1 · Formulas with numbers", 2: "Stage 2 · One-move formulas", 3: "Stage 3 · Two-move formulas" },
     levels: LEVELS,
@@ -183,6 +184,7 @@
         if (!chip) return;
         if (op === "*" || op === "/") {
           const f = parseMono(chip);
+          if (f.v.includes(lv.T)) return api.msg("This factor contains " + lv.T + ", which could be zero. Use a constant or another nonzero factor to preserve the solutions.", "warn");
           if (f.n === 0) return api.msg("You can't divide by 0.", "bad");
         }
         const [L, R] = apply(s.L, s.R, [op, chip]);
@@ -197,7 +199,7 @@
           return api.win({ answer: lv.T + " = " + sideText(other), lines: s.log, steps: s.steps, par: lv.par, check: checkLine(other) });
         }
         if (s.steps >= lv.par + 3) api.msg("That's a lot of moves. Undo or Restart and plan a shorter path.", "warn");
-        else api.msg("Move " + s.steps + " done. Is " + lv.T + " alone yet?");
+        else api.msg("Both sides changed by the same operation. What is still attached to " + lv.T + "?");
         refresh();
       }
       function onUndo() {
@@ -210,7 +212,7 @@
       }
       function checkLine(other) {
         if (lv.stage === 1) return "Check: put " + lv.T + " = " + sideText(other) + " back into the formula: both sides match ✓";
-        return "Same moves as with numbers, so it works for every value of the other letters ✓";
+        return "Same moves as with numbers, with every divisor nonzero ✓";
       }
       function draw(won) {
         let sc = A.backdrop(900, 330, { ground: 292 });
@@ -224,7 +226,7 @@
         eq.innerHTML = sideHTML(s.L) + '<span class="rel">=</span>' + sideHTML(s.R);
         goal.innerHTML = (lv.name ? lv.name + " · " : "") + "Goal: get <b><i>" + lv.T + "</i></b> alone";
       }
-      api.msg("Pick an operation and a piece, then apply it to both sides.");
+      api.msg("Choose a move that undoes an operation on the target letter. Assume any letter you divide by is nonzero.");
       refresh();
 
       api.autoplay = () => {
@@ -237,6 +239,7 @@
       };
     },
     guide: {
+      evidence: "Before applying a move, ask which operation on the target letter it will undo. Have the student check the rearranged formula with a set of values.",
       summary: "A 12-level game for rearranging formulas. Students treat a formula like a balanced scale and apply the same operation to both sides until the target letter is alone, first with numbers substituted, then with letters.",
       also: "<span class='code'>AI.A-REI.B.3</span> solving equations with coefficients represented by letters.",
       practices: "MP2 Reason abstractly and quantitatively · MP7 Look for and make use of structure · MP8 Look for and express regularity in repeated reasoning",

@@ -46,18 +46,19 @@
   GameShell.register({
     slug: "a-rei-c-5",
     title: "Stacked Scales",
+    firstMove: "Make one letter cancel. Choose the equation to change and how many copies of the other equation to add, then choose Apply.",
     subtitle: "Solve systems by stacking balanced scales (elimination)",
     stages: { 1: "Stage 1 · Stack or take away", 2: "Stage 2 · Stack several copies", 3: "Stage 3 · Resize, then stack" },
     levels: LEVELS,
     help: {
-      intro: "Each equation is a balanced scale. Stacking one balanced scale on another keeps it balanced, so the new equation has the <b>same solutions</b>.",
+      intro: "Each equation is a balanced scale. Keep one equation and add copies of it to the other. You can undo that move, so the <b>pair of equations</b> has the same solutions.",
       steps: [
         "<b>Stack</b>: replace an equation with itself plus k copies of the other (k can be negative to take copies away).",
         "<b>Resize</b>: multiply an equation by a number (both sides).",
         "Make one variable disappear from an equation, then solve for both variables.",
         "Reach a one-variable equation in as few moves as you can for 3 stars.",
       ],
-      note: "Blue tiles are x, green tiles are y, yellow are ones; red tiles are negative.",
+      note: "Read the letter and sign on each tile. Opposite coefficients of the same letter cancel.",
     },
     load(lv, api) {
       const s = { E: lv.E.map((e) => e.slice()), steps: 0, hist: [], log: [{ move: "Start", text: fmt(lv.E[0]) + "; " + fmt(lv.E[1]) }], phase: "move" };
@@ -110,7 +111,8 @@
         const one = s.E.findIndex((e) => (e[0] === 0) !== (e[1] === 0));
         if (one >= 0) return solvePhase(one);
         if (s.E.some((e) => e[0] === 0 && e[1] === 0)) api.msg("Both variables vanished from an equation. That's still balanced, but it doesn't help. Undo and try a different k.", "warn");
-        else api.msg("Still balanced, because you stacked balanced scales. Keep going until one variable disappears.");
+        else api.msg(kind === "mul" ? "Both sides were scaled. Which coefficient can now cancel with the other equation?" :
+          "Both letters remain. Choose a multiplier that makes one pair of coefficients add to zero.");
         refresh();
       }
       function onUndo() {
@@ -138,8 +140,8 @@
           logTitle: "Your moves",
           result: () => ({ answer: "x = " + Alg.num(lv.s[0]) + ", y = " + Alg.num(lv.s[1]), steps: moves, par: lv.par, stars: undefined, note: undefined,
             lines: s.log.map((l) => (l.move ? l.move + ": " : "") + l.text),
-            check: "(" + Alg.num(lv.s[0]) + ", " + Alg.num(lv.s[1]) + ") balances the original scales and every stacked one: " +
-              s.E.map((q) => Alg.num(q[0] * lv.s[0] + q[1] * lv.s[1]) + " = " + Alg.num(q[2])).join(", ") + " ✓" }),
+            check: "(" + Alg.num(lv.s[0]) + ", " + Alg.num(lv.s[1]) + ") balances both original scales: " +
+              lv.E.map((q) => Alg.num(q[0] * lv.s[0] + q[1] * lv.s[1]) + " = " + Alg.num(q[2])).join(", ") + " ✓" }),
         });
       }
       api.msg("Choose Stack or Resize, which equation changes, and k. Then apply.");
@@ -158,6 +160,7 @@
       api.autoplay = myAuto;
     },
     guide: {
+      evidence: "Before a stack, have the student name the two coefficients that will cancel. Ask them to check their final ordered pair in both original equations.",
       summary: "A 12-level game for the elimination method. Each equation is a balanced scale; students replace one equation with the sum of it and a multiple of the other until a variable disappears, then solve. The win screen shows that the solution balances every new scale.",
       also: "<span class='code'>AI.A-REI.C.6</span> solving systems of linear equations exactly.",
       practices: "MP3 Construct viable arguments · MP7 Look for and make use of structure",
