@@ -48,6 +48,8 @@
       const svg = api.svg("0 0 900 460", "Two routes on a grid");
       api.stage.appendChild(svg);
       let pick = null, reveal = !lv.hidden, marked = null;
+      let coordinates = [];
+      const axes = lv.ctx ? ["m", "C"] : ["x", "y"];
       const colors = ["#5a78b8", "#c8553d"];
       function draw() {
         let s = P.grid();
@@ -62,7 +64,10 @@
       svg.addEventListener("click", (e) => {
         if (!e.target.closest("[data-plane]")) return;
         const q = P.fromEvent(e, svg, lv.approx ? 0.5 * step[0] : step[0], lv.approx ? 0.5 * step[1] : step[1]);
-        pick = [q.x, q.y]; draw();
+        if (!coordinates.length || marked) return;
+        pick = [q.x, q.y];
+        coordinates.forEach((field, i) => { field.value = pick[i]; });
+        draw();
       });
       draw();
       const steps = [];
@@ -77,9 +82,18 @@
         else steps.push({ type: "choice", prompt: "Substitute y = x + 2 into 2y − 2x = 4. You get…", options: [
           { label: "4 = 4, always true", ok: true }, { label: "x = 2", why: "2(x + 2) − 2x = 2x + 4 − 2x. The x terms cancel." }, { label: "4 = 0", why: "Check: 2x + 4 − 2x = 4." }] });
       } else {
-        steps.push({ type: "click", button: "Place", prompt: lv.approx ? "Click as close to the crossing as you can (it snaps to halves)." : lv.hidden ? "Predict: click where the routes will cross." : "Click where the routes cross.",
+        steps.push({ type: "click", button: "Place", prompt: lv.approx ? "Estimate the crossing. Tap the graph or enter its coordinates." :
+          lv.hidden ? "Predict the crossing. Tap the graph or enter its coordinates." : "Tap where the routes cross or enter the coordinates.",
+          controls: () => {
+            coordinates = axes.map(axis => api.number("", { type: "text", "aria-label": axis + " coordinate", inputmode: "decimal" }));
+            return api.h("div", { class: "row" }, ...coordinates.map((field, i) => api.h("label", null, axes[i] + " ", field)));
+          },
           check: () => {
-            if (!pick) return "Click the grid first.";
+            const point = coordinates.map(field => Alg.parseNum(field.value));
+            const [x, y] = point;
+            if (!Number.isFinite(x) || !Number.isFinite(y)) return "Tap the graph or fill in both coordinates first.";
+            if (x < P.xmin || x > P.xmax || y < P.ymin || y > P.ymax) return "Choose coordinates inside the grid.";
+            pick = point;
             const tol = lv.approx ? 0.6 : 1e-9;
             reveal = true; draw();
             const dx = Math.abs(pick[0] - lv.sol[0]) / step[0], dy = Math.abs(pick[1] - lv.sol[1]) / step[1];
@@ -88,7 +102,7 @@
             if (dx <= tol) return "You chose " + pt(pick) + ". Keep the same horizontal position and move " + (pick[1] > lv.sol[1] ? "down" : "up") + " toward the crossing.";
             return "At " + (lv.ctx ? "m" : "x") + " = " + Alg.num(pick[0]) + " the routes are at " + Alg.num(Alg.round(f0, 2)) + " and " + Alg.num(Alg.round(f1, 2)) + ". They cross where those are equal.";
           },
-          autoplay: () => { pick = lv.approx ? [Math.round(lv.sol[0] * 2) / 2, Math.round(lv.sol[1] * 2) / 2] : lv.sol.slice(); }, get done() { return (lv.approx ? "Your estimate: " : "Crossing at ") + pt(marked); } });
+          autoplay: () => { coordinates.forEach((field, i) => { field.value = lv.approx ? Math.round(lv.sol[i] * 2) / 2 : lv.sol[i]; }); }, get done() { return (lv.approx ? "Your estimate: " : "Crossing at ") + pt(marked); } });
         if (lv.hidden || lv.approx || lv.ctx) {
           const xv = lv.ctx ? "m" : "x", yv = lv.ctx ? "C" : "y";
           steps.push({ type: "input", prompt: "Solve exactly: " + xv + " = [], " + yv + " = []", answers: lv.sol, hint: "Set the two expressions for " + yv + " equal (or substitute), then solve for " + xv + ". Put " + xv + " back in to get " + yv + ".",
@@ -97,7 +111,7 @@
       }
       Steps.run(api, { steps, logTitle: "Your work", result: () => ({
         answer: lv.sol === "none" ? "No solution" : lv.sol === "all" ? "Infinitely many solutions" : (lv.frac ? "(" + lv.frac.map((f) => (f[0] < 0 ? M : "") + Math.abs(f[0]) + "/" + f[1]).join(", ") + ")" : pt(lv.sol)),
-        check: Array.isArray(lv.sol) ? "Check: " + lv.l.map((l) => Alg.num(Alg.round(l.a * lv.sol[0] + l.b * lv.sol[1], 6)) + " = " + Alg.num(l.c)).join(" and ") + " ✓" : "Graphs and algebra agree ✓" }) });
+        check: Array.isArray(lv.sol) ? "Check: " + lv.l.map((l) => Alg.num(Alg.round(l.a * lv.sol[0] + l.b * lv.sol[1], 6)) + " = " + Alg.num(l.c)).join(" and ") + " ✓<br><strong>Explain:</strong> Why must the crossing point satisfy both equations?" : "Graphs and algebra agree ✓<br><strong>Explain:</strong> How would you tell how many solutions there are from the graph?" }) });
     },
     guide: {
       summary: "A 12-level game for systems of two linear equations. Students place an interceptor where two routes cross, predict crossings before the lines appear, solve exactly by substitution, estimate non-grid crossings, and recognize parallel and identical lines.",
