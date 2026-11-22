@@ -45,6 +45,14 @@
   section.band > h2 { font-family: var(--head); font-weight: 600; font-size: 32px; margin: 44px 0 4px; }
   section.band > .sub { color: var(--muted); font-weight: 600; font-size: 18px; margin: 0 0 16px; }
 
+  .starter-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+  .starter { display: flex; flex-direction: column; gap: 8px; background: var(--card);
+    border: 2px solid var(--line); border-radius: 14px; padding: 16px; }
+  .starter h3 { font: 600 23px/1.2 var(--head); margin: 0; }
+  .starter p { margin: 0; flex: 1; }
+  .starter .row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
+  @media (max-width: 760px) { .starter-grid { grid-template-columns: 1fr; } }
+
   /* game browser */
   .game-browser { scroll-margin-top: 16px; }
   .finder { position: sticky; top: 0; z-index: 5; background: var(--paper); padding: 10px 0 12px; border-bottom: 2px solid var(--line); }
@@ -152,12 +160,12 @@
       <h1>Algebra you can <em>play.</em></h1>
       <p class="lede">Balance a scale, fly a drone, fit a line. Every move you make is the math.</p>
       <div class="paths student-only">
-        <a class="path students" href="#games" data-role-set="student"><b>I'm a student</b><span>Pick a game and earn stars</span></a>
-        <a class="path" href="teachers/" data-role-set="teacher"><b>I'm a teacher</b><span>Classes, guides, answer keys</span></a>
+        <a class="path students" href="#games" data-role-set="student"><b>Play a game</b><span>Explore equations, graphs, and data</span></a>
+        <a class="path" href="teachers/pilot.html" data-role-set="teacher"><b>Try a 20-minute lesson</b><span>For teachers · sample activity and exit ticket</span></a>
       </div>
       <div class="paths teacher-only">
-        <a class="path students" href="classes/"><b>My classes</b><span>Make a class code, see progress</span></a>
-        <a class="path" href="teachers/"><b>Teacher guides</b><span>Lesson plans, answer keys, exit tickets</span></a>
+        <a class="path students" href="teachers/pilot.html"><b>Try a 20-minute lesson</b><span>Sample activity and exit ticket</span></a>
+        <a class="path" href="#games"><b>Play a game</b><span>Preview an activity before assigning it</span></a>
       </div>
       <ul class="facts">
         <li>63 games · every MA Algebra I standard</li>
@@ -216,7 +224,38 @@
     </div>
   </section>
 
-  <section class="band game-browser" aria-labelledby="games" id="games">
+  <section class="band" aria-labelledby="starterTitle">
+    <h2 id="starterTitle">Start with one lesson</h2>
+    <p class="sub">Try levels 1–4 first. Each guide includes an exit ticket.</p>
+    <div class="starter-grid">
+      <article class="starter">
+        <h3>Balance Workshop</h3>
+        <p>Solve linear equations by keeping both sides of a scale balanced.</p>
+        <div class="row">
+          <a class="btn primary" href="games/a-rei-b-3/?level=1" aria-label="Play levels 1–4 of Balance Workshop">Play levels 1–4</a>
+          <a class="btn" href="teachers/a-rei-b-3/" aria-label="Teacher guide for Balance Workshop">Teacher guide</a>
+        </div>
+      </article>
+      <article class="starter">
+        <h3>Intercept</h3>
+        <p>Find where two lines cross and explain why that point solves both equations.</p>
+        <div class="row">
+          <a class="btn primary" href="games/a-rei-c-6/?level=1" aria-label="Play levels 1–4 of Intercept">Play levels 1–4</a>
+          <a class="btn" href="teachers/guide.html?g=a-rei-c-6" aria-label="Teacher guide for Intercept">Teacher guide</a>
+        </div>
+      </article>
+      <article class="starter">
+        <h3>Draw, Then Look</h3>
+        <p>Build dot plots and histograms, then describe the shape of the data.</p>
+        <div class="row">
+          <a class="btn primary" href="games/s-id-a-1/?level=1" aria-label="Play levels 1–4 of Draw, Then Look">Play levels 1–4</a>
+          <a class="btn" href="teachers/guide.html?g=s-id-a-1" aria-label="Teacher guide for Draw, Then Look">Teacher guide</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="band game-browser" aria-labelledby="gamesTitle" id="games">
     <h2 id="gamesTitle">Pick a game</h2>
     <p class="sub" id="playSub"></p>
     <div class="finder" role="search" aria-label="Find a game">
@@ -255,9 +294,9 @@
         <li>Keyboard controls vary by game. <a href="teachers/pilot.html#accessibility">Review accessibility before assigning.</a></li>
       </ul>
       <div class="tile dark">
-        <h3>Teaching tomorrow?</h3>
-        <p>Find the standard, open its guide, and copy the student link into your class page. No setup.</p>
-        <a class="btn" href="teachers/">Find a teacher guide</a>
+        <h3>Teach one lesson</h3>
+        <p>Try Balance Workshop with a lesson plan and a printable exit ticket.</p>
+        <a class="btn" href="teachers/pilot.html">Try a 20-minute lesson</a>
       </div>
     </div>
   </section>
