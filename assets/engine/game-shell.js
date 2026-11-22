@@ -56,7 +56,8 @@
     else start(cfg);
   };
 
-  const reduceMotion = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  // In test mode (?test=1) animations finish instantly so autoplay is synchronous.
+  const reduceMotion = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) || /[?&]test=1/.test(location.search);
   GS.reduceMotion = reduceMotion;
 
   function start(cfg) {
