@@ -71,7 +71,12 @@
     p.point = function (x, y, o) {
       o = o || {};
       let s = '<circle cx="' + p.X(x) + '" cy="' + p.Y(y) + '" r="' + (o.r || 9) + '" fill="' + (o.fill || "#e7b84a") + '" stroke="' + INK + '" stroke-width="' + (o.sw || 3) + '"' + (o.hollow ? ' fill-opacity="0"' : "") + ' pointer-events="none"/>';
-      if (o.label) s += '<text x="' + (p.X(x) + 12) + '" y="' + (p.Y(y) - 12) + '" font-size="15" fill="' + INK + '" pointer-events="none">' + o.label + "</text>";
+      if (o.label) {
+        const alignRight = p.X(x) > (L + R) / 2;
+        const labelX = p.X(x) + (alignRight ? -12 : 12);
+        const labelY = p.Y(y) < T + 20 ? p.Y(y) + 24 : p.Y(y) - 12;
+        s += '<text text-anchor="' + (alignRight ? "end" : "start") + '" x="' + labelX + '" y="' + labelY + '" paint-order="stroke" stroke="#fffdf7" stroke-width="3" font-size="16" fill="' + INK + '" pointer-events="none">' + o.label + "</text>";
+      }
       return s;
     };
 

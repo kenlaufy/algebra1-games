@@ -27,7 +27,13 @@
   }
   function tryWrong(w, slug) {
     const d = w.document, api = w.GameShell.api;
-    if (slug === "a-ced-a-4") {
+    if (slug === "a-ced-a-2" && api.level.scale) {
+      const axis = api.level.scale.x ? "x" : "y";
+      const group = api.controls.querySelector('[aria-label="' + axis + '-axis scale"]');
+      const max = Math.max(...api.level.pts.map(point => point[axis === "x" ? 0 : 1]));
+      const best = api.level.scale[axis].find(scale => scale * 10 >= max);
+      [...group.querySelectorAll("button")].find(b => Number(b.textContent) !== best).click();
+    } else if (slug === "a-ced-a-4") {
       api.controls.querySelector('[aria-label="Piece"]').querySelectorAll("button").forEach(b => {
         if (b.textContent === api.level.T) b.click();
       });

@@ -25,6 +25,7 @@
   GameShell.register({
     slug: "a-rei-c-6",
     title: "Intercept",
+    firstMove: "Tap the point where the solid and dashed routes cross, then press Place. Read x across and y up.",
     subtitle: "Solve systems of linear equations with graphs and exactly",
     stages: { 1: "Stage 1 · Read the crossing", 2: "Stage 2 · Predict, then solve", 3: "Stage 3 · Off the grid" },
     levels: LEVELS,
@@ -43,7 +44,7 @@
       const P = Plane.create({ xmin: lv.r[0], xmax: lv.r[1], ymin: lv.r[2], ymax: lv.r[3], xstep: step[0], ystep: step[1], xtick: step[0] * (lv.r[1] - lv.r[0] > 12 ? 2 : 1), ytick: step[1] * 2,
         xlabel: lv.ctx ? "m" : "x", ylabel: lv.ctx ? "C" : "y" });
       if (lv.ctx) api.stage.appendChild(api.h("div", { class: "preview", style: { textAlign: "center", padding: "8px", fontSize: "18px", color: "var(--ink)" } }, lv.ctx));
-      api.stage.appendChild(api.h("div", { class: "stage-text", style: { fontSize: "24px" } }, lv.l[0].text + "   and   " + lv.l[1].text));
+      api.stage.appendChild(api.h("div", { class: "stage-text", style: { fontSize: "24px" } }, "Solid: " + lv.l[0].text + " · Dashed: " + lv.l[1].text));
       const svg = api.svg("0 0 900 460", "Two routes on a grid");
       api.stage.appendChild(svg);
       let pick = null, reveal = !lv.hidden, marked = null;
@@ -51,7 +52,7 @@
       function draw() {
         let s = P.grid();
         if (reveal) lv.l.forEach((l, i) => {
-          s += l.b !== 0 ? P.curve(yOf(l), { color: colors[i], dash: i === 1 && lv.sol === "all" ? "10 8" : null }) : P.seg(l.c / l.a, P.ymin, l.c / l.a, P.ymax, { color: colors[i] });
+          s += l.b !== 0 ? P.curve(yOf(l), { color: colors[i], dash: i === 1 ? "10 8" : null }) : P.seg(l.c / l.a, P.ymin, l.c / l.a, P.ymax, { color: colors[i], dash: i === 1 ? "10 8" : null });
         });
         if (marked) s += P.point(marked[0], marked[1], { fill: "#3f7d4c", r: 10, label: pt(marked) });
         if (pick) s += '<g pointer-events="none" transform="translate(' + P.X(pick[0]) + " " + P.Y(pick[1]) + ')"><circle r="14" fill="none" stroke="#23262d" stroke-width="3"/><path d="M -20 0 h 40 M 0 -20 v 40" stroke="#23262d" stroke-width="2.5"/></g>';
@@ -101,6 +102,7 @@
       summary: "A 12-level game for systems of two linear equations. Students place an interceptor where two routes cross, predict crossings before the lines appear, solve exactly by substitution, estimate non-grid crossings, and recognize parallel and identical lines.",
       also: "<span class='code'>AI.A-REI.D.11</span> intersections as solutions of f(x) = g(x).",
       practices: "MP5 Use appropriate tools strategically · MP6 Attend to precision",
+      evidence: "Ask the student to check a proposed crossing in both equations. A point that fits only one route makes a useful counterexample.",
       goals: [
         "Solve systems of linear equations approximately from graphs.",
         "Solve systems exactly by substitution, including fractional solutions.",

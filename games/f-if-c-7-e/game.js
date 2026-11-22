@@ -26,6 +26,7 @@
   GameShell.register({
     slug: "f-if-c-7-e",
     title: "Exponential Slide",
+    firstMove: "Read the coin height at x = 0 for a. Divide the next height by the first to find b, enter both, and press Slide.",
     subtitle: "Graph exponential functions; show intercepts and end behavior",
     stages: { 1: "Stage 1 · Growing slides", 2: "Stage 2 · Decay and the floor", 3: "Stage 3 · Moving the floor" },
     levels: LEVELS,
@@ -37,7 +38,7 @@
         "The slide gets closer and closer to a floor (the horizontal asymptote) but never touches it.",
         "Fewer wrong answers means more stars.",
       ],
-      note: "In y = a · bˣ + c, the floor is y = c.",
+      note: "In y = a · bˣ + c, the graph approaches the horizontal line y = c.",
     },
     load(lv, api) {
       const P = Plane.create({ xmin: lv.r[0], xmax: lv.r[1], ymin: lv.r[2], ymax: lv.r[3], xstep: 1, ystep: 1, ytick: lv.r[3] - lv.r[2] > 12 ? 2 : 1 });
@@ -52,8 +53,9 @@
         if (v) s += P.curve(fn(v), { upto: t, color: "#5a78b8", width: 6 });
         (lv.coins || []).forEach((c) => {
           const got = v && Alg.close(fn(v)(c[0]), c[1], 1e-6) && t >= 1;
-          s += '<circle cx="' + P.X(c[0]) + '" cy="' + P.Y(c[1]) + '" r="12" fill="' + (got ? "#3f7d4c" : "#e7b84a") + '" stroke="#23262d" stroke-width="3" pointer-events="none"/>' +
-            '<text x="' + (P.X(c[0]) + 16) + '" y="' + (P.Y(c[1]) - 12) + '" font-size="14" fill="#23262d">(' + Alg.num(c[0]) + ", " + Alg.num(c[1]) + ")</text>";
+          const mark = v && t >= 1 ? (got ? "✓ " : "× ") : "";
+          s += P.point(c[0], c[1], { r: 12, fill: got ? "#3f7d4c" : "#e7b84a",
+            label: mark + "(" + Alg.num(c[0]) + ", " + Alg.num(c[1]) + ")" });
         });
         svg.innerHTML = s;
       }
@@ -63,6 +65,7 @@
         const n = lv.ans.length;
         steps.push({ type: "input", prompt: n === 3 ? "a = [], b = [], c = []" : "a = [], b = []", answers: lv.ans, button: "Slide",
           accept: (vals) => {
+            if (vals[1] <= 0) return "An exponential growth factor must be positive. Divide one height by the previous height.";
             v = vals; t = 0; head.textContent = eq(vals);
             api.tween(0, 1, 900, (u) => { t = u; draw(); });
             const miss = lv.coins.find((c) => !Alg.close(fn(vals)(c[0]), c[1], 1e-6));
@@ -80,6 +83,7 @@
       summary: "A 12-level game for graphing exponential functions. Students choose a and b (and a vertical shift c) so the curve passes through coins, and read intercepts, horizontal asymptotes and end behavior.",
       also: "<span class='code'>AI.F-LE.A.2</span> constructing exponential functions from points.",
       practices: "MP7 Look for and make use of structure · MP8 Look for and express regularity in repeated reasoning",
+      evidence: "Hide the next coin and ask the student to predict its height. Listen for the factor between consecutive heights and an explanation of what happens when it is below one.",
       goals: [
         "Graph y = a · bˣ and identify its y-intercept and whether it grows or decays.",
         "Describe end behavior as x → ∞ and x → −∞ and identify the horizontal asymptote.",
