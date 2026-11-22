@@ -59,19 +59,46 @@
         s += P.hitArea();
         svg.innerHTML = s;
       }
+      const selection = api.h("p", { class: "preview", role: "status" });
+      function showSelection() {
+        selection.textContent = marks.length ? "Marked: " + marks.map(pt).join(", ") : "No points marked.";
+      }
+      function togglePoint(x, y) {
+        if (showHits) return;
+        const k = marks.findIndex(m => m[0] === x && m[1] === y);
+        if (k >= 0) marks.splice(k, 1); else marks.push([x, y]);
+        draw();
+        showSelection();
+        api.msg("");
+      }
       svg.addEventListener("click", (e) => {
         if (!e.target.closest("[data-plane]") || lv.stage !== 1) return;
         const q = P.fromEvent(e, svg, 1, 1);
-        const k = marks.findIndex((m) => m[0] === q.x && m[1] === q.y);
-        if (k >= 0) marks.splice(k, 1); else marks.push([q.x, q.y]);
-        draw();
+        togglePoint(q.x, q.y);
       });
       draw();
       const steps = [];
       const same = (a, c) => a.length === c.length && a.every((p) => c.some((q) => Alg.close(p[0], q[0], 1e-6) && Alg.close(p[1], q[1], 1e-6)));
       if (lv.stage === 1) {
-        steps.push({ type: "click", button: "Fire", prompt: "Click every crossing point (click again to remove a mark).",
+        steps.push({ type: "click", button: "Fire", prompt: "Mark every crossing. Select a marked point again to remove it.",
+          controls: () => {
+            const x = api.number("", { "aria-label": "x coordinate", inputmode: "numeric" });
+            const y = api.number("", { "aria-label": "y coordinate", inputmode: "numeric" });
+            const mark = () => {
+              const a = Alg.parseNum(x.value), b = Alg.parseNum(y.value);
+              if (!Number.isInteger(a) || !Number.isInteger(b) || a < P.xmin || a > P.xmax || b < P.ymin || b > P.ymax) {
+                api.msg("Enter two whole-number coordinates within the grid.", "warn");
+                return;
+              }
+              togglePoint(a, b);
+            };
+            [x, y].forEach(field => field.addEventListener("keydown", e => { if (e.key === "Enter") mark(); }));
+            showSelection();
+            return api.h("div", null, api.h("div", { class: "row" },
+              api.h("label", null, "x ", x), api.h("label", null, "y ", y), api.button("Mark or remove point", mark)), selection);
+          },
           check: () => {
+            if (!marks.length) return "Mark a point on the graph or enter its coordinates first.";
             if (same(marks, lv.hits)) { showHits = true; draw(); return true; }
             const bad = marks.find((m) => !lv.hits.some((h) => h[0] === m[0] && h[1] === m[1]));
             if (bad) return pt(bad) + " isn't on both: the path gives y = " + Alg.num(f(bad[0])) + " and the laser gives y = " + Alg.num(lv.laser[0] * bad[0] + b) + " at x = " + Alg.num(bad[0]) + ".";
