@@ -18,6 +18,7 @@ cat > "games/$slug/index.html" <<HTML
 </head>
 <body>
 <script src="../../assets/engine/catalog.js"></script>
+<script src="../../assets/engine/look.js"></script>
 <script src="../../assets/engine/algebra.js"></script>
 <script src="../../assets/engine/cartoon.js"></script>
 <script src="../../assets/engine/plane.js"></script>

@@ -4,100 +4,127 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Algebra 1 Games · Play-based practice for Massachusetts Algebra I</title>
-<meta name="description" content="Browser games where the math is the gameplay, aligned to the 2017 Massachusetts Algebra I standards. Free, no logins, no student data collected.">
+<meta name="description" content="63 browser games where the math is the gameplay, one for every 2017 Massachusetts Algebra I standard. Free, no logins, no student data collected.">
 <meta property="og:title" content="Algebra 1 Games">
-<meta property="og:description" content="Browser games where the math is the gameplay, aligned to the Massachusetts Algebra I standards.">
+<meta property="og:description" content="63 browser games where the math is the gameplay, one for every Massachusetts Algebra I standard.">
 <meta property="og:type" content="website">
 <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
 <link rel="stylesheet" href="assets/site.css">
 <style>
-  .hero {
-    max-width: 1080px; margin: 0 auto; padding: 18px 20px 10px;
-    display: grid; grid-template-columns: 1.05fr 1fr; gap: 34px; align-items: center;
-  }
-  .hero h1 { font-family: var(--head); font-weight: 700; font-size: 52px; line-height: 1.05; margin: 0 0 12px; }
-  .hero p { font-size: 20px; margin: 0 0 18px; }
-  .hero .facts { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 22px; padding: 0; list-style: none; }
-  .hero .facts li { background: var(--chip); border-radius: 999px; padding: 4px 12px; font-weight: 700; font-size: 15px; }
-  .cta { display: flex; flex-wrap: wrap; gap: 12px; }
-  .feature {
-    background: var(--card); border: 3px solid var(--ink); border-radius: 20px; box-shadow: 0 7px 0 var(--ink);
-    overflow: hidden; display: block; text-decoration: none; color: var(--ink);
-  }
+  .hero { max-width: 1080px; margin: 0 auto; padding: 30px 20px 18px; display: grid; grid-template-columns: 1.05fr 1fr; gap: 34px; align-items: center; }
+  .hero h1 { font-family: var(--head); font-weight: 700; font-size: 54px; line-height: 1.04; margin: 0 0 12px; }
+  .hero h1 em { font-style: normal; color: var(--go); }
+  .hero p.lede { font-size: 20px; margin: 0 0 20px; max-width: 34ch; }
+  .paths { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 0 0 18px; }
+  .path { display: flex; flex-direction: column; gap: 2px; text-decoration: none; color: var(--ink); background: var(--card);
+          border: 2.5px solid var(--ink); border-radius: 16px; padding: 12px 16px 14px; box-shadow: 0 5px 0 var(--ink); }
+  .path:hover { transform: translateY(-2px); box-shadow: 0 7px 0 var(--ink); }
+  .path:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--ink); }
+  .path.students { background: var(--go); color: #fff; border-color: var(--go-dark); box-shadow: 0 5px 0 var(--go-dark); }
+  .path b { font-family: var(--head); font-weight: 600; font-size: 22px; }
+  .path span { font-size: 15px; font-weight: 700; opacity: .9; }
+  .facts { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+  .facts li { background: var(--chip); border-radius: 999px; padding: 4px 12px; font-weight: 700; font-size: 14.5px; }
+
+  .feature { background: var(--card); border: 3px solid var(--ink); border-radius: 20px; box-shadow: 0 7px 0 var(--ink);
+             overflow: hidden; display: block; text-decoration: none; color: var(--ink); }
   .feature:hover { transform: translateY(-2px); box-shadow: 0 9px 0 var(--ink); }
   .feature .art { display: block; width: 100%; border-bottom: 3px solid var(--ink); }
   .feature .body { padding: 14px 18px 18px; }
-  .feature .name { font-family: var(--head); font-weight: 700; font-size: 28px; margin: 6px 0 2px; }
-  .feature .row { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 10px; }
+  .feature .kicker { font-weight: 800; font-size: 14px; text-transform: uppercase; letter-spacing: .6px; color: var(--muted); }
+  .feature .name { font-family: var(--head); font-weight: 700; font-size: 28px; margin: 2px 0 2px; }
+  .feature .row { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 12px; }
   .feature .meta { color: var(--muted); font-weight: 700; font-size: 15px; }
+  .feature .band { display: flex; align-items: center; gap: 16px; padding: 22px 20px; background: var(--t); border-bottom: 3px solid var(--ink); }
+  .feature .band svg { width: 86px; height: 86px; flex: none; background: #fff; border: 3px solid var(--ink); border-radius: 18px; padding: 8px; }
+  .feature .band .unitname { font-family: var(--head); font-weight: 600; font-size: 19px; color: var(--u); }
   .play-pill { font-family: var(--head); font-weight: 600; font-size: 20px; color: #fff; background: var(--go);
                border-radius: 12px; padding: 7px 22px; box-shadow: 0 5px 0 var(--go-dark); }
 
   section.band { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
-  section.band h2 { font-family: var(--head); font-weight: 600; font-size: 30px; margin: 48px 0 6px; }
-  section.band .sub { color: var(--muted); font-weight: 600; font-size: 18px; margin: 0 0 16px; }
+  section.band > h2 { font-family: var(--head); font-weight: 600; font-size: 32px; margin: 44px 0 4px; }
+  section.band > .sub { color: var(--muted); font-weight: 600; font-size: 18px; margin: 0 0 16px; }
+
+  /* game browser */
+  .game-browser { scroll-margin-top: 16px; }
+  .finder { position: sticky; top: 0; z-index: 5; background: var(--paper); padding: 10px 0 12px; border-bottom: 2px solid var(--line); }
+  .finder .searchrow { display: flex; gap: 10px; align-items: center; }
+  .finder input { flex: 1; min-width: 0; min-height: 48px; font: inherit; font-size: 17px; color: var(--ink); background: #fff;
+                  border: 2px solid var(--muted); border-radius: 12px; padding: 10px 14px 10px 42px;
+                  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2348566b' stroke-width='2.5' stroke-linecap='round'%3E%3Ccircle cx='10.5' cy='10.5' r='6.5'/%3E%3Cpath d='M15.5 15.5L21 21'/%3E%3C/svg%3E");
+                  background-repeat: no-repeat; background-size: 20px; background-position: 13px center; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; padding: 10px 2px 2px; }
+  @media (max-width: 700px) { .chips { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin-inline: -12px; padding-inline: 12px; } .chips::-webkit-scrollbar { display: none; } }
+  .chip { flex: none; display: inline-flex; align-items: center; gap: 7px; font: 700 15px/1 var(--body); color: var(--ink);
+          background: var(--card); border: 2px solid var(--line); border-radius: 999px; padding: 8px 13px; min-height: 40px; cursor: pointer; }
+  .chip i { width: 11px; height: 11px; border-radius: 50%; background: var(--u, var(--ink)); flex: none; }
+  .chip[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .chip small { font-weight: 800; opacity: .6; }
+  .chip[aria-pressed="true"] i { box-shadow: 0 0 0 2px var(--paper); }
+  .game-count { color: var(--muted); font-size: 16px; font-weight: 700; margin: 14px 0 0; }
+
+  .unit { margin-top: 26px; scroll-margin-top: 150px; }
+  .unit-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin: 0 0 12px; padding-bottom: 6px; border-bottom: 3px solid var(--u); }
+  .unit-head h3 { font: 600 25px/1.2 var(--head); margin: 0; color: var(--ink); }
+  .unit-head h3 i { display: inline-block; width: 14px; height: 14px; border-radius: 4px; background: var(--u); margin-right: 9px; vertical-align: 1px; }
+  .unit-head small { color: var(--muted); font-weight: 700; font-size: 15px; }
+  .ggrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 238px), 1fr)); gap: 14px; }
+  .gcard { position: relative; background: var(--card); border: 2px solid var(--line); border-radius: 16px; overflow: hidden;
+           display: flex; flex-direction: column; box-shadow: 0 4px 0 var(--line); transition: box-shadow .12s, border-color .12s; }
+  .gcard:hover, .gcard:focus-within { border-color: var(--ink); box-shadow: 0 4px 0 var(--ink); }
+  .gtop { display: flex; justify-content: space-between; align-items: flex-start; background: var(--t); padding: 12px 14px 10px; border-bottom: 2px solid var(--line); }
+  .gtop svg { width: 54px; height: 54px; background: #fff; border: 2.5px solid var(--ink); border-radius: 14px; padding: 5px; }
+  .gtop .code { background: var(--u); color: #fff; }
+  .gbody { padding: 12px 16px 14px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+  .gcard h4 { font: 600 22px/1.15 var(--head); margin: 0; }
+  .gcard h4 a { text-decoration: none; color: var(--ink); }
+  .gcard h4 a::after { content: ""; position: absolute; inset: 0; }   /* the whole card opens the game */
+  .gcard p { margin: 0; font-size: 16px; flex: 1; }
+  .prog { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 800; color: var(--muted); min-height: 22px; }
+  .prog .bar { flex: 1; height: 8px; background: var(--chip); border-radius: 99px; overflow: hidden; }
+  .prog .bar b { display: block; height: 100%; background: var(--unit); border-radius: 99px; }
+  .prog .new { background: var(--chip); color: var(--ink); border-radius: 6px; padding: 1px 7px; }
+  .prog .done { color: var(--go); }
+  .card-actions { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 2px; }
+  .card-actions .btn { min-height: 42px; padding: 6px 16px; position: relative; z-index: 1; }
+  .guide-link { position: relative; z-index: 1; font-size: 14.5px; font-weight: 800; color: var(--muted); padding: 10px 2px; }
+  .empty { background: var(--card); border: 2px dashed var(--line); border-radius: 16px; padding: 18px 20px; margin-top: 18px; }
+
+  /* how and classroom */
   .three { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
   .tile { background: var(--card); border: 2px solid var(--line); border-radius: 16px; padding: 16px 18px; }
-  .tile h3 { font-family: var(--head); font-weight: 600; font-size: 21px; margin: 4px 0 6px; }
+  .tile h3 { font-family: var(--head); font-weight: 600; font-size: 21px; margin: 6px 0 6px; }
   .tile p { margin: 0; }
   .tile .num { display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 50%;
                background: var(--unit); border: 2.5px solid var(--ink); font-family: var(--head); font-weight: 700; }
-  .teachers { display: grid; grid-template-columns: 1.3fr 1fr; gap: 20px; align-items: start; }
-  .checks { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
-  .checks li { padding-left: 30px; position: relative; font-weight: 600; }
-  .checks li::before { content: "✓"; position: absolute; left: 0; top: -1px; width: 22px; height: 22px; border-radius: 6px;
+  .teachers { display: grid; grid-template-columns: 1.25fr 1fr; gap: 20px; align-items: start; }
+  .checks { list-style: none; padding: 0; margin: 0; display: grid; gap: 9px; }
+  .checks li { padding-left: 32px; position: relative; font-weight: 600; }
+  .checks li::before { content: "✓"; position: absolute; left: 0; top: 1px; width: 22px; height: 22px; border-radius: 6px;
                        background: var(--go); color: #fff; display: grid; place-items: center; font-size: 14px; font-weight: 800; }
-
-  .ggrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); gap: 14px; }
-  .gcard { background: var(--card); border: 3px solid var(--ink); border-radius: 16px; box-shadow: 0 5px 0 var(--ink);
-           padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 6px; text-decoration: none; color: var(--ink); }
-  .gcard:hover { transform: translateY(-2px); box-shadow: 0 7px 0 var(--ink); }
-  .gcard .code { align-self: flex-start; }
-  .gcard b { font-family: var(--head); font-weight: 600; font-size: 21px; }
-  .gcard .d { font-size: 15.5px; flex: 1; }
-  .play-pill.small { align-self: flex-start; font-size: 17px; padding: 4px 16px; box-shadow: 0 4px 0 var(--go-dark); }
-  .roadmap details { background: var(--card); border: 2px solid var(--line); border-radius: 14px; margin: 10px 0; }
-  .roadmap summary { cursor: pointer; padding: 12px 16px; font-family: var(--head); font-weight: 600; font-size: 19px;
-                     display: flex; justify-content: space-between; gap: 12px; list-style: none; }
-  .roadmap summary::-webkit-details-marker { display: none; }
-  .roadmap summary::after { content: "+"; font-size: 24px; line-height: 1; }
-  .roadmap details[open] summary::after { content: "−"; }
-  .roadmap summary small { color: var(--muted); font-family: var(--body); font-weight: 700; font-size: 15px; margin-left: auto; padding-right: 8px; align-self: center; }
-  .roadmap ul { list-style: none; margin: 0; padding: 0 16px 14px; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 10px; }
-  .roadmap li { border-top: 1px solid var(--line); padding-top: 10px; }
-  .roadmap li b { font-family: var(--head); font-weight: 600; font-size: 17px; display: block; margin: 4px 0 2px; }
-  .roadmap li span.d { font-size: 15px; }
-  .roadmap li.ready b::after { content: " · Play now"; color: var(--go); }
+  .tile.dark { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .tile.dark a.btn { margin-top: 12px; }
 
   @media (max-width: 860px) {
-    .hero { grid-template-columns: 1fr; gap: 24px; }
+    .hero { grid-template-columns: 1fr; gap: 24px; padding-top: 18px; }
     .hero h1 { font-size: 42px; }
     .three, .teachers { grid-template-columns: 1fr; }
+    /* a returning student sees "continue" right under the headline */
+    .hero.continuing { gap: 16px; }
+    .hero.continuing > div:first-child { display: contents; }
+    .hero.continuing h1 { order: 0; margin: 0; } .hero.continuing #heroCard { order: 1; } .hero.continuing > div > :not(h1) { order: 2; }
+    .hero.continuing .lede, .hero.continuing .paths, .hero.continuing .facts { margin: 0; }
   }
   @media (max-width: 480px) {
     .hero h1 { font-size: 36px; }
-    .hero p { font-size: 18px; }
+    .hero p.lede { font-size: 18px; }
+    .paths { grid-template-columns: 1fr; }
+    .ggrid { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .gtop { padding: 10px; } .gtop svg { width: 42px; height: 42px; }
+    .gbody { padding: 10px 12px 12px; } .gcard h4 { font-size: 18px; } .gcard p { display: none; }
+    .card-actions .guide-link { display: none; } .card-actions .btn { width: 100%; }
   }
-
-  .hero { padding-top: 36px; padding-bottom: 28px; }
-  .game-browser { scroll-margin-top: 24px; }
-  .game-filters { display: flex; align-items: end; gap: 14px; flex-wrap: wrap; padding: 20px; background: var(--card); border: 2px solid var(--line); border-radius: 16px; }
-  .game-filters > div:first-child { flex: 2 1 280px; }
-  .game-filters > div { flex: 1 1 220px; min-width: 0; }
-  .game-filters label { display: block; font-weight: 800; margin-bottom: 6px; }
-  .game-filters input, .game-filters select { width: 100%; min-height: 48px; font: inherit; color: var(--ink); background: #fff; border: 2px solid var(--muted); border-radius: 10px; padding: 10px 12px; }
-  .game-filters button { min-height: 48px; }
-  .game-count { color: var(--muted); font-size: 16px; font-weight: 700; margin: 16px 0; }
-  .gcard { padding: 20px; border-width: 2px; box-shadow: 0 4px 0 var(--line); gap: 10px; }
-  .gcard:hover { transform: none; box-shadow: 0 4px 0 var(--ink); }
-  .gcard h3 { font: 600 25px/1.15 var(--head); margin: 0; }
-  .gcard h3 a { text-decoration-thickness: 1px; text-underline-offset: 4px; }
-  .gcard p { margin: 0; font-size: 17px; }
-  .card-topic { font-size: 14px; font-weight: 800; color: var(--muted); }
-  .card-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin-top: 6px; }
-  .card-actions .btn { min-height: 44px; }
-  .guide-link { display: inline-flex; align-items: center; min-height: 44px; font-size: 15px; font-weight: 800; }
-  @media (max-width: 480px) { .hero { padding-top: 24px; } .game-filters { padding: 14px; } }
+  @media (max-width: 340px) { .ggrid { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -114,22 +141,22 @@
 <main id="main">
   <section class="hero">
     <div>
-      <h1>Algebra you can play.</h1>
-      <p>Balance a scale, build a rectangle, or predict where a graph meets the axis. Each game explores a Massachusetts Algebra I standard.</p>
+      <h1>Algebra you can <em>play.</em></h1>
+      <p class="lede">Balance a scale, fly a drone, fit a line. Every move you make is the math.</p>
+      <div class="paths">
+        <a class="path students" href="#games"><b>I'm a student</b><span>Pick a game and earn stars</span></a>
+        <a class="path" href="teachers/"><b>I'm a teacher</b><span>Guides, answer keys, exit tickets</span></a>
+      </div>
       <ul class="facts">
-        <li>Massachusetts Algebra I</li>
+        <li>63 games · every MA Algebra I standard</li>
         <li>No logins</li>
         <li>No student data</li>
         <li>Chromebooks, iPads, laptops</li>
       </ul>
-      <div class="cta">
-        <a class="btn primary big" href="#playnow">Find a game</a>
-        <a class="btn big" href="teachers/">For teachers</a>
-      </div>
     </div>
-
-    <a class="feature" href="games/a-rei-b-3/" aria-label="Play Balance Workshop">
-      <svg class="art" viewBox="0 0 600 300" aria-hidden="true">
+    <div id="heroCard">
+      <a class="feature" href="games/a-rei-b-3/" aria-label="Play Balance Workshop">
+        <svg class="art" viewBox="0 0 600 300" aria-hidden="true">
         <defs><linearGradient id="hsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c3d9ea"/><stop offset="1" stop-color="#e6eff4"/></linearGradient></defs>
         <rect width="600" height="300" fill="url(#hsky)"/>
         <circle cx="540" cy="52" r="38" fill="#f6dc86" opacity="0.35"/><circle cx="540" cy="52" r="25" fill="#f3d06a"/>
@@ -164,41 +191,42 @@
           <rect x="-23" y="-56" width="46" height="6" rx="3" fill="#e7b84a" stroke="#23262d" stroke-width="3"/>
         </g>
       </svg>
-      <div class="body">
-        <span class="code">AI.A-REI.B.3</span>
-        <div class="name">Balance Workshop</div>
-        <div>Solve linear equations by keeping a scale balanced. Mystery boxes become algebra tiles, then pure symbols.</div>
-        <div class="row">
-          <span class="meta">12 levels · about 15 minutes</span>
-          <span class="play-pill">Play</span>
+        <div class="body">
+          <span class="kicker">Start here</span>
+          <div class="name">Balance Workshop</div>
+          <div>Solve linear equations by keeping a scale balanced. Mystery boxes become algebra tiles, then pure symbols.</div>
+          <div class="row">
+            <span class="meta"><span class="code">AI.A-REI.B.3</span> &nbsp;12 levels · about 15 minutes</span>
+            <span class="play-pill">Play</span>
+          </div>
         </div>
-      </div>
-    </a>
+      </a>
+    </div>
   </section>
 
-  <section class="band game-browser" aria-labelledby="playnow">
-    <h2 id="playnow">Find your next game</h2>
+  <section class="band game-browser" aria-labelledby="games" id="games">
+    <h2 id="gamesTitle">Pick a game</h2>
     <p class="sub" id="playSub"></p>
-    <div class="game-filters" role="search" aria-label="Find a game">
-      <div><label for="gameSearch">Search games</label>
-        <input id="gameSearch" type="search" placeholder="Try equations, graphs, or a standard…" autocomplete="off" aria-controls="playGrid"></div>
-      <div><label for="gameTopic">Topic</label>
-        <select id="gameTopic" aria-controls="playGrid"><option value="">All topics</option></select></div>
-      <button class="btn" id="clearFilters" type="button">Clear filters</button>
+    <div class="finder" role="search" aria-label="Find a game">
+      <div class="searchrow">
+        <label class="sr-only" for="gameSearch">Search games</label>
+        <input id="gameSearch" type="search" placeholder="Search: equations, graphs, slope, S-ID.C.8…" autocomplete="off" aria-controls="units">
+      </div>
+      <div class="chips" id="chips" role="group" aria-label="Filter by unit"></div>
     </div>
     <p class="game-count" id="gameCount" role="status" aria-live="polite" aria-atomic="true"></p>
-    <div class="ggrid" id="playGrid"></div>
-    <div id="emptyGames" class="tile" hidden><h3>No matching games</h3><p>Try a shorter search or choose All topics.</p></div>
+    <div id="units"></div>
+    <div id="emptyGames" class="empty" hidden><b>No games match.</b> Try a shorter word, or <button class="btn" id="clearFilters" type="button">show all games</button></div>
     <noscript><p>Enable JavaScript to browse the full collection. You can <a href="games/a-rei-b-3/">play Balance Workshop</a> or <a href="teachers/">browse teacher guides</a>.</p></noscript>
   </section>
 
   <section class="band" aria-labelledby="how">
-    <h2 id="how">How the games teach</h2>
+    <h2 id="how">How the games work</h2>
     <p class="sub">Use the picture, make a move, and explain what changed.</p>
     <div class="three">
-      <div class="tile"><span class="num">1</span><h3>The math is the move</h3><p>Your choices change the model. In Balance Workshop, use the same operation on both sides to keep the equation balanced.</p></div>
-      <div class="tile"><span class="num">2</span><h3>Concrete to abstract</h3><p>Start with visible models, then connect what you see to equations, functions, and symbols.</p></div>
-      <div class="tile"><span class="num">3</span><h3>Translate it back</h3><p>Review the worked steps and answer checks after a win. Use them to explain why your method worked.</p></div>
+      <div class="tile"><span class="num">1</span><h3>The math is the move</h3><p>Your choices change the model. Do the same thing to both sides and the scale stays balanced.</p></div>
+      <div class="tile"><span class="num">2</span><h3>Picture first, then symbols</h3><p>Each game starts with something you can see and ends with equations, functions and graphs.</p></div>
+      <div class="tile"><span class="num">3</span><h3>Stars for smart moves</h3><p>Every win shows what you did, written in math. Fewer moves and fewer mistakes earn more stars.</p></div>
     </div>
   </section>
 
@@ -207,26 +235,18 @@
     <p class="sub">Ready for a 15-minute warm-up, a station, or homework.</p>
     <div class="teachers">
       <ul class="checks">
-        <li>Aligned to the 2017 Massachusetts Curriculum Framework for Mathematics (Model Algebra I)</li>
-        <li>A teacher guide for every game: lesson plan, answer key, misconceptions, and an exit ticket</li>
-        <li>No accounts, no ads, no tracking. Progress stays on the student's device</li>
+        <li>One game for each standard in the 2017 Massachusetts Curriculum Framework, Model Algebra I</li>
+        <li>A teacher guide for every game: lesson plan, misconceptions, answer key and exit ticket</li>
+        <li>No accounts, no ads, no tracking. Stars stay on the student's device</li>
         <li>Runs in any modern browser, including school Chromebooks and iPads</li>
         <li>Keyboard and screen-reader friendly controls</li>
       </ul>
-      <div class="tile">
-        <h3>Teacher guides</h3>
-        <p>Every game comes with learning goals, a ready-to-run lesson, discussion questions, and an answer key for all 12 levels.</p>
-        <p style="margin-top:12px"><a class="btn" href="teachers/">Browse teacher guides</a></p>
+      <div class="tile dark">
+        <h3>Teaching tomorrow?</h3>
+        <p>Find the standard, open its guide, and copy the student link into your class page. No setup.</p>
+        <a class="btn" href="teachers/">Find a teacher guide</a>
       </div>
     </div>
-  </section>
-
-
-
-  <section class="band roadmap" aria-labelledby="road">
-    <h2 id="road">All standards</h2>
-    <p class="sub" id="roadSub"></p>
-    <div id="roadmap"></div>
   </section>
 </main>
 
@@ -236,52 +256,82 @@
 </footer>
 
 <script src="assets/engine/catalog.js"></script>
+<script src="assets/engine/look.js"></script>
 <script>
-const all = A1G_CATALOG.domains.flatMap(d => d.games);
-const ready = all.filter(g => g.ready);
-const standards = new Set(all.map(g => g.code)).size;
-document.getElementById("playSub").textContent = ready.length + " games · 12 levels each · Free to play";
-const search = document.getElementById("gameSearch");
-const topic = document.getElementById("gameTopic");
-const grid = document.getElementById("playGrid");
-const playableDomains = A1G_CATALOG.domains.filter(d => d.games.some(g => g.ready));
-playableDomains.forEach(d => topic.add(new Option(d.name, d.name)));
-const normalize = text => text.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
-function renderGames() {
-  const words = normalize(search.value).split(/\s+/).filter(Boolean);
-  const games = playableDomains.flatMap(d => d.games.filter(g => {
-    const text = normalize([g.name, g.desc, g.code, g.std, d.name].join(" "));
-    return g.ready && (!topic.value || topic.value === d.name) && words.every(word => text.includes(word));
-  }).map(g => ({ ...g, topic: d.name })));
-  grid.innerHTML = games.map(g =>
-    '<article class="gcard"><div class="card-topic">' + g.topic + '</div><h3><a href="games/' + g.slug + '/">' + g.name + '</a></h3><p class="d">' + g.desc +
-    '</p><span class="code">' + g.code + '</span><div class="card-actions"><a class="btn primary" href="games/' + g.slug + '/" aria-label="Play ' + g.name +
-    '">Play game</a><a class="guide-link" href="' + (g.guide || 'teachers/guide.html?g=' + g.slug) + '" aria-label="Teacher guide for ' + g.name + '">Teacher guide</a></div></article>').join("");
-  document.getElementById("gameCount").textContent = games.length + " of " + ready.length + " games";
-  document.getElementById("emptyGames").hidden = games.length > 0;
-}
-search.addEventListener("input", renderGames);
-topic.addEventListener("change", renderGames);
-document.getElementById("clearFilters").addEventListener("click", () => {
-  search.value = "";
-  topic.value = "";
-  renderGames();
-  search.focus();
-});
-renderGames();
-document.getElementById("roadSub").textContent =
-  "One game for every Model Algebra I standard: " + all.length + " games across " + standards +
-  " standards" + (ready.length === all.length ? ", all playable now." : ". " + ready.length + " playable now, " + (all.length - ready.length) + " in development.");
-document.getElementById("roadmap").innerHTML = A1G_CATALOG.domains.map(d => {
-  const n = d.games.length, r = d.games.filter(g => g.ready).length;
-  return "<details><summary>" + d.name + "<small>" + n + (n === 1 ? " game" : " games") +
-    (r ? " · " + r + " playable" : "") + "</small></summary><ul>" +
-    d.games.map(g =>
-      '<li class="' + (g.ready ? "ready" : "") + '"><span class="code">' + g.code + "</span>" +
-      (g.ready ? '<b><a href="games/' + g.slug + '/">' + g.name + "</a></b>" : "<b>" + g.name + "</b>") +
-      '<span class="d">' + g.desc + "</span></li>").join("") +
-    "</ul></details>";
-}).join("");
+(function () {
+  const L = A1G_LOOK;
+  const domains = A1G_CATALOG.domains.map(d => ({ ...d, games: d.games.filter(g => g.ready) })).filter(d => d.games.length);
+  const total = domains.reduce((n, d) => n + d.games.length, 0);
+  const search = document.getElementById("gameSearch");
+  const chips = document.getElementById("chips");
+  const units = document.getElementById("units");
+  let unit = "";
+  document.getElementById("playSub").textContent = total + " games, one for every standard · 12 levels each · Free";
+
+  const esc = t => String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
+  const style = d => { const u = L.unit(d.name); return "--u:" + u.color + ";--t:" + u.tint; };
+
+  // unit chips
+  const chip = (value, label, color, n) => '<button type="button" class="chip" data-unit="' + esc(value) + '" aria-pressed="' + (value === unit) + '"' +
+    (color ? ' style="--u:' + color + '"' : "") + ">" + (color ? "<i></i>" : "") + esc(label) + ' <small>' + n + "</small></button>";
+  chips.innerHTML = chip("", "All units", "", total) + domains.map(d => chip(d.name, L.unit(d.name).short, L.unit(d.name).color, d.games.length)).join("");
+  chips.addEventListener("click", e => {
+    const b = e.target.closest(".chip"); if (!b) return;
+    unit = b.dataset.unit;
+    chips.querySelectorAll(".chip").forEach(c => c.setAttribute("aria-pressed", String(c.dataset.unit === unit)));
+    render();
+  });
+
+  function progress(g) {
+    const p = L.progress(g.slug);
+    if (!p.solved) return { html: '<span class="new">New</span> 12 levels', label: "Play", level: 1 };
+    const s = L.stars(g.slug);
+    let next = 1; while (next <= 12 && s[next - 1]) next++;
+    const bar = '<span class="bar" aria-hidden="true"><b style="width:' + Math.round(100 * p.stars / p.max) + '%"></b></span>';
+    if (p.solved === 12) return { html: '<span class="done">✓ All 12 levels</span>' + bar + "★ " + p.stars + "/36", label: "Play again", level: 1 };
+    return { html: bar + "★ " + p.stars + "/36 · " + p.solved + " of 12", label: "Continue", level: next };
+  }
+  function card(g, d) {
+    const pr = progress(g);
+    const href = "games/" + g.slug + "/" + (pr.level > 1 ? "?level=" + pr.level : "");
+    return '<article class="gcard" style="' + style(d) + '"><div class="gtop">' + L.icon(g.engine) + '<span class="code">' + g.code.replace("AI.", "") + "</span></div>" +
+      '<div class="gbody"><h4><a href="' + href + '">' + esc(g.name) + "</a></h4><p>" + esc(g.desc) + '</p><div class="prog">' + pr.html + "</div>" +
+      '<div class="card-actions"><a class="btn primary" href="' + href + '" tabindex="-1" aria-hidden="true">' + pr.label + "</a>" +
+      '<a class="guide-link" href="' + (g.guide || "teachers/guide.html?g=" + g.slug) + '" aria-label="Teacher guide for ' + esc(g.name) + '">Teacher guide</a></div></div></article>';
+  }
+  const norm = t => t.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+  function render() {
+    const words = norm(search.value).split(/\s+/).filter(Boolean);
+    let shown = 0;
+    units.innerHTML = domains.filter(d => !unit || d.name === unit).map(d => {
+      const games = d.games.filter(g => { const t = norm([g.name, g.desc, g.code, g.std, d.name, L.unit(d.name).short].join(" ")); return words.every(w => t.includes(w)); });
+      shown += games.length;
+      if (!games.length) return "";
+      return '<section class="unit" style="' + style(d) + '" aria-label="' + esc(d.name) + '"><div class="unit-head"><h3><i aria-hidden="true"></i>' + esc(L.unit(d.name).short) +
+        "</h3><small>" + esc(d.name) + " · " + games.length + (games.length === 1 ? " game" : " games") + '</small></div><div class="ggrid">' + games.map(g => card(g, d)).join("") + "</div></section>";
+    }).join("");
+    document.getElementById("gameCount").textContent = (shown === total ? "Showing all " + total + " games" : "Showing " + shown + " of " + total + " games");
+    document.getElementById("emptyGames").hidden = shown > 0;
+  }
+  search.addEventListener("input", render);
+  document.getElementById("clearFilters").addEventListener("click", () => { search.value = ""; unit = ""; chips.querySelectorAll(".chip").forEach(c => c.setAttribute("aria-pressed", String(c.dataset.unit === ""))); render(); search.focus(); });
+  render();
+
+  // continue where the student left off
+  let last = null; try { last = localStorage.getItem("a1g-last"); } catch (e) {}
+  const place = last && L.place(last);
+  if (place && place.game.ready) {
+    const g = place.game, d = place.domain, pr = progress(g), p = L.progress(g.slug);
+    const done = p.solved === 12;
+    const href = done && place.next ? "games/" + place.next.slug + "/" : "games/" + g.slug + "/" + (pr.level > 1 ? "?level=" + pr.level : "");
+    if (done && place.next) pr.label = "Play next";
+    document.querySelector(".hero").classList.add("continuing");
+    document.getElementById("heroCard").innerHTML = '<a class="feature" style="' + style(d) + '" href="' + href + '"><div class="band">' + L.icon(g.engine) +
+      '<div><span class="unitname">' + esc(L.unit(d.name).short) + '</span><div class="name">' + esc(g.name) + "</div></div></div>" +
+      '<div class="body"><span class="kicker">' + (done ? "You finished this one" : "Continue where you left off") + "</span><div>" + esc(g.desc) + '</div><div class="prog" style="margin-top:12px">' + pr.html + "</div>" +
+      '<div class="row"><span class="meta">' + (done ? (place.next ? "Next up: " + esc(place.next.name) : "") : "Level " + pr.level + " is next") + '</span><span class="play-pill">' + pr.label + "</span></div></div></a>";
+  }
+})();
 </script>
 </body>
 </html>

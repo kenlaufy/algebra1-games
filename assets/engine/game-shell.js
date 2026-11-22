@@ -85,14 +85,18 @@
       h("a", { class: "brand", href: root }, h("img", { src: root + "assets/logo.svg", alt: "" }), "Algebra 1 Games"),
       h("nav", { class: "site-nav", "aria-label": "Main" },
         h("a", { href: root }, "Games"), h("a", { href: root + "teachers/" }, "For teachers"), h("a", { href: root + "privacy/" }, "Privacy"))));
+    const LOOK = window.A1G_LOOK, place = LOOK && LOOK.place(cfg.slug), unit = place && LOOK.unit(place.domain.name);
+    if (unit) { document.documentElement.style.setProperty("--u", unit.color); document.documentElement.style.setProperty("--t", unit.tint); }
     body.appendChild(h("div", { class: "game-head" },
-      h("div", null, h("h1", null, title),
+      h("div", null,
+        h("nav", { class: "crumb", "aria-label": "Breadcrumb" }, h("a", { href: root + "#games" }, "All games"), unit ? h("span", null, unit.short) : null),
+        h("h1", null, title),
         h("div", { class: "sub" }, code ? h("span", { class: "code" }, code) : null, cfg.subtitle || info.desc || "")),
       h("div", { class: "head-actions" },
         els.helpBtn = h("button", { class: "btn" }, "How to play"),
         els.levelsBtn = h("button", { class: "btn" }, "Levels"))));
     body.appendChild(h("main", { id: "main", class: "game-main" },
-      h("div", { class: "levelbar" }, els.levelTitle = h("h2"), els.levelMeta = h("div", { class: "meta" })),
+      h("div", { class: "levelbar" }, h("div", { class: "lvl" }, els.levelTitle = h("h2"), els.pips = h("div", { class: "pips" })), els.levelMeta = h("div", { class: "meta" })),
       els.firstMove = h("p", { class: "first-move" }, h("strong", null, "Start here"), cfg.firstMove),
       els.tip = h("div", { class: "tip" }),
       els.stage = h("div", { class: "stagecard", id: "diagram" }),
@@ -125,6 +129,7 @@
       els.winLines = h("ol"),
       els.winCheck = h("div", { class: "check" }),
       h("div", { class: "row" },
+        els.nextGame = h("a", { class: "btn next-game", hidden: true }),
         els.replayBtn = h("button", { class: "btn" }, "Play again"),
         els.nextBtn = h("button", { class: "btn primary" }, "Next level")));
     els.levelsOverlay = overlay("levelsTitle",
@@ -238,6 +243,7 @@
       els.stage.innerHTML = "";
       els.controls.innerHTML = "";
       els.levelTitle.textContent = "Level " + (i + 1) + " of " + levels.length;
+      renderPips();
       els.tip.innerHTML = lv.tip || "";
       api.log(null);
       api.msg("");
@@ -246,6 +252,18 @@
       cfg.load(lv, api, i);
       els.zoom.hidden = !els.stage.querySelector("svg");
       setZoom(false);
+    }
+
+    function renderPips() {
+      let total = 0;
+      els.pips.innerHTML = "";
+      levels.forEach((lv, k) => {
+        const n = stars[k] || 0; total += n;
+        els.pips.appendChild(h("span", { class: "pip s" + n + (k === index ? " cur" : ""), "aria-hidden": "true" }));
+      });
+      els.pips.appendChild(h("span", { class: "pip-total" }, "★ " + total + "/" + levels.length * 3));
+      els.pips.setAttribute("aria-label", total + " of " + levels.length * 3 + " stars earned");
+      els.pips.setAttribute("role", "img");
     }
 
     function setZoom(enlarged) {
@@ -288,6 +306,12 @@
         (r.lines || []).forEach((l) => els.winLines.appendChild(lineItem(l)));
         els.winCheck.innerHTML = r.check || "";
         els.nextBtn.textContent = last ? "Back to level 1" : "Next level";
+        const nxt = last && place && place.next;
+        els.nextGame.hidden = !nxt;
+        if (nxt) { els.nextGame.href = root + "games/" + nxt.slug + "/"; els.nextGame.textContent = "Next game: " + nxt.name; }
+        els.nextGame.classList.toggle("primary", !!nxt);
+        els.nextBtn.classList.toggle("primary", !nxt);
+        renderPips();
         openOverlay(els.winOverlay, els.nextBtn);
       }, r.delay == null ? 700 : r.delay);
     }
@@ -318,6 +342,7 @@
       stars = {};
       try { localStorage.removeItem(STORE); } catch (e) {}
       showLevels();
+      renderPips();
     });
     els.restartBtn.addEventListener("click", () => load(index));
     els.replayBtn.addEventListener("click", () => { closeOverlay(els.winOverlay); load(index); });
@@ -332,6 +357,7 @@
     const m = /[?&]level=(\d+)/.exec(location.search);
     if (m) startAt = Math.max(0, Math.min(levels.length - 1, Number(m[1]) - 1));
     load(startAt);
+    if (!window.GAME_GUIDE_MODE && !/[?&]test=1/.test(location.search)) { try { localStorage.setItem("a1g-last", cfg.slug); } catch (e) {} }
 
   }
 })();

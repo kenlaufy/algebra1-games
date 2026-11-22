@@ -157,3 +157,5 @@ a { color: var(--ink); }
   .site-header, .game-head, main.game-main, .page { padding-inline: 12px; }
   .page .math { white-space: normal; }
 }
+
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }

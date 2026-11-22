@@ -15,6 +15,14 @@
   .game-head h1 { font-family: var(--head); font-weight: 700; font-size: 32px; margin: 0; letter-spacing: 0.3px; }
   .game-head .sub { color: var(--muted); font-size: 16px; font-weight: 600; }
   .game-head .code { margin-right: 8px; vertical-align: 2px; }
+  :root { --u: #346d42; }
+  .game-head .code { background: var(--u); color: #fff; }
+  .crumb { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 800; margin-bottom: 2px; }
+  .crumb a { color: var(--muted); text-decoration: none; display: inline-flex; align-items: center; min-height: 32px; }
+  .crumb a::before { content: "\2190"; margin-right: 6px; }
+  .crumb a:hover { color: var(--ink); text-decoration: underline; }
+  .crumb span { color: var(--u); }
+  .crumb span::before { content: "\00b7"; color: var(--muted); margin-right: 8px; }
   .head-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
   main { max-width: 980px; margin: 0 auto; padding: 10px 20px 24px; }
   .levelbar { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 6px; }
@@ -122,6 +130,7 @@
 </header>
 <div class="game-head">
   <div>
+    <nav class="crumb" aria-label="Breadcrumb"><a href="../../#games">All games</a><span>Solving</span></nav>
     <h1>Balance Workshop</h1>
     <div class="sub"><span class="code">AI.A-REI.B.3</span>Solve linear equations by keeping the scale balanced</div>
   </div>
@@ -808,7 +817,9 @@ document.addEventListener("keydown", e => {
   ["helpOverlay", "levelsOverlay", "winOverlay"].forEach(id => { if ($(id).classList.contains("show")) closeOverlay(id); });
 });
 
-loadLevel(0);
+const startMatch = /[?&]level=(\d+)/.exec(location.search);
+loadLevel(startMatch ? Math.max(0, Math.min(LEVELS.length - 1, Number(startMatch[1]) - 1)) : 0);
+try { localStorage.setItem("a1g-last", "a-rei-b-3"); } catch (e) {}
 
 </script>
 </body>
